@@ -149,9 +149,9 @@ class NamuMark {
 	}
 
 	public function toHtml() {
-		$this->whtml = htmlspecialchars($this->WikiPage->text);
+		$this->whtml = $this->WikiPage->text;
 		$this->whtml = $this->htmlScan($this->whtml);
-		$this->whtml.= $this->printFootnote();
+	//	$this->whtml.= $this->printFootnote();
 		return $this->whtml;
 	}
 
@@ -544,7 +544,7 @@ class NamuMark {
 		// external image
 		if(preg_match('/^(https?:\/\/[^ ]+\.(jpg|jpeg|png|gif))(?:\?([^ ]+))?(.*)$/', $block, $match)) {
 			$result .= ''
-				.'<img src="'.$match[1].'">'
+				.'<img src="//cdn.mirror.wiki/'.$match[1].'">'
 				.'';
 			$block = $match[4];
 		}
@@ -604,6 +604,11 @@ class NamuMark {
 		if(self::startsWith($text, '#!html')) {
 			$html = substr($text, 7);
 			$html = htmlspecialchars_decode($html);
+			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
+			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
+			$html = preg_replace('/(<img[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//cdn.mirror.wiki/$2$3', $html);
+			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
+#			$html = preg_replace('/(<script[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//js.mirror.wiki/$2$3', $html);
 			return '<div>'.$html.'</div>';
 		}
 		return '<pre><code>'.substr($text, 1).'</code></pre>';
@@ -638,7 +643,7 @@ class NamuMark {
 				if(self::startsWith($text, 'include') && preg_match('/^include\((.+)\)$/', $text, $include)) {
 					return $this->htmlScan($this->WikiPage->getPage($include[1])->text);
 				}
-				elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
+/*				elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
 					$notetext = !empty($note[2])?$this->blockParser($note[2]):'';
 					$id = $this->fnInsert($this->fn, $notetext, $note[1]);
 					$preview = $notetext;
@@ -646,7 +651,7 @@ class NamuMark {
 					$preview = htmlspecialchars($preview);
 					$preview = str_replace('"', '\\"', $preview);
 					return '<a id="rfn-'.htmlspecialchars($id).'" class="wiki-fn" href="#fn-'.rawurlencode($id).'" title="'.$preview.'">['.($note[1]?$note[1]:$id).']</a>';
-				}
+				}*/
 		}
 		return '['.$text.']';
 	}
@@ -695,7 +700,8 @@ class NamuMark {
 			for($i=0;$i<$arr_cnt;$i++) {
 				if($arr[$i]['id']==$id) {
 					$arr[$i]['count']++;
-					if(!empty(trim($text)))
+					$trim_data = trim($text);
+					if(!empty($trim_data))
 						$arr[$i]['text'] = $text;
 					else
 						$text = $arr[$i]['text'];
