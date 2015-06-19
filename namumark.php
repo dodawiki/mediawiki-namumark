@@ -151,7 +151,7 @@ class NamuMark {
 	public function toHtml() {
 		$this->whtml = $this->WikiPage->text;
 		$this->whtml = $this->htmlScan($this->whtml);
-	//	$this->whtml.= $this->printFootnote();
+	 $this->whtml.= $this->printFootnote();
 		return $this->whtml;
 	}
 
@@ -643,15 +643,15 @@ class NamuMark {
 				if(self::startsWith($text, 'include') && preg_match('/^include\((.+)\)$/', $text, $include)) {
 					return $this->htmlScan($this->WikiPage->getPage($include[1])->text);
 				}
-/*				elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
+				elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
 					$notetext = !empty($note[2])?$this->blockParser($note[2]):'';
 					$id = $this->fnInsert($this->fn, $notetext, $note[1]);
 					$preview = $notetext;
 					$preview = strip_tags($preview);
 					$preview = htmlspecialchars($preview);
 					$preview = str_replace('"', '\\"', $preview);
-					return '<a id="rfn-'.htmlspecialchars($id).'" class="wiki-fn" href="#fn-'.rawurlencode($id).'" title="'.$preview.'">['.($note[1]?$note[1]:$id).']</a>';
-				}*/
+					return '<sup id="cite_ref-'.htmlspecialchars($id).'" class="reference"><a href="#cite_note-'.rawurlencode($id).'">['.($note[1]?$note[1]:$id).']</a></sup>';
+				}
 		}
 		return '['.$text.']';
 	}
@@ -713,10 +713,11 @@ class NamuMark {
 		return $multi?$id.'-1':$id;
 	}
 
-	private function printFootnote() {
+/*	private function printFootnote() {
 		if(count($this->fn)==0)
 			return '';
-		$result = '<hr><ul>';
+	//	$result = '<hr><ul>';
+	$result = '<ol class="references">';
 		foreach($this->fn as $k => $fn) {
 			$result .= '<li>';
 			if($fn['count']>1) {
@@ -726,14 +727,35 @@ class NamuMark {
 				}
 			}
 			else {
-				$result .= '<a id="fn-'.htmlspecialchars($fn['id']).'" href="#rfn-'.$fn['id'].'">['.$fn['id'].']</a> ';
+				$result .= '<a id="fn-'.htmlspecialchars($fn['id']).'" href="#cite_ref-'.$fn['id'].'">['.$fn['id'].']</a> ';
 			}
 			$result .= $this->blockParser($fn['text']).'</li>';
 		}
 		$result .= '</ul>';
 		$this->fn = array();
 		return $result;
+	}*/
+	
+	
+	// 각주
+	private function printFootnote() {
+		if(count($this->fn)==0)
+			return '';
+	$result = '<hr><ol class="references">';
+	
+			foreach($this->fn as $k => $fn) {
+		//		for($i=0;$i<$fn['count'];$i++) {
+				$result .= '<li id="cite_note-'.$fn['id'].'"><span class="mw-cite-backlink"><a href="#cite_ref-'.$fn['id'].'">↑</a></span> <span class="reference-text">';
+	//	}
+	
+
+		$result .= $this->blockParser($fn['text']).'</span></li>';
+		}
+		$result .= '</ol>';
+		$this->fn = array();
+		return $result;
 	}
+	
 
 	private function tocInsert(&$arr, $text, $level, $path = '') {
 		if(empty($arr[0])) {
