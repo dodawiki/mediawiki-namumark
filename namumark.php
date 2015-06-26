@@ -177,7 +177,7 @@ class NamuMark {
 				continue;
 			}
 
-			if($line == '' && self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
+			if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 				$result .= ''
 					.$table
 					.'';
@@ -525,7 +525,7 @@ class NamuMark {
 		$line = $this->blockParser($line);
 
 		if($line != '')
-			$result .= '<p>'.$line.'</p>';
+			$result .= $line;
 
 		return $result;
 	}

@@ -18,7 +18,7 @@ $wgExtensionCredits['parserhook'][] = array(
  
    // The version of the extension, which will appear on Special:Version.
    // This can be a number or a string.
-   'version' => '0.2', 
+   'version' => '0.3', 
  
    // Your name, which will appear on Special:Version.
    'author' => 'koreapyj 원본, 김동동 수정',
@@ -28,11 +28,11 @@ $wgExtensionCredits['parserhook'][] = array(
    'url' => 'https://github.com/koreapyj/php-namumark',
  
 );
-$wgHooks['OutputPageBeforeHTML'][] = 'NamuMark';
+$wgHooks['ParserBeforeTidy'][] = 'NamuMark';
 
 
 
-function NamuMark( OutputPage &$out, &$text ) { 
+function NamuMark( &$parser, &$text ) { 
 	global $namu_articepath;
 	require_once("namumark.php");
 	$wPage = new PlainWikiPage("$text");
