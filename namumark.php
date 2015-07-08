@@ -601,7 +601,7 @@ class NamuMark {
 	}
 
 	private function renderProcessor($text, $type) {
-		if(self::startsWith($text, '#!html')) {
+		if(self::startsWithi($text, '#!html')) {
 			$html = substr($text, 7);
 			$html = htmlspecialchars_decode($html);
 			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
