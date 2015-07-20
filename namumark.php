@@ -83,6 +83,11 @@ class NamuMark {
 				'open'	=> '{{{',
 				'close' => '}}}',
 				'multiline' => true,
+				'processor' => array($this,'renderProcessor')),
+			array(
+				'open'	=> '<pre>',
+				'close' => '</pre>',
+				'multiline' => true,
 				'processor' => array($this,'renderProcessor'))
 			);
 
@@ -137,7 +142,8 @@ class NamuMark {
 				'open'	=> ',,',
 				'close' => ',,',
 				'multiline' => false,
-				'processor' => array($this,'textProcessor'))
+				'processor' => array($this,'textProcessor')),
+
 			);
 		
 		$this->WikiPage = $wtext;
@@ -160,6 +166,7 @@ class NamuMark {
 		$len = strlen($text);
 		$now = '';
 		$line = '';
+
 
 		if(self::startsWith($text, '#') && preg_match('/^#(?:redirect|넘겨주기) (.+)$/im', $text, $target)) {
 			header('Location: '.$this->prefix.'/'.rawurlencode($target[1]));
@@ -611,7 +618,7 @@ class NamuMark {
 #			$html = preg_replace('/(<script[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//js.mirror.wiki/$2$3', $html);
 			return '<div>'.$html.'</div>';
 		}
-		return '<pre><code>'.substr($text, 1).'</code></pre>';
+		return '<pre>'.$text.'</pre>';
 	}
 
 	private function linkProcessor($text, $type) {
@@ -653,7 +660,20 @@ class NamuMark {
 					return '<sup id="cite_ref-'.htmlspecialchars($id).'" class="reference"><a href="#cite_note-'.rawurlencode($id).'">['.($note[1]?$note[1]:$id).']</a></sup>';
 				}
 		}
-		return '['.$text.']';
+		
+
+/* $href = explode('|', $text);
+		if(preg_match('/^https?:\/\//', $href[0])) {
+			$targetUrl = $href[0];
+			$class = 'externalLink unnamed external';
+			$target = 'blank';
+		}
+		else {
+			$targetUrl = $this->prefix.'/'.rawurlencode($href[0]);
+		}
+		return '<a href="'.$targetUrl.'"'.(!empty($class)?' class="'.$class.'"':'').(!empty($target)?' target="'.$target.'"':'').'>'.(!empty($href[1])?$this->formatParser($href[1]):$href[0]).'</a>';
+	*/
+return '['.$text.']';
 	}
 
 	private function textProcessor($otext, $type) {
@@ -668,7 +688,7 @@ class NamuMark {
 				return '<em>'.$text.'</em>';
 			case '--':
 			case '~~':
-				return '<del>'.$text.'</del>';
+				return '<s>'.$text.'</s>';
 			case '__':
 				return '<u>'.$text.'</u>';
 			case '^^':
