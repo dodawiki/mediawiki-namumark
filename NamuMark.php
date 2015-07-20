@@ -38,7 +38,12 @@ function NamuMark( &$parser, &$text ) {
 
 	$upload = '특수:올리기';
 	$str1 = strcmp($title, $upload);
+		preg_match('/(<div id="specialchars".*<\/div>)/s', $text, $charinsert
+    );
+  $text = preg_replace('/(<div id="specialchars".*<\/div>)/s', '', $text
+    );
 
+	
 		if ($str1) {
 			global $namu_articepath;
 			require_once("namumark.php");
@@ -47,7 +52,11 @@ function NamuMark( &$parser, &$text ) {
 			$wEngine->prefix = "$namu_articepath";
 			$text =  $wEngine->toHtml();
 		}
+		if( count( $charinsert ) > 0 ) {
+		$charinsert = $charinsert[0];
+		$text = $text.$charinsert;
 	}
+}
 
 	
 ?>
