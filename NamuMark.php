@@ -26,6 +26,8 @@ $wgExtensionCredits['parserhook'][] = array(
    // The URL to a wiki page/web page with information about the extension,
    // which will appear on Special:Version.
    'url' => 'https://github.com/koreapyj/php-namumark',
+
+'license-name' => "AGPL-3.0",   // Short name of the license, links LICENSE or COPYING file if existing - string, added in 1.23.0
  
 );
 $wgHooks['ParserBeforeTidy'][] = 'NamuMark';
