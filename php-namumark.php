@@ -67,6 +67,11 @@ class NamuMark {
 				'open'	=> '<pre>',
 				'close' => '</pre>',
 				'multiline' => true,
+				'processor' => array($this,'renderProcessor')),
+			array(
+				'open'	=> '{{|',
+				'close' => '|}}',
+				'multiline' => true,
 				'processor' => array($this,'renderProcessor'))
 			);
 
@@ -393,7 +398,7 @@ class NamuMark {
 		}
 
 		$tableAttrStr = ($tableStyleStr?' style="'.$tableStyleStr.'"':'');
-		$result = '<div><table class="wikitable"'.$tableAttrStr.'>'.$tableInnerStr.'</table></div>';
+		$result = '<table class="wikitable"'.$tableAttrStr.'>'.$tableInnerStr.'</table>';
 		$offset = $i-1;
 		return $result;
 	}
@@ -498,12 +503,6 @@ class NamuMark {
 
 	private function lineParser($line, $type) {
 		$result = '';
-		$line_len = strlen($line);
-
-		// comment
-		if(self::startsWith($line, '##')) {
-			$line = '';
-		}
 
 		$line = $this->blockParser($line);
 
@@ -572,36 +571,25 @@ class NamuMark {
 
 	private function renderProcessor($text, $type) {
 		if(self::startsWithi($text, '#!html')) {
-			$html = substr($text, 7);
-			$html = htmlspecialchars_decode($html);
-			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
-			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
-			$html = preg_replace('/(<img[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//cdn.mirror.wiki/$2$3', $html);
-			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
-#			$html = preg_replace('/(<script[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//js.mirror.wiki/$2$3', $html);
-			return '<div>'.$html.'</div>';
+			
+			return '<nowiki>{{{'.$text.'}}}</nowiki>';
+		}
+		
+		if($type == '{{|') {
+			return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
 		}
 		return '<pre>'.$text.'</pre>';
 	}
 
 	private function linkProcessor($text, $type) {
-		if(self::startsWithi($text, 'html')) {
-			$html = $text;
-			$html = preg_replace('/html\((.*)\)/', '$1', $html);
-			$html = htmlspecialchars_decode($html);
-			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
-			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
-			$html = preg_replace('/(<img[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//cdn.mirror.wiki/$2$3', $html);
-			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
-			return '<div>'.$html.'</div>';
-		} elseif(preg_match('/br/i', $text)) {
+		if(preg_match('/br/i', $text)) {
 			return '<br>';
 		} elseif(preg_match('/목차/', $text)) {
 			return '__TOC__';
 		} elseif(preg_match('/각주/', $text)) {
 			return $this->printFootnote();
 		} elseif(self::startsWithi($text, 'wiki')) {
-			if(preg_match('/wiki:"(.*)"(.*)/', $text, $wikilinks)) {
+			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 				$wikilinks = '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 				return $wikilinks;
 			}	
@@ -643,7 +631,7 @@ class NamuMark {
 					//return '<sup id="cite_ref-'.htmlspecialchars($id).'" class="reference"><a href="#cite_note-'.rawurlencode($id).'">['.($note[1]?$note[1]:$id).']</a></sup>';
 					return "<ref>$note[2]</ref>";
 				} elseif(self::startsWith($text, 'wiki')) {
-					if(preg_match('/wiki:"(.*)"(.*)/', $text, $wikilinks)) {
+					if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 						$wikilinks = '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 						return $wikilinks;
 					}					
@@ -662,10 +650,6 @@ return '['.$text.']';
 		else
 			$text = $otext;
 		switch($type) {
-/*			case '\'\'\'':
-				return '<strong>'.$text.'</strong>';*/
-/*			case '\'\'':
-				return '<em>'.$text.'</em>';*/
 			case '--':
 			case '~~':
 				return '<s>'.$text.'</s>';
@@ -684,15 +668,11 @@ return '['.$text.']';
 			case '<!--':
 				return '<!--'.$text.'-->';
 			case '{{{':
-				if(self::startsWith($text, '#!html')) {
-					$html = substr($text, 7);
-					$html = htmlspecialchars_decode($html);
-					return $html;
-				}
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
 					if(empty($color[1]) && empty($color[2]))
 						return $text;
 					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
+					//return '{{{'.$text.'}}}';
 				}
 				if(preg_match('/^\+([1-5]) (.*)$/', $text, $size)) {
 					for ($i=1; $i<=$size[1]; $i++){

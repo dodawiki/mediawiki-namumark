@@ -31,7 +31,7 @@ $wgExtensionCredits['parserhook'][] = array(
   
 );
 $wgHooks['ParserBeforeStrip'][] = 'NamuMark';
-
+$wgHooks['ParserAfterTidy'][] = 'NamuMarkHTML';
 
 
 function NamuMark(&$parser, &$text, &$strip_state) { 
@@ -44,16 +44,57 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 	$special = '특수:최근바뀜';
 	$str2 = strcmp($title, $special);
 	
-		if ($str1 && $str2 && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match("/&oldid=/", $_SERVER["REQUEST_URI"])) {
-			global $namu_articepath;
-			require_once("php-namumark.php");
-			$wPage = new PlainWikiPage("$text");
-			$wEngine = new NamuMark($wPage);
-			$wEngine->prefix = "$namu_articepath";
-			$text =  $wEngine->toHtml();
+	if ($str1 && $str2 && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/특수:기여/', $title) && !preg_match('/특수:기록/', $title)) {
+		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"])) {
+			preg_match('/^.*$/m', $text, $fn);
+			$text = str_replace("$fn[0]", '', $text);
 		}
+			
+		global $namu_articepath;
+		require_once("php-namumark.php");
+		$wPage = new PlainWikiPage("$text");
+		$wEngine = new NamuMark($wPage);
+		$wEngine->prefix = "$namu_articepath";
+		$text =  $wEngine->toHtml();
+		preg_match_all('/<math>.*?<\/math>/', $text, $math);
+    
+		foreach ($math as $tex) {
+			foreach ($tex as $rtex) {
+				if (preg_match('/<math>.*?\[.*?\].*?<\/math>/', $rtex)) {
+						if (!isset($i)) {
+							$i=0;
+						} 
+						$i++;
+						$math_value[$i] = $rtex;
+				}
+			}
+		}
+    
+
+		if(isset($math_value)) {
+			foreach ($math_value as $link) {
+					$rlink = str_replace('[[', '[', $link);
+					$rlink = str_replace(']]', ']', $rlink);
+			$text = str_replace("$link", "$rlink", $text);
+			}
+		}
+		
+		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"])) {
+		$text = $fn[0].$text;
+		}
+		
+	}
 	
 }
 
+function NamuMarkHTML( &$parser, &$text ) {
+	global $namu_articepath;
+			require_once("php-namumark.class2.php");
+			$wPage = new PlainWikiPage2("$text");
+			$wEngine = new NamuMark2($wPage);
+			$wEngine->prefix = "$namu_articepath";
+			$text =  $wEngine->toHtml();
+	
+}
 	
 ?>
