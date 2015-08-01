@@ -36,7 +36,7 @@ $wgHooks['ParserAfterTidy'][] = 'NamuMarkHTML2';
 
 
 function NamuMark(&$parser, &$text, &$strip_state) { 
-	$url = "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]; 
+	$text = html_entity_decode($text);
 	$title = $parser->getTitle();
 
 	$special = '특수:올리기';
