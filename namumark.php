@@ -44,8 +44,10 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 	unset($special);
 	$special = '특수:최근바뀜';
 	$str2 = strcmp($title, $special);
-	
-	if ($str1 && $str2 && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/특수:기여/', $title) && !preg_match('/특수:기록/', $title)) {
+	unset($special);
+	$special = '특수:옮기기';
+	$str3 = strcmp($title, $special);
+	if ($str1 && $str2 && $str3 && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/특수:기여/', $title) && !preg_match('/특수:기록/', $title)) {
 		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"])) {
 			preg_match('/^.*$/m', $text, $fn);
 			$text = str_replace("$fn[0]", '', $text);
