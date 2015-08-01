@@ -137,6 +137,11 @@ class NamuMark {
 				'close' => '-->',
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
+			array(
+				'open'	=> '{{|',
+				'close' => '|}}',
+				'multiline' => false,
+				'processor' => array($this,'textProcessor')),
 
 			);
 		
@@ -667,6 +672,8 @@ return '['.$text.']';
 				return '<math>'.$text.'</math>';
 			case '<!--':
 				return '<!--'.$text.'-->';
+			case '{{|':
+			  return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
 			case '{{{':
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
 					if(empty($color[1]) && empty($color[2]))

@@ -31,7 +31,8 @@ $wgExtensionCredits['parserhook'][] = array(
   
 );
 $wgHooks['ParserBeforeStrip'][] = 'NamuMark';
-$wgHooks['ParserAfterTidy'][] = 'NamuMarkHTML';
+$wgHooks['InternalParseBeforeLinks'][] = 'NamuMarkHTML';
+$wgHooks['ParserAfterTidy'][] = 'NamuMarkHTML2';
 
 
 function NamuMark(&$parser, &$text, &$strip_state) { 
@@ -84,17 +85,31 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		}
 		
 	}
+	preg_match_all("/<nowiki>'''(.*?)'''<\/nowiki>/", $text, $GLOBALS['strong_nowiki'], PREG_SET_ORDER);
 	
 }
 
-function NamuMarkHTML( &$parser, &$text ) {
+
+function NamuMarkHTML( Parser &$parser, &$text ) {
 	global $namu_articepath;
-			require_once("php-namumark.class2.php");
-			$wPage = new PlainWikiPage2("$text");
-			$wEngine = new NamuMark2($wPage);
-			$wEngine->prefix = "$namu_articepath";
-			$text =  $wEngine->toHtml();
-	
+	require_once("php-namumark.class2.php");
+	$wPage = new PlainWikiPage2("$text");
+	$wEngine = new NamuMark2($wPage);
+	$wEngine->prefix = "$namu_articepath";
+	$text =  $wEngine->toHtml();
 }
-	
+
+function NamuMarkHTML2( &$parser, &$text ) {
+	global $strong_nowiki;
+
+	preg_match_all("/'''(.*?)'''/", $text, $strong, PREG_SET_ORDER);
+		
+		
+	$text = preg_replace("/'''(.*?)'''/", '<strong>$1</strong>', $text);
+		
+	foreach($strong_nowiki as $each_strong_nowiki) {
+		$text = str_replace("<strong>".$each_strong_nowiki[1]."</strong>", "'''".$each_strong_nowiki[1]."'''", $text);
+			
+	}
+}	
 ?>

@@ -95,6 +95,14 @@ class NamuMark2 {
 			$now = self::getChar($text,$i);
 
 
+if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
+				$result .= ''
+					.$table
+					.'';
+				$line = '';
+				$now = '';
+				continue;
+			}
 
 
 
@@ -121,7 +129,167 @@ class NamuMark2 {
 			$result .= $this->lineParser($line, 'notn');
 		return $result;
 	}
+private function tableParser($text, &$offset) {
+		$tableTable = array();
+		$len = strlen($text);
+		$lineStart = $offset;
+		
+		$tableInnerStr = '';
+		$tableStyleList = array();
+		for($i=$offset;$i<$len;$i=self::seekEndOfLine($text, $i)+1) {
+			$now = self::getChar($text,$i);
+			$eol = self::seekEndOfLine($text, $i);
+			if(!self::startsWith($text, '||', $i)) {
+				// table end
+				break;
+			}
+			$line = substr($text, $i, $eol-$i);
+			$td = explode('||', $line);
+			$td_cnt = count($td);
 
+			$trInnerStr = '';
+			$simpleColspan = 0;
+			for($j=1;$j<$td_cnt-1;$j++) {
+				$innerstr = htmlspecialchars_decode($td[$j]);
+
+				if($innerstr=='') {
+					$simpleColspan += 1;
+					continue;
+				}
+
+				$tdAttr = $tdStyleList = array();
+
+				if($simpleColspan != 0) {
+					$tdAttr['colspan'] = $simpleColspan+1;
+					$simpleColspan = 0;
+				}
+				while(self::startsWith($innerstr, '<')) {
+					$dummy=0;
+					$prop = $this->bracketParser($innerstr, $dummy, array('open'	=> '<', 'close' => '>','multiline' => false,'processor' => function($str) { return $str; }));
+					$innerstr = substr($innerstr, $dummy+1);
+					switch($prop) {
+						case '(':
+							break;
+						case ':':
+							$tdStyleList['text-align'] = 'center';
+							break;
+						case ')':
+							$tdStyleList['text-align'] = 'right';
+							break;
+						default:
+							if(self::startsWith($prop, 'table ')) {
+								$tbprops = explode(' ', $prop);
+								foreach($tbprops as $tbprop) {
+									if(!preg_match('/^([^=]+)=(?|"(.*)"|\'(.*)\'|(.*))$/', $tbprop, $tbprop))
+										continue;
+									switch($tbprop[1]) {
+										case 'align':
+											switch($tbprop[2]) {
+												case 'left':
+													$tableStyleList['margin-left'] = null;
+													$tableStyleList['margin-right'] = 'auto';
+													break;
+												case 'center':
+													$tableStyleList['margin-left'] = 'auto';
+													$tableStyleList['margin-right'] = 'auto';
+													break;
+												case 'right':
+													$tableStyleList['margin-left'] = 'auto';
+													$tableStyleList['margin-right'] = null;
+													break;
+											}
+											break;
+										case 'bgcolor':
+											$tableStyleList['background-color'] = $tbprop[2];
+											break;
+										case 'bordercolor':
+											$tableStyleList['border-color'] = $tbprop[2];
+											break;
+										case 'width':
+											$tableStyleList['width'] = $tbprop[2];
+											break;
+									}
+								}
+							}
+							elseif(preg_match('/^(\||\-)([0-9]+)$/', $prop, $span)) {
+								if($span[1] == '-') {
+									$tdAttr['colspan'] = $span[2];
+									break;
+								}
+								elseif($span[1] == '|') {
+									$tdAttr['rowspan'] = $span[2];
+									break;
+								}
+							}
+							elseif(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+))$/', $prop, $span)) {
+								$tdStyleList['background-color'] = $span[1]?'#'.$span[1]:$span[2];
+								break;
+							}
+							elseif(preg_match('/^([^=]+)=(?|"(.*)"|\'(.*)\'|(.*))$/', $prop, $match)) {
+								switch($match[1]) {
+									case 'bgcolor':
+										$tdStyleList['background-color'] = $match[2];
+										break;
+									case 'width':
+										$tdStyleList['width'] = $match[2];
+										break;
+									case 'height':
+										$tdStyleList['height'] = $match[2];
+										break;
+								}
+							}
+					}
+				}
+
+				if(empty($tdStyleList['text-align'])) {
+					if(preg_match('/^ .* $/', $innerstr)) {
+						$tdStyleList['text-align'] = 'center';
+					}
+					elseif(self::seekEndOfLine($innerstr)>0 && $innerstr[self::seekEndOfLine($innerstr)-1] == ' ') {
+						$tdStyleList['text-align'] = null;
+					}
+					elseif(self::startsWith($innerstr, ' ')) {
+						$tdStyleList['text-align'] = 'right';
+					}
+					else {
+						$tdStyleList['text-align'] = null;
+					}
+				}
+				$innerstr = trim($innerstr);
+				
+				$tdAttr['style'] = '';
+				foreach($tdStyleList as $styleName =>$styleValue) {
+					if(empty($styleValue))
+						continue;
+					$tdAttr['style'] .= $styleName.': '.$styleValue.'; ';
+				}
+
+				$tdAttrStr = '';
+				foreach($tdAttr as $propName => $propValue) {
+					if(empty($propValue))
+						continue;
+					$tdAttrStr .= ' '.$propName.'="'.str_replace('"', '\\"', $propValue).'"';
+				}
+				$trInnerStr .= '<td'.$tdAttrStr.'>'.$this->blockParser($innerstr).'</td>';
+			}
+			$tableInnerStr .= !empty($trInnerStr)?'<tr>'.$trInnerStr.'</tr>':'';
+		}
+
+		if(empty($tableInnerStr))
+			return false;
+
+		$tableStyleStr = '';
+		foreach($tableStyleList as $styleName =>$styleValue) {
+			if(empty($styleValue))
+				continue;
+			$tableStyleStr .= $styleName.': '.$styleValue.'; ';
+		}
+
+		$tableAttrStr = ($tableStyleStr?' style="'.$tableStyleStr.'"':'');
+		$result = '<table class="wikitable"'.$tableAttrStr.'>'.$tableInnerStr.'</table>';
+		$offset = $i-1;
+		return $result;
+	}
 
 	private function blockParser($block) {
 		$result = '';
