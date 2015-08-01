@@ -100,6 +100,12 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 }
 
 function NamuMarkHTML2( &$parser, &$text ) {
+	global $namu_articepath;
+	require_once("php-namumark.class2.php");
+	$wPage = new PlainWikiPage2("$text");
+	$wEngine = new NamuMark2($wPage);
+	$wEngine->prefix = "$namu_articepath";
+	$text =  $wEngine->toHtml();
 	global $strong_nowiki;
 
 	preg_match_all("/'''(.*?)'''/", $text, $strong, PREG_SET_ORDER);
