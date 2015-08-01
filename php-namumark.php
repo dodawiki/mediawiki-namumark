@@ -600,6 +600,14 @@ class NamuMark {
 			}	
 		} elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
 			return '{{'.$include[1].'}}';
+		} elseif(self::startsWithi($text, 'youtube')) {
+			if(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
+				return '{{#ev:youtube|'.$youtube_code[1].'}}';
+			}
+		} elseif(self::startsWithi($text, 'nicovideo')) {
+			if(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
+				return '{{#ev:nico|'.$nico_code[1].'}}';
+			}
 		}
 /*		else {
 			$targetUrl = $this->prefix.'/'.rawurlencode($href[0]);
@@ -625,8 +633,7 @@ class NamuMark {
 					return '{{'.$include[1].'}}';
 
 					//return $this->htmlScan($this->WikiPage->getPage($include[1])->text);
-				}
-				elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
+				} elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
 					$notetext = !empty($note[2])?$this->blockParser($note[2]):'';
 					$id = $this->fnInsert($this->fn, $notetext, $note[1]);
 					$preview = $notetext;
@@ -635,6 +642,14 @@ class NamuMark {
 					$preview = str_replace('"', '\\"', $preview);
 					//return '<sup id="cite_ref-'.htmlspecialchars($id).'" class="reference"><a href="#cite_note-'.rawurlencode($id).'">['.($note[1]?$note[1]:$id).']</a></sup>';
 					return "<ref>$note[2]</ref>";
+				} elseif(self::startsWithi($text, 'youtube')) {
+					if(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
+						return '{{#ev:youtube|'.$youtube_code[1].'}}';
+					}
+				} elseif(self::startsWithi($text, 'nicovide')) {
+					if(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
+						return '{{#ev:nico|'.$nico_code[1].'}}';
+					}
 				} elseif(self::startsWith($text, 'wiki')) {
 					if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 						$wikilinks = '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
