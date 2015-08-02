@@ -364,7 +364,7 @@ private function tableParser($text, &$offset) {
 	private function linkProcessor($text, $type) {
 		if(self::startsWithi($text, 'html')) {
 			$html = $text;
-			$html = preg_replace('/html\((.*)\)/', '$1', $html);
+			$html = preg_replace('/html\((.*)\)/i', '$1', $html);
 			$html = htmlspecialchars_decode($html);
 			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
 			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
@@ -388,7 +388,7 @@ private function tableParser($text, &$offset) {
 			case '~~':
 				return '<s>'.$text.'</s>';
 			case '{{{':
-				if(self::startsWith($text, '#!html')) {
+				if(self::startsWithi($text, '#!html')) {
 					$html = substr($text, 7);
 					$html = htmlspecialchars_decode($html);
 					return $html;
