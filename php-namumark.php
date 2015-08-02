@@ -241,8 +241,8 @@ class NamuMark {
 			return false;
 
 		$offset = $i-1;
-		$innerhtml = preg_replace('/^>/m', '', $innerhtml);
-		$innerhtml = preg_replace('/<br>>/m', '<br>', $innerhtml);
+		$innerhtml = preg_replace('/^>+/m', '', $innerhtml);
+		$innerhtml = preg_replace('/<br>>+/m', '<br>', $innerhtml);
 		return '<blockquote>'.$innerhtml.'</blockquote>';
 	}
 
