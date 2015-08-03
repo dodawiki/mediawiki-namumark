@@ -133,8 +133,8 @@ class NamuMark {
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
 			array(
-				'open'	=> '$',
-				'close' => '$',
+				'open'	=> '$ ',
+				'close' => ' $',
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
 			array(
@@ -145,6 +145,11 @@ class NamuMark {
 			array(
 				'open'	=> '{{|',
 				'close' => '|}}',
+				'multiline' => false,
+				'processor' => array($this,'textProcessor')),
+			array(
+				'open'	=> '^',
+				'close' => '^',
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
 
@@ -665,10 +670,11 @@ class NamuMark {
 					return '<u>'.$text.'</u>';
 				}
 			case '^^':
+			case '^':
 				return '<sup>'.$text.'</sup>';
 			case ',,':
 				return '<sub>'.$text.'</sub>';
-			case '$':
+			case '$ ':
 				return '<math>'.$text.'</math>';
 			case '<!--':
 				return '<!--'.$text.'-->';

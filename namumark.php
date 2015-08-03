@@ -98,7 +98,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 	$wPage = new PlainWikiPage2("$text");
 	$wEngine = new NamuMark2($wPage);
 	$wEngine->prefix = "$namu_articepath";
-	$text =  $wEngine->toHtml();
+	$text =  $wEngine->toHtml();	
 }
 
 function NamuMarkHTML2( &$parser, &$text ) {
@@ -118,6 +118,15 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	foreach($strong_nowiki as $each_strong_nowiki) {
 		$text = str_replace("<strong>".$each_strong_nowiki[1]."</strong>", "'''".$each_strong_nowiki[1]."'''", $text);
 			
+	}
+	preg_match_all("/<span class=\"mwe-math-fallback-source-inline tex\" dir=\"ltr\">(.*?)<\/span>/", $text, $math);
+	foreach($math[1] as $math_value){
+		$vowels = array(
+			"&lt;sup&gt;",
+			"&lt;/sup&gt;"
+		);
+		$math_value_rpe = str_replace($vowels, '^', $math_value);
+		$text = str_replace($math_value, $math_value_rpe, $text);
 	}
 }	
 ?>
