@@ -72,7 +72,12 @@ class NamuMark {
 				'open'	=> '{{|',
 				'close' => '|}}',
 				'multiline' => true,
-				'processor' => array($this,'renderProcessor'))
+				'processor' => array($this,'renderProcessor')),
+			array(
+				'open'	=> '||',
+				'close' => '||',
+				'multiline' => true,
+				'processor' => array($this,'renderProcessor')),
 			);
 
 		$this->single_bracket = array(
@@ -579,9 +584,11 @@ class NamuMark {
 			return '<nowiki>{{{'.$text.'}}}</nowiki>';
 		}
 		
-		if($type == '{{|') {
+		if($type == '{{|' || $type == '||') {
 			return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
 		}
+		
+
 		return '<pre>'.$text.'</pre>';
 	}
 
@@ -591,7 +598,7 @@ class NamuMark {
 		} elseif(preg_match('/목차/', $text)) {
 			return '__TOC__';
 		} elseif(preg_match('/각주/', $text)) {
-			return $this->printFootnote();
+			return '<hr><references />';
 		} elseif(self::startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 				$wikilinks = '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
@@ -608,9 +615,6 @@ class NamuMark {
 				return '{{#ev:nico|'.$nico_code[1].'}}';
 			}
 		}
-/*		else {
-			$targetUrl = $this->prefix.'/'.rawurlencode($href[0]);
-		}*/
 		
 	}
 
@@ -622,24 +626,14 @@ class NamuMark {
 				return date('Y-m-d H:i:s');
 			case '목차':
 			case 'tableofcontents':
-				//return $this->printToc();
 				return '__TOC__';
 			case '각주':
 			case 'footnote':
-				return $this->printFootnote();
+				return '<hr><references />';
 			default:
 				if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
 					return '{{'.$include[1].'}}';
-
-					//return $this->htmlScan($this->WikiPage->getPage($include[1])->text);
 				} elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
-					$notetext = !empty($note[2])?$this->blockParser($note[2]):'';
-					$id = $this->fnInsert($this->fn, $notetext, $note[1]);
-					$preview = $notetext;
-					$preview = strip_tags($preview);
-					$preview = htmlspecialchars($preview);
-					$preview = str_replace('"', '\\"', $preview);
-					//return '<sup id="cite_ref-'.htmlspecialchars($id).'" class="reference"><a href="#cite_note-'.rawurlencode($id).'">['.($note[1]?$note[1]:$id).']</a></sup>';
 					return "<ref>$note[2]</ref>";
 				} elseif(self::startsWithi($text, 'youtube')) {
 					if(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
@@ -659,7 +653,7 @@ class NamuMark {
 				}
 		}
 		
-return '['.$text.']';
+		return '['.$text.']';
 	}
 
 	private function textProcessor($otext, $type) {
@@ -693,7 +687,6 @@ return '['.$text.']';
 					if(empty($color[1]) && empty($color[2]))
 						return $text;
 					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
-					//return '{{{'.$text.'}}}';
 				}
 				if(preg_match('/^\+([1-5]) (.*)$/', $text, $size)) {
 					for ($i=1; $i<=$size[1]; $i++){
@@ -707,8 +700,6 @@ return '['.$text.']';
 					}
 					
 					return $big_before.$this->formatParser($size[2]).$big_after;
-					
-				//	return '<span class="wiki-size-'.$size[1].'">'.$this->formatParser($size[2]).'</span>';
 				}
 				
 				return '<code>'.$text.'</code>';
@@ -740,27 +731,6 @@ return '['.$text.']';
 		return $multi?$id.'-1':$id;
 	}
 	
-	// 각주
-	private function printFootnote() {
-		if(count($this->fn)==0)
-			return '';
-	$result = '<hr><ol class="references">';
-	
-			foreach($this->fn as $k => $fn) {
-		//		for($i=0;$i<$fn['count'];$i++) {
-				$result .= '<li id="cite_note-'.$fn['id'].'"><span class="mw-cite-backlink"><a href="#cite_ref-'.$fn['id'].'">↑</a></span> <span class="reference-text">';
-	//	}
-	
-
-		$result .= $this->blockParser($fn['text']).'</span></li>';
-		}
-		$result .= '</ol>';
-		$this->fn = array();
-		// return $result;
-		return '<hr><references />';
-	}
-	
-
 	private function tocInsert(&$arr, $text, $level, $path = '') {
 		if(empty($arr[0])) {
 			$arr[0] = array('name' => $text, 'level' => $level, 'childNodes' => array());
@@ -794,35 +764,6 @@ return '['.$text.']';
 			}
 		}
 
-		return $result;
-	}
-
-	private function printToc(&$arr = null, $level = -1, $path = '') {
-		if($level == -1) {
-			$bak = $this->toc;
-			$this->toc = array();
-			$this->hParse($this->WikiPage->text);
-			$result = ''
-				.'<div id="toc">'
-#					.'<h2>Contents</h2>'
-					.$this->printToc($this->toc, 0)
-				.'</div>'
-				.'';
-			$this->toc = $bak;
-			return $result;
-		}
-
-		if(empty($arr[0]))
-			return '';
-
-		$result  = '<div class="indent">';
-		foreach($arr as $i => $item) {
-			$readableId = $i+1;
-			$result .= '<div><a href="#s-'.$path.$readableId.'">'.$path.$readableId.'</a>. '.$item['name'].'</div>'
-							.$this->printToc($item['childNodes'], $level+1, $path.$readableId.'.')
-							.'';
-		}
-		$result .= '</div>';
 		return $result;
 	}
 
