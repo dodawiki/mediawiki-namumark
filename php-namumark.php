@@ -156,7 +156,6 @@ class NamuMark {
 	public function toHtml() {
 		$this->whtml = $this->WikiPage->text;
 		$this->whtml = $this->htmlScan($this->whtml);
-	 $this->whtml.= $this->printFootnote();
 		return $this->whtml;
 	}
 
