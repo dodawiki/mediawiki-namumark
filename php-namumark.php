@@ -642,11 +642,8 @@ class NamuMark {
 					return '{{#ev:youtube|'.$youtube_code[1].'}}';
 				} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
 					return '{{#ev:nico|'.$nico_code[1].'}}';
-				} elseif(self::startsWith($text, 'wiki')) {
-					if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
-						$wikilinks = '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-						return $wikilinks;
-					}					
+				} elseif(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/"(.*?)" ?(.*)/', $text, $wikilinks)) {
+					return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 				} elseif(!self::startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
 					return '[['.$text.']]';
 				}
