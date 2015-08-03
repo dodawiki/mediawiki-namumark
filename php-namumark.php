@@ -582,9 +582,7 @@ class NamuMark {
 		if(self::startsWithi($text, '#!html')) {
 			
 			return '<nowiki>{{{'.$text.'}}}</nowiki>';
-		}
-		
-		if($type == '{{|' || $type == '||') {
+		} elseif($type == '{{|' || $type == '||') {
 			return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
 		}
 		

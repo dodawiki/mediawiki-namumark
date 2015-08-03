@@ -58,6 +58,11 @@ class NamuMark2 {
 				'multiline' => false,
 				'processor' => array($this,'linkProcessor')),
 			array(
+				'open'	=> '[',
+				'close' => ']',
+				'multiline' => false,
+				'processor' => array($this,'macroProcessor')),
+			array(
 				'open'	=> '~~',
 				'close' => '~~',
 				'multiline' => false,
@@ -375,8 +380,16 @@ private function tableParser($text, &$offset) {
 
 		
 	}
-
 	
+private function macroProcessor($text, $type) {
+		switch(strtolower($text)) {
+			case 'br':
+				return '<br>';
+			
+		}
+	
+		return '['.$text.']';
+	}
 
 	private function textProcessor($otext, $type) { 
 		if($type != '{{{')
