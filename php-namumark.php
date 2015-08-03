@@ -606,14 +606,11 @@ class NamuMark {
 			}	
 		} elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
 			return '{{'.$include[1].'}}';
-		} elseif(self::startsWithi($text, 'youtube')) {
-			if(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
-				return '{{#ev:youtube|'.$youtube_code[1].'}}';
-			}
-		} elseif(self::startsWithi($text, 'nicovideo')) {
-			if(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
-				return '{{#ev:nico|'.$nico_code[1].'}}';
-			}
+		} elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
+			$youtube_code[1] = preg_replace('/,(.*)/', '', $youtube_code[1]);
+			return '{{#ev:youtube|'.$youtube_code[1].'}}';
+		} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
+			return '{{#ev:nico|'.$nico_code[1].'}}';
 		}
 		
 	}
@@ -635,14 +632,11 @@ class NamuMark {
 					return '{{'.$include[1].'}}';
 				} elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
 					return "<ref>$note[2]</ref>";
-				} elseif(self::startsWithi($text, 'youtube')) {
-					if(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
-						return '{{#ev:youtube|'.$youtube_code[1].'}}';
-					}
-				} elseif(self::startsWithi($text, 'nicovide')) {
-					if(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
-						return '{{#ev:nico|'.$nico_code[1].'}}';
-					}
+				} elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
+					$youtube_code[1] = preg_replace('/,(.*)/', '', $youtube_code[1]);
+					return '{{#ev:youtube|'.$youtube_code[1].'}}';
+				} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
+					return '{{#ev:nico|'.$nico_code[1].'}}';
 				} elseif(self::startsWith($text, 'wiki')) {
 					if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 						$wikilinks = '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
