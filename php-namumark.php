@@ -604,8 +604,10 @@ class NamuMark {
 			return '<hr><references />';
 		} elseif(self::startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
-				$wikilinks = '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-				return $wikilinks;
+				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
+					$wikilinks[2] = '{{{#!html <img src="'.$wikilinks[2].'">}}}';
+				}
+				return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 			}	
 		} elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
 			return '{{'.$include[1].'}}';
