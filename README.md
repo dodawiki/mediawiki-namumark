@@ -5,12 +5,12 @@ php-namumark-mediawiki는 나무위키에서 사용하는 나무마크를 미디
 본 라이브러리는 GNU Affero GPL 3.0에 따라 자유롭게 사용하실 수 있습니다. 라이선스에 대한 자세한 사항은 첨부 문서를 참고하십시오.
 
 ## 사용 방법
-1. 미디어위키 extensions 폴더에 NamuMark 폴더를 새로 생성합니다.
-2. NamuMark.php 파일과 namumark.php 파일을 넣습니다.
+1. 미디어위키 extensions 폴더에 NamuMark 폴더를 새로 생성합니다. 또는 서버에 직접 git을 이용하실 수 있으면 설치된 미디어위키의 extensions 폴더에서 다음과 같이 명령합니다.
+<code>git clone https://github.com/Oriwiki/php-namumark-mediawiki.git NamuMark</code>
+2. NamuMark.php 파일과 namumark.php 파일을 넣습니다. (git으로 한 경우 필요 없습니다.)
 3. LocalSettings.php에 다음을 입력합니다.
-> require_once "$IP/extensions/NamuMark/NamuMark.php";
-4. 이어서 바로 다음을 입력합니다. 미디어위키의 $wgArticlePath 값에서 /$1를 뺀 값이나 http://yourwiki.com/~~~/Frontpage 와 같은 도메인에서 /~~~부분을 입력하시면 됩니다.
-> $namu_articepath = '/w';
+<code>require_once "$IP/extensions/NamuMark/NamuMark.php";</code>
+
 	
 ## 그 외
 상당한 발코딩입니다. 항상 죄송스럽게 생각합니다.
