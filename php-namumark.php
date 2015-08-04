@@ -588,8 +588,14 @@ class NamuMark {
 			
 			return '<nowiki>{{{'.$text.'}}}</nowiki>';
 		} elseif($type == '{{|' || $type == '||') {
-			return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+			if(preg_match('/<#(.*?)>/', $text, $color)) {
+				$text = str_replace($color[0], '', $text);
+				return '<poem style="border: 2px solid #d6d2c5; background-color: #'.$color[1].'; padding: 1em;">'.$text.'</poem>';
+			} else {
+				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+			}
 		}
+		
 		
 
 		return '<pre>'.$text.'</pre>';
