@@ -601,7 +601,7 @@ class NamuMark {
 		} elseif(preg_match('/목차/', $text)) {
 			return '__TOC__';
 		} elseif(preg_match('/각주/', $text)) {
-			return '<hr><references />';
+			return '<references />';
 		} elseif(self::startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
@@ -631,7 +631,7 @@ class NamuMark {
 				return '__TOC__';
 			case '각주':
 			case 'footnote':
-				return '<hr><references />';
+				return '<references />';
 			default:
 				if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
 					return '{{'.$include[1].'}}';

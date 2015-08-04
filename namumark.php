@@ -144,5 +144,7 @@ function NamuMarkHTML2( &$parser, &$text ) {
 		$math_value_rpe = str_replace($vowels, '^', $math_value);
 		$text = str_replace($math_value, $math_value_rpe, $text);
 	}
+	
+	$text = str_replace('<ol class="references">', '<hr><ol class="references">', $text); // 각주 바로 앞에 <hr> 태그 추가
 }	
 ?>
