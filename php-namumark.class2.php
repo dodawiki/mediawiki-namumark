@@ -62,16 +62,16 @@ class NamuMark2 {
 				'close' => ']',
 				'multiline' => false,
 				'processor' => array($this,'macroProcessor')),
-			array(
-				'open'	=> '~~',
-				'close' => '~~',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
-				'open'	=> '--',
-				'close' => '--',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
+			// array(
+				// 'open'	=> '~~',
+				// 'close' => '~~',
+				// 'multiline' => false,
+				// 'processor' => array($this,'textProcessor')),
+			// array(
+				// 'open'	=> '--',
+				// 'close' => '--',
+				// 'multiline' => false,
+				// 'processor' => array($this,'textProcessor')),
 			);
 			
 		
@@ -363,7 +363,6 @@ private function tableParser($text, &$offset) {
 #			$html = preg_replace('/(<script[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//js.mirror.wiki/$2$3', $html);
 			return $html;
 		}
-		
 	}
 
 	private function linkProcessor($text, $type) {
