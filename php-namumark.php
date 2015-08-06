@@ -602,7 +602,7 @@ class NamuMark {
 	}
 
 	private function linkProcessor($text, $type) {
-		if(preg_match('/br/i', $text)) {
+		if(self::startsWithi($text, 'br')) {
 			return '<br>';
 		} elseif(preg_match('/목차/', $text)) {
 			return '__TOC__';
@@ -625,7 +625,6 @@ class NamuMark {
 		} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
 			return '{{#ev:nico|'.$nico_code[1].'}}';
 		}
-		
 	}
 
 	private function macroProcessor($text, $type) {
