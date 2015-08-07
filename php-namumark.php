@@ -602,7 +602,7 @@ class NamuMark {
 	}
 
 	private function linkProcessor($text, $type) {
-		if(self::startsWithi($text, 'br')) {
+		if(preg_match('/^br$/im', $text)) {
 			return '<br>';
 		} elseif(preg_match('/목차/', $text)) {
 			return '__TOC__';
