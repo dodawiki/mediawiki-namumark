@@ -366,7 +366,7 @@ private function tableParser($text, &$offset) {
 	}
 
 	private function linkProcessor($text, $type) {
-		if(self::startsWithi($text, 'html')) {
+		if(self::startsWithi($text, 'html(')) {
 			$html = $text;
 			$html = preg_replace('/html\((.*)\)/i', '$1', $html);
 			$html = htmlspecialchars_decode($html);

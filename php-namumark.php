@@ -613,6 +613,7 @@ class NamuMark {
 				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
 					$wikilinks[2] = '{{{#!html <img src="'.$wikilinks[2].'">}}}';
 				}
+
 				return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 			}	
 		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks)) {
