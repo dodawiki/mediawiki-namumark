@@ -711,7 +711,7 @@ class NamuMark {
 					return $big_before.$this->formatParser($size[2]).$big_after;
 				}
 				
-				return '<code>'.$text.'</code>';
+				return '<code><nowiki>'.$text.'</nowiki></code>';
 		}
 		return $type.$text.$type;
 	}
