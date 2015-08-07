@@ -63,6 +63,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		}
 		$text = preg_replace('/^\|\| /m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
 		
+		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
 		# 파서를 불러온다.
 		require_once("php-namumark.php");
 		$wPage = new PlainWikiPage("$text");
