@@ -152,6 +152,11 @@ class NamuMark {
 				'close' => '^',
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
+			array(
+				'open'	=> '<nowiki>',
+				'close' => '</nowiki>',
+				'multiline' => false,
+				'processor' => array($this,'textProcessor')),
 
 			);
 		
@@ -690,7 +695,9 @@ class NamuMark {
 			case '<!--':
 				return '<!--'.$text.'-->';
 			case '{{|':
-			  return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+			case '<nowiki>':
+				return '{{{<nowiki>'.$text.'</nowiki>}}}';
 			case '{{{':
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
 					if(empty($color[1]) && empty($color[2]))
@@ -711,7 +718,7 @@ class NamuMark {
 					return $big_before.$this->formatParser($size[2]).$big_after;
 				}
 				
-				return '<code><nowiki>'.$text.'</nowiki></code>';
+				return '<nowiki>'.$text.'</nowiki>';
 		}
 		return $type.$text.$type;
 	}

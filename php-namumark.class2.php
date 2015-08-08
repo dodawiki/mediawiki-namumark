@@ -411,7 +411,7 @@ private function macroProcessor($text, $type) {
 					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
 				}
 
-				return '<code>'.$text.'</code>';
+				return $text;
 		}
 		return $type.$text.$type;
 	}
