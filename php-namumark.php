@@ -609,7 +609,7 @@ class NamuMark {
 	private function linkProcessor($text, $type) {
 		if(preg_match('/^br$/im', $text)) {
 			return '<br>';
-		} elseif(preg_match('/목차/', $text)) {
+		} elseif(preg_match('/^목차$/m', $text)) {
 			return '__TOC__';
 		} elseif(preg_match('/각주/', $text)) {
 			return '<references />';
