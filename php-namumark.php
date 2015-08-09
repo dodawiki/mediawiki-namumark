@@ -596,6 +596,9 @@ class NamuMark {
 			if(preg_match('/<#(.*?)>/', $text, $color)) {
 				$text = str_replace($color[0], '', $text);
 				return '<poem style="border: 2px solid #d6d2c5; background-color: #'.$color[1].'; padding: 1em;">'.$text.'</poem>';
+			} elseif(preg_match('/<tablewidth=(.*?)>/', $text, $width)) {
+				$text = str_replace($width[0], '', $text);
+				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; width: '.$width[1].'; padding: 1em;">'.$text.'</poem>';
 			} else {
 				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
 			}
