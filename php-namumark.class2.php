@@ -421,10 +421,6 @@ private function macroProcessor($text, $type) {
 		$result = '';
 		$line_len = strlen($line);
 
-		// comment
-		if(self::startsWith($line, '##')) {
-			$line = '';
-		}
 
 		$line = $this->blockParser($line);
 

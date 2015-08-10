@@ -181,10 +181,6 @@ class NamuMark {
 		$line = '';
 
 
-		if(self::startsWith($text, '#') && preg_match('/^#(?:redirect|넘겨주기) (.+)$/im', $text, $target)) {
-			header('Location: '.$this->prefix.'/'.rawurlencode($target[1]));
-			return;
-		}
 
 		for($i=0;$i<$len;self::nextChar($text,$i)) {
 			$now = self::getChar($text,$i);
