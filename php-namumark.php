@@ -513,6 +513,7 @@ class NamuMark {
 			$result .= $tag=='indent'?$text:'<li>'.$text.'</li>';
 		}
 		$result .= '</'.($tag=='indent'?'div':$tag).'>';
+		$result .= "\n";
 		return $result;
 	}
 
