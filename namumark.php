@@ -100,12 +100,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		}
 		
 	}
-	
-	
-	# '''내용''' 태그에 nowiki 태그가 덧붙일 경우, nowiki 태그가 전혀 반영이 되지 않는 문제를 해결하기 위하여, 별도의 변수에 모든 해당 태그를 가져온다.
-	# nowiki 태그는 미디어위키에서 자동적으로 HTML로 넘어가면 사라지는 태그이므로 이 단계에서 해당 변수를 글로벌화하여 HTML 단계에서 사용할 수 있도록 만든다.
-	preg_match_all("/<nowiki>'''(.*?)'''<\/nowiki>/", $text, $GLOBALS['strong_nowiki'], PREG_SET_ORDER);
-	
+
 }
 
 
@@ -127,18 +122,6 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	$text =  $wEngine->toHtml();
 	
 	
-	global $strong_nowiki; // 상기에서 글로벌화한 변수를 로컬 변수로 가져온다.
-	
-	preg_match_all("/'''(.*?)'''/", $text, $strong, PREG_SET_ORDER); // 모든 '''내용''' 태그를 가져온다.
-		
-	$text = preg_replace("/'''(.*?)'''/", '<strong>$1</strong>', $text); // 일단 모든 '''내용''' 태그를 변환한다.
-		
-	# 그리고 <nowiki>'''내용'''</nowiki>가 담긴 변수의 앞뒤로 <strong>, </strong>을 붙여 nowiki가 붙은 태그를 찾아내고,
-	# 아까 변환한 태그를 도로 '''내용'''으로 되돌린다. 
-	foreach($strong_nowiki as $each_strong_nowiki) {
-		$text = str_replace("<strong>".$each_strong_nowiki[1]."</strong>", "'''".$each_strong_nowiki[1]."'''", $text);
-			
-	}
 	
 	# 모든 수식을 불러온다.
 	#'^내용^' 태그로 인하여, 한 수식에 '^'가 두 개 이상의 짝수개로 존재할시 <sup>수식 내용</sup>으로 변환되는 버그를 고치기 위함이다.
