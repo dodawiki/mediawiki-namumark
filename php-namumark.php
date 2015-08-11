@@ -418,7 +418,7 @@ class NamuMark {
 		}
 
 		$tableAttrStr = ($tableStyleStr?' style="'.$tableStyleStr.'"':'');
-		$result = '<table class="wikitable"'.$tableAttrStr.'>'.$tableInnerStr.'</table>';
+		$result = '<table class="wikitable"'.$tableAttrStr.'>'.$tableInnerStr."</table>\n";
 		$offset = $i-1;
 		return $result;
 	}
