@@ -62,16 +62,11 @@ class NamuMark2 {
 				'close' => ']',
 				'multiline' => false,
 				'processor' => array($this,'macroProcessor')),
-			// array(
-				// 'open'	=> '~~',
-				// 'close' => '~~',
-				// 'multiline' => false,
-				// 'processor' => array($this,'textProcessor')),
-			// array(
-				// 'open'	=> '--',
-				// 'close' => '--',
-				// 'multiline' => false,
-				// 'processor' => array($this,'textProcessor')),
+			array(
+				'open'	=> '<nowiki>',
+				'close' => '</nowiki>',
+				'multiline' => false,
+				'processor' => array($this,'textProcessor')),
 			);
 			
 		
@@ -400,14 +395,13 @@ private function macroProcessor($text, $type) {
 	}
 
 	private function textProcessor($otext, $type) { 
-		if($type != '{{{')
+		if($type != '{{{' && $type != '<nowiki>')
 			$text = $this->formatParser($otext);
 		else
 			$text = $otext;
 		switch($type) {
-			case '--':
-			case '~~':
-				return '<s>'.$text.'</s>';
+			case '<nowiki>':
+				return '<nowiki>'.$text.'</nowiki>';
 			case '{{{':
 				if(self::startsWithi($text, '#!html')) {
 					$html = substr($text, 7);
@@ -420,7 +414,7 @@ private function macroProcessor($text, $type) {
 					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
 				}
 
-				return $text;
+				return '<nowiki>'.$text.'</nowiki>';
 		}
 		return $type.$text.$type;
 	}
