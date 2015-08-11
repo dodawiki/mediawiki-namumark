@@ -636,6 +636,7 @@ class NamuMark {
 		} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
 			return '{{#ev:nico|'.$nico_code[1].'}}';
 		}
+		return '[['.$this->formatParser($text).']]';
 	}
 
 	private function macroProcessor($text, $type) {
