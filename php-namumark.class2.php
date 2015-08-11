@@ -384,7 +384,16 @@ private function macroProcessor($text, $type) {
 		switch(strtolower($text)) {
 			case 'br':
 				return '<br>';
-			
+			default:
+				if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks)) {
+					if($wikilinks[2] !== '') {
+					return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
+					} else {
+					return '[['.$wikilinks[1].']]';
+					}
+				} elseif(!self::startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
+					return '[['.$text.']]';
+				}
 		}
 	
 		return '['.$text.']';
