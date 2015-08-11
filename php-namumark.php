@@ -640,6 +640,7 @@ class NamuMark {
 	}
 
 	private function macroProcessor($text, $type) {
+		$text = $this->formatParser($text);
 		switch(strtolower($text)) {
 			case 'br':
 				return '<br>';
