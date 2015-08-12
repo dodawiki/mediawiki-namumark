@@ -37,15 +37,6 @@ class NamuMark2 {
 
 	function __construct($wtext) {
 
-
-		$this->multi_bracket = array(
-			array(
-				'open'	=> '{{{',
-				'close' => '}}}',
-				'multiline' => true,
-				'processor' => array($this,'renderProcessor')),
-			);
-
 		$this->single_bracket = array(
 			array(
 				'open'	=> '{{{',
@@ -62,11 +53,6 @@ class NamuMark2 {
 				'close' => ']',
 				'multiline' => false,
 				'processor' => array($this,'macroProcessor')),
-			array(
-				'open'	=> '<nowiki>',
-				'close' => '</nowiki>',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
 			);
 			
 		
@@ -105,19 +91,6 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 			}
 
 
-
-			foreach($this->multi_bracket as $bracket) {
-				if(self::startsWith($text, $bracket['open'], $i) && $innerstr = $this->bracketParser($text, $i, $bracket)) {
-					$result .= ''
-						.$this->lineParser($line, '')
-						.$innerstr
-						.'';
-					$line = '';
-					$now = '';
-					break;
-				}
-			}
-
 			if($now == "\n") { // line parse
 				$result .= $this->lineParser($line, '');
 				$line = '';
@@ -129,6 +102,7 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 			$result .= $this->lineParser($line, 'notn');
 		return $result;
 	}
+
 private function tableParser($text, &$offset) {
 		$tableTable = array();
 		$len = strlen($text);
@@ -347,33 +321,23 @@ private function tableParser($text, &$offset) {
 		return $line;
 	}
 
-	private function renderProcessor($text, $type) {
-		if(self::startsWithi($text, '#!html')) {
-			$html = substr($text, 7);
-			$html = htmlspecialchars_decode($html);
-			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
-			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
-			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
-			return $html;
-		}
-	}
-
 	private function linkProcessor($text, $type) {
-		if(self::startsWithi($text, 'html(')) {
-			$html = $text;
-			$html = preg_replace('/html\((.*)\)/i', '$1', $html);
-			$html = htmlspecialchars_decode($html);
-			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
-			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
-			$html = preg_replace('/(<img[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//cdn.mirror.wiki/$2$3', $html);
-			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
-			return $html;
-		}
+		
+		if(self::startsWithi($text, 'wiki')) {
+			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
+				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
+					$wikilinks[2] = '{{{#!html <img src="'.$wikilinks[2].'">}}}';
+				}
 
+				return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
+			}	
+		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks)) {
+			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
+		}
 		
 	}
 	
-private function macroProcessor($text, $type) {
+	private function macroProcessor($text, $type) {
 		switch(strtolower($text)) {
 			case 'br':
 				return '<br>';
@@ -393,28 +357,15 @@ private function macroProcessor($text, $type) {
 	}
 
 	private function textProcessor($otext, $type) { 
-		if($type != '{{{' && $type != '<nowiki>')
-			$text = $this->formatParser($otext);
-		else
-			$text = $otext;
-		switch($type) {
-			case '<nowiki>':
-				return '<nowiki>'.$text.'</nowiki>';
-			case '{{{':
-				if(self::startsWithi($text, '#!html')) {
-					$html = substr($text, 7);
-					$html = htmlspecialchars_decode($html);
-					return $html;
-				}
-				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
-					if(empty($color[1]) && empty($color[2]))
-						return $text;
-					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
-				}
 
-				return '<nowiki>'.$text.'</nowiki>';
+		$text = $otext;
+
+		if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
+			if(empty($color[1]) && empty($color[2]))
+				return $text;
+			return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
 		}
-		return $type.$text.$type;
+		
 	}
 
 	

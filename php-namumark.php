@@ -544,15 +544,15 @@ class NamuMark {
 		$result = '';
 		$block_len = strlen($block);
 		
-		if(preg_match('/^(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([^"]\S+)(.*)$/', $block, $match)) {
+		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&]\S+)(?!<\/nowiki>)(.*)$/', $block, $match)) {
 			$vowels = array('?', '&');
-			$match[3] = str_replace($vowels, ' ', $match[3]);
+			$match[4] = str_replace($vowels, ' ', $match[4]);
 			$result .= ''
-				.'<img src="'.$match[1].$match[2].'"'.$match[3].'>'
+				.$match[1].'<img src="'.$match[2].$match[3].'"'.$match[4].'>'
 				.'';
-			$block = $match[4];
+			$block = $this->blockParser($match[5]);
 		}
-
+		
 		$result .= $this->formatParser($block);
 		return $result;
 	}
@@ -721,7 +721,7 @@ class NamuMark {
 			case '{{|':
 				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
 			case '<nowiki>':
-				return '{{{<nowiki>'.$text.'</nowiki>}}}';
+				return '<nowiki>'.$text.'</nowiki>';
 			case '{{{':
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
 					if(empty($color[1]) && empty($color[2]))
