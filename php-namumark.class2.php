@@ -353,9 +353,7 @@ private function tableParser($text, &$offset) {
 			$html = htmlspecialchars_decode($html);
 			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
 			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
-			$html = preg_replace('/(<img[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//cdn.mirror.wiki/$2$3', $html);
 			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
-#			$html = preg_replace('/(<script[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//js.mirror.wiki/$2$3', $html);
 			return $html;
 		}
 	}

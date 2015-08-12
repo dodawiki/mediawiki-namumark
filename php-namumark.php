@@ -78,6 +78,12 @@ class NamuMark {
 				'close' => '||',
 				'multiline' => true,
 				'processor' => array($this,'renderProcessor')),
+			array(
+				'open'	=> '<nowiki>',
+				'close' => '</nowiki>',
+				'multiline' => true,
+				'processor' => array($this,'renderProcessor')),	
+			
 			);
 
 		$this->single_bracket = array(
@@ -537,6 +543,15 @@ class NamuMark {
 	private function blockParser($block) {
 		$result = '';
 		$block_len = strlen($block);
+		
+		if(preg_match('/^(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([^"]\S+)(.*)$/', $block, $match)) {
+			$vowels = array('?', '&');
+			$match[3] = str_replace($vowels, ' ', $match[3]);
+			$result .= ''
+				.'<img src="'.$match[1].$match[2].'"'.$match[3].'>'
+				.'';
+			$block = $match[4];
+		}
 
 		$result .= $this->formatParser($block);
 		return $result;
@@ -606,8 +621,9 @@ class NamuMark {
 			}
 		}
 		
-		
-
+		$vowels = array('{{{#!html', '}}}');
+		$rpe = array("{{{#!html <xmp>", '</xmp>}}}');
+		$text = str_ireplace($vowels, $rpe, $text);
 		return '<pre>'.$text.'</pre>';
 	}
 
