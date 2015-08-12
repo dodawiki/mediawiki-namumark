@@ -64,7 +64,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 			preg_match('/^.*$/m', $text, $fn);
 			$text = str_replace("$fn[0]", '', $text);
 		}
-		$text = preg_replace('/^\|\| /m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
+		$text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
 		
 		//echo $text;
 		
