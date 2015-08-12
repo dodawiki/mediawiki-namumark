@@ -635,6 +635,8 @@ class NamuMark {
 			return '{{#ev:youtube|'.$youtube_code[1].'}}';
 		} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
 			return '{{#ev:nico|'.$nico_code[1].'}}';
+		} elseif(preg_match('/anchor\((.*?)\)/i', $text, $anchor)) {
+			return '<span id="'.$anchor[1].'"></span>';
 		}
 		return '[['.$this->formatParser($text).']]';
 	}
