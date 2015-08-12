@@ -125,6 +125,9 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	$wEngine->prefix = "";
 	$text =  $wEngine->toHtml();
 	
+	$text = preg_replace('/<a rel="nofollow" target="_blank" class="external autonumber" href="(.*?)">\[(\[\d+\])\]<\/a>/',
+	'<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>',
+	$text);
 	
 	
 	# 모든 수식을 불러온다.
