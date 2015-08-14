@@ -263,6 +263,15 @@ private function tableParser($text, &$offset) {
 	private function blockParser($block) {
 		$result = '';
 		$block_len = strlen($block);
+		
+		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&]\S+)(?!<\/nowiki>)(.*)$/', $block, $match)) {
+			$vowels = array('?', '&');
+			$match[4] = str_replace($vowels, ' ', $match[4]);
+			$result .= ''
+				.$match[1].'<img src="'.$match[2].$match[3].'"'.$match[4].'>'
+				.'';
+			$block = $this->blockParser($match[5]);
+		}
 
 		$result .= $this->formatParser($block);
 		return $result;

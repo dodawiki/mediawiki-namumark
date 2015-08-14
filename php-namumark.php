@@ -544,15 +544,6 @@ class NamuMark {
 		$result = '';
 		$block_len = strlen($block);
 		
-		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&]\S+)(?!<\/nowiki>)(.*)$/', $block, $match)) {
-			$vowels = array('?', '&');
-			$match[4] = str_replace($vowels, ' ', $match[4]);
-			$result .= ''
-				.$match[1].'<img src="'.$match[2].$match[3].'"'.$match[4].'>'
-				.'';
-			$block = $this->blockParser($match[5]);
-		}
-		
 		if(preg_match('/^#title (.*)$/', $block, $match)) {
 			$result .= ''
 				.'{{DISPLAYTITLE:'.$match[1].'}}'
