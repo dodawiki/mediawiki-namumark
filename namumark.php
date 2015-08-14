@@ -125,6 +125,8 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	$wEngine->prefix = "";
 	$text =  $wEngine->toHtml();
 	
+	$text = str_replace("<br /></p>\n<p>", '<br />', $text);
+	
 	$text = preg_replace('/<a rel="nofollow" target="_blank" class="external autonumber" href="(.*?)">\[(\[\d+\])\]<\/a>/',
 	'<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>',
 	$text);
