@@ -36,7 +36,7 @@ $wgHooks['ParserAfterTidy'][] = 'NamuMarkHTML2';
 
 
 function NamuMark(&$parser, &$text, &$strip_state) {
-	$text = html_entity_decode($text); // HTML 엔티티를 디코드한다.
+	$text = html_entity_decode($text,  ENT_QUOTES | ENT_HTML5);   // HTML 엔티티를 디코드한다.
 	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
 
 	# 이하는 수식 태그로 인하여 발생하는 버그를 해결하기 위하여 특정 문서에서는 파서가 작동되지 않도록 한다.
