@@ -39,11 +39,6 @@ class NamuMark2 {
 
 		$this->single_bracket = array(
 			array(
-				'open'	=> '{{{',
-				'close' => '}}}',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
 				'open'	=> '[[',
 				'close' => ']]',
 				'multiline' => false,
@@ -356,19 +351,6 @@ private function tableParser($text, &$offset) {
 		return '['.$text.']';
 	}
 
-	private function textProcessor($otext, $type) { 
-
-		$text = $otext;
-
-		if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
-			if(empty($color[1]) && empty($color[2]))
-				return $text;
-			return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
-		}
-		
-	}
-
-	
 	private function lineParser($line, $type) {
 		$result = '';
 		$line_len = strlen($line);

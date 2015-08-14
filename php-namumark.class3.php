@@ -128,7 +128,7 @@ class NamuMark3 {
 			if(self::startsWith($text, $bracket['open'], $i) && !($bracket['open']==$bracket['close'] && $cnt>0)) {
 				$cnt++;
 				$done = true;
-				$i+=$openlen-1; // ¹Ýº¹µÉ ¶§ ´õÇØÁú °ÍÀÌ¹Ç·Î
+				$i+=$openlen-1; // ï¿½Ýºï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¹Ç·ï¿½
 			}elseif(self::startsWith($text, $bracket['close'], $i)) {
 				$cnt--;
 				$i+=$closelen-1;
@@ -197,6 +197,10 @@ class NamuMark3 {
 			$html = substr($text, 7);
 			$html = htmlspecialchars_decode($html);
 			return $html;
+		} elseif(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
+			if(empty($color[1]) && empty($color[2]))
+				return $text;
+			return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
 		}
 	}
 
