@@ -553,6 +553,12 @@ class NamuMark {
 			$block = $this->blockParser($match[5]);
 		}
 		
+		if(pre_match('/^#title (.*)$/', $block, $match)) {
+			$result .= ''
+				.'{{DISPLAYTITLE:'.$match[1].'}}'
+				.'';
+		}
+		
 		$result .= $this->formatParser($block);
 		return $result;
 	}
