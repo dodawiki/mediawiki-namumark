@@ -644,6 +644,9 @@ class NamuMark {
 			return '{{#ev:nico|'.$nico_code[1].'}}';
 		} elseif(preg_match('/anchor\((.*?)\)/i', $text, $anchor)) {
 			return '<span id="'.$anchor[1].'"></span>';
+		} elseif(self::startsWith($text, 'http')) {
+			$text = str_replace('|', ' ', $text);
+			return '['.$text.']';
 		}
 		return '[['.$this->formatParser($text).']]';
 	}
