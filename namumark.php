@@ -132,19 +132,6 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	$text);
 	
 	
-	# 모든 수식을 불러온다.
-	#'^내용^' 태그로 인하여, 한 수식에 '^'가 두 개 이상의 짝수개로 존재할시 <sup>수식 내용</sup>으로 변환되는 버그를 고치기 위함이다.
-	preg_match_all("/<span class=\"mwe-math-fallback-source-inline tex\" dir=\"ltr\">(.*?)<\/span>/", $text, $math);
-	# 불러온 수식에 있는 '<sup>'과 '</sup>'를 모두 '^'으로 바꾼다.
-	foreach($math[1] as $math_value){
-		$vowels = array(
-			"&lt;sup&gt;",
-			"&lt;/sup&gt;"
-		);
-		$math_value_rpe = str_replace($vowels, '^', $math_value);
-		$text = str_replace($math_value, $math_value_rpe, $text);
-	}
-	
 	$text = str_replace('<ol class="references">', '<hr><ol class="references">', $text); // 각주 바로 앞에 <hr> 태그 추가
 }	
 ?>

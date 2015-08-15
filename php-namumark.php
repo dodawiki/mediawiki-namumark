@@ -154,11 +154,6 @@ class NamuMark {
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
 			array(
-				'open'	=> '^',
-				'close' => '^',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
 				'open'	=> '<nowiki>',
 				'close' => '</nowiki>',
 				'multiline' => false,
@@ -707,7 +702,6 @@ class NamuMark {
 					return '<u>'.$text.'</u>';
 				}
 			case '^^':
-			case '^':
 				return '<sup>'.$text.'</sup>';
 			case ',,':
 				return '<sub>'.$text.'</sub>';
