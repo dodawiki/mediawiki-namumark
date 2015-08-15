@@ -111,6 +111,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 
 
 function NamuMarkHTML( Parser &$parser, &$text ) {
+	$text = str_replace('&apos;', "'", $text);
+
 	# 파서를 불러온다.
 	require_once("php-namumark.class2.php");
 	$wPage = new PlainWikiPage2("$text");
