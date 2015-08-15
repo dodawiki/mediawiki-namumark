@@ -74,11 +74,6 @@ class NamuMark {
 				'multiline' => true,
 				'processor' => array($this,'renderProcessor')),
 			array(
-				'open'	=> '||',
-				'close' => '||',
-				'multiline' => true,
-				'processor' => array($this,'renderProcessor')),
-			array(
 				'open'	=> '<nowiki>',
 				'close' => '</nowiki>',
 				'multiline' => true,
@@ -601,15 +596,19 @@ class NamuMark {
 		if(self::startsWithi($text, '#!html')) {
 			
 			return '<nowiki>{{{'.$text.'}}}</nowiki>';
-		} elseif($type == '{{|' || $type == '||') {
-			if(preg_match('/<#(.*?)>/', $text, $color)) {
-				$text = str_replace($color[0], '', $text);
-				return '<poem style="border: 2px solid #d6d2c5; background-color: #'.$color[1].'; padding: 1em;">'.$text.'</poem>';
-			} elseif(preg_match('/<tablewidth=(.*?)>/', $text, $width)) {
-				$text = str_replace($width[0], '', $text);
-				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; width: '.$width[1].'; padding: 1em;">'.$text.'</poem>';
+		} elseif($type == '{{|') {
+			if(preg_match('/\|-/', $text)) {
+				return $type.$text.$type;
 			} else {
+				if(preg_match('/<#(.*?)>/', $text, $color)) {
+					$text = str_replace($color[0], '', $text);
+					return '<poem style="border: 2px solid #d6d2c5; background-color: #'.$color[1].'; padding: 1em;">'.$text.'</poem>';
+				} elseif(preg_match('/<tablewidth=(.*?)>/', $text, $width)) {
+					$text = str_replace($width[0], '', $text);
+					return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; width: '.$width[1].'; padding: 1em;">'.$text.'</poem>';
+				} else {
 				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+				}
 			}
 		}
 		
