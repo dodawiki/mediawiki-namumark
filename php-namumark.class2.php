@@ -337,6 +337,8 @@ private function tableParser($text, &$offset) {
 			}	
 		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks)) {
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
+		} elseif(preg_match('/^br$/im', $text)) {
+			return '<br>';
 		}
 		
 	}
