@@ -72,7 +72,9 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
 		
-		$text = preg_replace('/src="http:\/\/www\.youtube\.com/', 'src="//www.youtube.com', $text);
+		$text = preg_replace('/src="http:\/\/www\.youtube\.com/', 'src="//www.youtube.com', $text); // HHTPS 환경에서 비 SSL 유튜브 URL 첨부시 재생이 안 되는 버그를 위해 SSL URL로 변경.
+		
+		$text = preg_replace('/^(\|\|<table .*?>)(\|\|+)/im', '$2$1', $text);
 		
 		# 파서를 불러온다.
 		require_once("php-namumark.php");
