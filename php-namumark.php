@@ -194,6 +194,7 @@ class NamuMark {
 				continue;
 			}
 
+			/*
 			if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 				$result .= ''
 					.$table
@@ -202,7 +203,7 @@ class NamuMark {
 				$now = '';
 				continue;
 			}
-
+*/
 			if($line == '' && self::startsWith($text, '>', $i) && $blockquote = $this->bqParser($text, $i)) {
 				$result .= ''
 					.$blockquote

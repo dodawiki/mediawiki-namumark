@@ -36,7 +36,13 @@ class NamuMark2 {
 	public $prefix, $lastchange;
 
 	function __construct($wtext) {
-
+$this->multi_bracket = array(
+array(
+				'open'	=> '||',
+				'close' => '||',
+				'multiline' => true,
+				'processor' => array($this,'renderProcessor')),
+);
 		$this->single_bracket = array(
 			array(
 				'open'	=> '[[',
@@ -84,7 +90,17 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 				$now = '';
 				continue;
 			}
-
+foreach($this->multi_bracket as $bracket) {
+				if(self::startsWith($text, $bracket['open'], $i) && $innerstr = $this->bracketParser($text, $i, $bracket)) {
+					$result .= ''
+						.$this->lineParser($line, '')
+						.$innerstr
+						.'';
+					$line = '';
+					$now = '';
+					break;
+				}
+			}
 
 			if($now == "\n") { // line parse
 				$result .= $this->lineParser($line, '');
@@ -259,7 +275,11 @@ private function tableParser($text, &$offset) {
 		$offset = $i-1;
 		return $result;
 	}
-
+	private function renderProcessor($text, $type) {
+		$text = str_replace("\n", '<br>', $text);
+		return $text;
+	}
+	
 	private function blockParser($block) {
 		$result = '';
 		$block_len = strlen($block);
