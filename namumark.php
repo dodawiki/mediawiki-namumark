@@ -64,17 +64,24 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 			preg_match('/^.*$/m', $text, $fn);
 			$text = str_replace("$fn[0]", '', $text);
 		}
-		$text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
-		
-		//echo $text;
-		
-		$text = preg_replace('/^ \|\|/m', '||', $text); // 테이블 맨 앞(||)의 바로 앞에 공백이 있을 경우 제거하도록 한다.
 		
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
 		
 		$text = preg_replace('/src="http:\/\/www\.youtube\.com/', 'src="//www.youtube.com', $text); // HHTPS 환경에서 비 SSL 유튜브 URL 첨부시 재생이 안 되는 버그를 위해 SSL URL로 변경.
 		
 		$text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
+		
+		$text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
+		
+		$text = str_replace('|| <', '||<', $text);
+		
+		//echo $text;
+		
+		$text = preg_replace('/^ \|\|/m', '||', $text); // 테이블 맨 앞(||)의 바로 앞에 공백이 있을 경우 제거하도록 한다.
+		
+		
+		$text = str_replace('> <', '><', $text);
+		
 		
 		# 파서를 불러온다.
 		require_once("php-namumark.php");
@@ -84,6 +91,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$text =  $wEngine->toHtml();
 		
 		$text = preg_replace('/^\|\|(.*?)\|\|$/ms', '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">$1</poem>', $text);
+		
 		
 		preg_match_all('/<math>.*?<\/math>/', $text, $math); // [내부항목] 태그로 인해 수식의 [내용]이 [[내용]]으로 대괄호 하나가 덧붙는 버그를 제거하기 위하여 모든 수식을 가져오고,
     
@@ -121,6 +129,8 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 	$wEngine = new NamuMark2($wPage);
 	$wEngine->prefix = "";
 	$text =  $wEngine->toHtml();	
+	
+	
 }
 
 function NamuMarkHTML2( &$parser, &$text ) {
