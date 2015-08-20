@@ -623,7 +623,7 @@ class NamuMark {
 			return '<br>';
 		} elseif(preg_match('/^목차$/m', $text)) {
 			return '__TOC__';
-		} elseif(preg_match('/각주/', $text)) {
+		} elseif(preg_match('/^각주$/m', $text)) {
 			return '<references />';
 		} elseif(self::startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
