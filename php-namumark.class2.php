@@ -284,7 +284,7 @@ private function tableParser($text, &$offset) {
 		$result = '';
 		$block_len = strlen($block);
 		
-		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&]\S+)(?!<\/nowiki>)(.*)$/', $block, $match)) {
+		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ]+)(?!<\/nowiki>)(.*)$/', $block, $match)) {
 			$vowels = array('?', '&');
 			$match[4] = str_replace($vowels, ' ', $match[4]);
 			$result .= ''
