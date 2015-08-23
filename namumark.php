@@ -84,7 +84,12 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		$text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
 		$text = preg_replace('/attachment:([^\/\s]*?(\.jpeg|\.jpg|\.png|\.gif))/i', 'attachment:'.$title.'__$1', $text);
-		$text = preg_replace('/attachment:[^\/]\S*?\/(\S*(\.jpeg|\.jpg|\.png|\.gif))/', 'attachment:'.$title.'__$1', $text);
+		preg_match_all('/attachment:[^\/]\S*?\/(\S*(\.jpeg|\.jpg|\.png|\.gif))/', $text, $attachment, PREG_SET_ORDER);
+		foreach ($attachment as $file) {
+			if(!preg_match('/__/', $file[1])) {
+				$text = str_replace($file[0], 'attachment:'.$title.'__'.$file[1], $text);
+			}
+		}
 		
 		
 		
