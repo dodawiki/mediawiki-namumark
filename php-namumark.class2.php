@@ -293,7 +293,7 @@ private function tableParser($text, &$offset) {
 			$block = $this->blockParser($match[5]);
 		}
 		
-		if(preg_match('/^(.*?)(?<!<nowiki>)attachment:(.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&]\S+[^\|])?(?!<\/nowiki>)(.*)$/', $block, $match)) {
+		if(preg_match('/^(.*?)(?<!<nowiki>)attachment:"?(.*?)(\.jpeg|\.jpg|\.png|\.gif)"?([?&]\S+[^\|])?(?!<\/nowiki>)(.*)$/', $block, $match)) {
 			
 			$match[2] = preg_replace('/^\//', '', $match[2]);
 			
