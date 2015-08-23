@@ -706,7 +706,8 @@ class NamuMark {
 					}
 				} elseif(!self::startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
 					return '[['.$text.']]';
-				}
+				} 
+
 		}
 		
 		return '['.$text.']';
