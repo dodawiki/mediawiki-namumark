@@ -97,6 +97,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		$text = preg_replace('/\[\[파일:(.*?)\|(\d*)px%\|?(.*?)\]\]/', '{{ScaleImage|imagename=$1|newwidth=$2|caption=$3}}', $text);
 				
+		$text = preg_replace('/(\{\{.*?\}\})/', "$1\n", $text);
 		
 		preg_match_all('/<math>.*?<\/math>/', $text, $math); // [내부항목] 태그로 인해 수식의 [내용]이 [[내용]]으로 대괄호 하나가 덧붙는 버그를 제거하기 위하여 모든 수식을 가져오고,
     
