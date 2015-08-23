@@ -97,17 +97,6 @@ class NamuMark {
 				'close' => ']',
 				'multiline' => false,
 				'processor' => array($this,'macroProcessor')),
-
-			array(
-				'open'	=> '\'\'\'',
-				'close' => '\'\'\'',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
-				'open'	=> '\'\'',
-				'close' => '\'\'',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
 			array(
 				'open'	=> '~~',
 				'close' => '~~',
