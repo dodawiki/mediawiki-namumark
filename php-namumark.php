@@ -530,28 +530,36 @@ class NamuMark {
 				.'';
 		}
 		
-		// if(preg_match('/^(.*?)(?<!<nowiki>)attachment:(.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&]\S+[^\|])?(?!<\/nowiki>)(.*)$/', $block, $match)) {
+		if(preg_match('/^(.*?)(?<!<nowiki>)attachment:"?(.*?)(\.jpeg|\.jpg|\.png|\.gif)"?([?&][^\| <]+)?(?!<\/nowiki>)(.*)$/i', $block, $match)) {
 			
-			// $match[2] = preg_replace('/^\//', '', $match[2]);
+			$match[2] = preg_replace('/^\//', '', $match[2]);
 			
-			// if(strlen($match[4]) == 0) {
-				// $result .= ''
-					// .$match[1].'[[파일:'.$match[2].$match[3].']]'
-					// .'';
-			// } else {
-				// $vowels = array('?', '&');
-				// $match[4] = str_replace($vowels, '|', $match[4]);
-				// $match[4] = preg_replace('/width=(\d*)/i', '$1px', $match[4]);
-				// $match[4] = str_replace('align=', '', $match[4]);
-				
-				// $result .= ''
-					// .$match[1].'[[파일:'.$match[2].$match[3].$match[4].']]'
-					// .'';
+			if(strlen($match[4]) == 0) {
+				$result .= ''
+					.$match[1].'[[파일:'.$match[2].$match[3].']]'
+					.'';
 					
-			// }
+			} elseif(preg_match('/%/', $match[4])) {
+				$vowels = array('?', '&');
+				$match[4] = str_replace($vowels, '|', $match[4]);
+				$match[4] = str_replace('%', '', $match[4]);
+				$match[4] = str_replace('width', 'newwidth', $match[4]);
+				$match[4] = str_replace('align', 'caption', $match[4]);
+				return '{{ScaleImage|imagename='.$match[2].$match[3].$match[4].'}}';
+			} else {
+				$vowels = array('?', '&');
+				$match[4] = str_replace($vowels, '|', $match[4]);
+				$match[4] = preg_replace('/width=(\d*)/i', '$1px', $match[4]);
+				$match[4] = str_replace('align=', '', $match[4]);
+				
+				$result .= ''
+					.$match[1].'[[파일:'.$match[2].$match[3].$match[4].']]'
+					.'';
+					
+			}
 			
-			// $block = $this->blockParser($match[5]);
-		// }
+			$block = $this->blockParser($match[5]);
+		}
 		
 		$result .= $this->formatParser($block);
 		return $result;

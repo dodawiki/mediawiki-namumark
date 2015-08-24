@@ -99,8 +99,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$wEngine = new NamuMark($wPage);
 		$wEngine->prefix = "";
 		$text =  $wEngine->toHtml();
-		
-		$text = preg_replace('/\[\[파일:(.*?)\|(\d*)px%\|?(.*?)\]\]/', '{{ScaleImage|imagename=$1|newwidth=$2|caption=$3}}', $text);
 				
 		$text = preg_replace('/(\{\{.*?\}\})/', "$1\n", $text);
 		
