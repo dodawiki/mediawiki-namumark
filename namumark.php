@@ -18,7 +18,7 @@ $wgExtensionCredits['parserhook'][] = array(
  
    // The version of the extension, which will appear on Special:Version.
    // This can be a number or a string.
-   'version' => '0.4.4', 
+   'version' => '0.4.4.1', 
  
    // Your name, which will appear on Special:Version.
    'author' => 'koreapyj 원본, 김동동 수정',
@@ -100,7 +100,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$wEngine->prefix = "";
 		$text =  $wEngine->toHtml();
 				
-		$text = preg_replace('/(\{\{.*?\}\})/', "$1\n", $text);
+		#$text = preg_replace('/(\{\{.*?\}\})/', "$1\n", $text);
 		
 		preg_match_all('/<math>.*?<\/math>/', $text, $math); // [내부항목] 태그로 인해 수식의 [내용]이 [[내용]]으로 대괄호 하나가 덧붙는 버그를 제거하기 위하여 모든 수식을 가져오고,
     

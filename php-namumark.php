@@ -657,7 +657,7 @@ class NamuMark {
 		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks)) {
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 		} elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
-			return '{{'.$include[1].'}}';
+			return '{{'.$include[1].'}}'."\n";
 		} elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
 			$youtube_code[1] = preg_replace('/,(.*)/', '', $youtube_code[1]);
 			return '{{#ev:youtube|'.$youtube_code[1].'}}';
@@ -687,7 +687,7 @@ class NamuMark {
 				return '<references />';
 			default:
 				if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
-					return '{{'.$include[1].'}}';
+					return '{{'.$include[1].'}}'."\n";
 				} elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
 					return "<ref>$note[2]</ref>";
 				} elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
