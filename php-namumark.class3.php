@@ -44,6 +44,11 @@ class NamuMark3 {
 				'close' => '}}}',
 				'multiline' => true,
 				'processor' => array($this,'renderProcessor')),
+			array(
+				'open'	=> '||',
+				'close' => '||',
+				'multiline' => true,
+				'processor' => array($this,'renderProcessor')),				
 			);
 
 		$this->single_bracket = array(
@@ -172,6 +177,12 @@ class NamuMark3 {
 			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
 			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
 			return $html;
+		}
+		if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match)) {
+			$text = str_replace($match[0], '', $text);
+			return '<div style="border: 2px solid #d6d2c5; background-color: '.$match[1].'; padding: 1em;"><p>'.$text.'</p></div>';
+		} else {
+			return '<div style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;"><p>'.$text.'</p></div>';
 		}
 	}
 

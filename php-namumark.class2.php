@@ -36,13 +36,7 @@ class NamuMark2 {
 	public $prefix, $lastchange;
 
 	function __construct($wtext) {
-$this->multi_bracket = array(
-array(
-				'open'	=> '||',
-				'close' => '||',
-				'multiline' => true,
-				'processor' => array($this,'renderProcessor')),
-);
+
 		$this->single_bracket = array(
 			array(
 				'open'	=> '[[',
@@ -90,17 +84,7 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 				$now = '';
 				continue;
 			}
-foreach($this->multi_bracket as $bracket) {
-				if(self::startsWith($text, $bracket['open'], $i) && $innerstr = $this->bracketParser($text, $i, $bracket)) {
-					$result .= ''
-						.$this->lineParser($line, '')
-						.$innerstr
-						.'';
-					$line = '';
-					$now = '';
-					break;
-				}
-			}
+
 
 			if($now == "\n") { // line parse
 				$result .= $this->lineParser($line, '');
@@ -276,14 +260,16 @@ private function tableParser($text, &$offset) {
 		return $result;
 	}
 	private function renderProcessor($text, $type) {
-		$text = str_replace("\n", '<br>', $text);
-		$text = preg_replace('/<br>:+/', '<br> ', $text);
 		
-		if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match)) {
-			$text = str_replace($match[0], '', $text);
-			return '<div style="border: 2px solid #d6d2c5; background-color: '.$match[1].'; padding: 1em;"><p>'.$text.'</p></div>';
-		} else {
-			return '<div style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;"><p>'.$text.'</p></div>';
+		if(!preg_match('/\|/', $text)) {
+			$text = str_replace("\n", '<br>', $text);
+			$text = preg_replace('/<br>:+/', '<br> ', $text);
+			if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match)) {
+				$text = str_replace($match[0], '', $text);
+				return '<div style="border: 2px solid #d6d2c5; background-color: '.$match[1].'; padding: 1em;"><p>'.$text.'</p></div>';
+			} else {
+				return '<div style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;"><p>'.$text.'</p></div>';
+			}
 		}
 	}
 	
@@ -300,28 +286,7 @@ private function tableParser($text, &$offset) {
 			$block = $this->blockParser($match[5]);
 		}
 		
-		// if(preg_match('/^(.*?)(?<!<nowiki>)attachment:"?(.*?)(\.jpeg|\.jpg|\.png|\.gif)"?([?&][^\| <]+)?(?!<\/nowiki>)(.*)$/i', $block, $match)) {
-			
-			// $match[2] = preg_replace('/^\//', '', $match[2]);
-			
-			// if(strlen($match[4]) == 0) {
-				// $result .= ''
-					// .$match[1].'[[파일:'.$match[2].$match[3].']]'
-					// .'';
-			// } else {
-				// $vowels = array('?', '&');
-				// $match[4] = str_replace($vowels, '|', $match[4]);
-				// $match[4] = preg_replace('/width=(\d*)/i', '$1px', $match[4]);
-				// $match[4] = str_replace('align=', '', $match[4]);
-				
-				// $result .= ''
-					// .$match[1].'[[파일:'.$match[2].$match[3].$match[4].']]'
-					// .'';
-					
-			// }
-			
-			// $block = $this->blockParser($match[5]);
-		// }
+
 
 		$result .= $this->formatParser($block);
 		return $result;
