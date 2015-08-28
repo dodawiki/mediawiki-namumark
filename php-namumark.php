@@ -706,7 +706,7 @@ class NamuMark {
 				} 
 
 		}
-		
+		$text = str_replace('|', ' ', $text);
 		return '['.$text.']';
 	}
 

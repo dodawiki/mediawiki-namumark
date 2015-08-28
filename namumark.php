@@ -18,14 +18,14 @@ $wgExtensionCredits['parserhook'][] = array(
  
    // The version of the extension, which will appear on Special:Version.
    // This can be a number or a string.
-   'version' => '0.4.4.1', 
+   'version' => '0.4.5', 
  
    // Your name, which will appear on Special:Version.
    'author' => 'koreapyj 원본, 김동동 수정',
  
    // The URL to a wiki page/web page with information about the extension,
    // which will appear on Special:Version.
-   'url' => 'https://github.com/koreapyj/php-namumark',
+   'url' => 'https://github.com/Oriwiki/php-namumark-mediawiki',
    
 'license-name' => "AGPL-3.0",   // Short name of the license, links LICENSE or COPYING file if existing - string, added in 1.23.0
   
