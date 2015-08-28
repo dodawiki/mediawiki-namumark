@@ -32,7 +32,7 @@ $wgExtensionCredits['parserhook'][] = array(
 );
 $wgHooks['ParserBeforeStrip'][] = 'NamuMark';
 $wgHooks['InternalParseBeforeLinks'][] = 'NamuMarkHTML';
-$wgHooks['ParserAfterTidy'][] = 'NamuMarkHTML2';
+$wgHooks['ParserBeforeTidy'][] = 'NamuMarkHTML2';
 
 
 function NamuMark(&$parser, &$text, &$strip_state) {
