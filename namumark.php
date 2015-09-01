@@ -92,6 +92,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		}
 		
 		$text = str_replace('tablealign', 'table align', $text);
+		$text = str_replace('tablewidth', 'table width', $text);
 		
 		# 파서를 불러온다.
 		require_once("php-namumark.php");
