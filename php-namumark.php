@@ -39,7 +39,7 @@ class NamuMark {
 
 		$this->list_tag = array(
 			array('*', 'ul'),
-			array('1.', 'ol class="decimal"'),
+			#array('1.', 'ol class="decimal"'),
 			array('A.', 'ol class="upper-alpha"'),
 			array('a.', 'ol class="lower-alpha"'),
 			array('I.', 'ol class="upper-roman"'),
