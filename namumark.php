@@ -18,7 +18,7 @@ $wgExtensionCredits['parserhook'][] = array(
  
    // The version of the extension, which will appear on Special:Version.
    // This can be a number or a string.
-   'version' => '0.4.5.1', 
+   'version' => '0.4.5.2', 
  
    // Your name, which will appear on Special:Version.
    'author' => 'koreapyj 원본, 김동동 수정',
@@ -132,7 +132,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 
 function NamuMarkHTML( Parser &$parser, &$text ) {
 	$text = str_replace('&apos;', "'", $text);
-
+	$text = str_replace('tablealign', 'table align', $text);
+	$text = str_replace('tablewidth', 'table width', $text);
 	# 파서를 불러온다.
 	require_once("php-namumark.class2.php");
 	$wPage = new PlainWikiPage2("$text");
