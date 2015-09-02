@@ -178,7 +178,7 @@ class NamuMark3 {
 			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
 			return $html;
 		}
-		if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match)) {
+		if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match) || preg_match('/^&lt;bgcolor=(#.*?)&gt;/m', $text, $match)) {
 			$text = str_replace($match[0], '', $text);
 			$text = str_replace("\n", '<br>', $text);
 			return '<div style="border: 2px solid #d6d2c5; background-color: '.$match[1].'; padding: 1em;"><p>'.$text.'</p></div>';
