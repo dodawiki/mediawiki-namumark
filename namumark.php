@@ -160,10 +160,7 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	$text = preg_replace('/<a rel="nofollow" target="_blank" class="external autonumber" href="(.*?)">\[(\[\d+\])\]<\/a>/',
 	'<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>',
 	$text);
-	
-	
-	$text = str_replace('<ol class="references">', '<hr><ol class="references">', $text); // 각주 바로 앞에 <hr> 태그 추가
-	
+		
 	$text = preg_replace('/^([^<\n])/m', '<br>$1', $text);
 	
 }	
