@@ -120,6 +120,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 			}
 		}
 		
+		//$text = preg_replace('/([^\n=])\n([^\n=\*])/', "$1<br>$2", $text);
+		
 		# 상기에서 볃도로 보관한 변수의 값을 본문의 바로 앞에 추가한다.
 		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"])) {
 		$text = $fn[0].$text;
@@ -161,5 +163,8 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	
 	
 	$text = str_replace('<ol class="references">', '<hr><ol class="references">', $text); // 각주 바로 앞에 <hr> 태그 추가
+	
+	$text = preg_replace('/^([^<\n])/m', '<br>$1', $text);
+	
 }	
 ?>
