@@ -160,8 +160,10 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	$text = preg_replace('/<a rel="nofollow" target="_blank" class="external autonumber" href="(.*?)">\[(\[\d+\])\]<\/a>/',
 	'<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>',
 	$text);
+	
+	//echo $text;
 		
-	$text = preg_replace('/^([^<\n])/m', '<br>$1', $text);
+	$text = preg_replace('@^(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m)([^\n])@m', '<br>$1', $text);
 	
 }	
 ?>
