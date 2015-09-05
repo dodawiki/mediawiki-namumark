@@ -180,10 +180,8 @@ class NamuMark3 {
 		}
 		if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match) || preg_match('/^&lt;bgcolor=(#.*?)&gt;/m', $text, $match)) {
 			$text = str_replace($match[0], '', $text);
-			$text = str_replace("\n", '<br>', $text);
 			return '<div style="border: 2px solid #d6d2c5; background-color: '.$match[1].'; padding: 1em;"><p>'.$text.'</p></div>';
 		} else {
-			$text = str_replace("\n", '<br>', $text);
 			return '<div style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;"><p>'.$text.'</p></div>';
 		}
 	}

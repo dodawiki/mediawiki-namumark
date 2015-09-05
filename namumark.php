@@ -119,9 +119,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 				$text = str_replace($rtex, str_replace($vowels, $rpe, $rtex), $text);
 			}
 		}
-		
-		//$text = preg_replace('/([^\n=])\n([^\n=\*])/', "$1<br>$2", $text);
-		
+				
 		# 상기에서 볃도로 보관한 변수의 값을 본문의 바로 앞에 추가한다.
 		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"])) {
 		$text = $fn[0].$text;
