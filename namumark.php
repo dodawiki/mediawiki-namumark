@@ -105,6 +105,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$text = str_replace('tablealign', 'table align', $text);
 		$text = str_replace('tablewidth', 'table width', $text);
 		
+		$text = preg_replace('@\{\{\{#!html\n?<iframe width=".*?" height=".*?" src="(http:|https:)?//www.youtube.com/embed/(.*?)".*?</iframe>\n?\}\}\}@', '{{#ev:youtube|$2}}', $text);
+		
 		# 파서를 불러온다.
 		require_once("php-namumark.php");
 		$wPage = new PlainWikiPage("$text");
