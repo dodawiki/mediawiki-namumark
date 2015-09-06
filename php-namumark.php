@@ -689,7 +689,9 @@ class NamuMark {
 				if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
 					return '{{'.$include[1].'}}'."\n";
 				} elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
-					return "<ref>$note[2]</ref>";
+					if(isset($note[2])) {
+						return "<ref>$note[2]</ref>";
+					}
 				} elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
 					$youtube_code[1] = preg_replace('/,(.*)/', '', $youtube_code[1]);
 					return '{{#ev:youtube|'.$youtube_code[1].'}}';
