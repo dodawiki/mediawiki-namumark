@@ -142,9 +142,29 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 
 
 function NamuMarkHTML( Parser &$parser, &$text ) {
+	$title = $parser->getTitle();
 	$text = str_replace('&apos;', "'", $text);
 	$text = str_replace('tablealign', 'table align', $text);
 	$text = str_replace('tablewidth', 'table width', $text);
+	
+	$text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
+	$text = preg_replace('/attachment:([^\/\s]*?(\.jpeg|\.jpg|\.png|\.gif))/i', 'attachment:'.$title.'__$1', $text);
+	preg_match_all('/attachment:[^\/]\S*?\/(\S*(\.jpeg|\.jpg|\.png|\.gif))/', $text, $attachment, PREG_SET_ORDER);
+	foreach ($attachment as $file) {
+		if(!preg_match('/__/', $file[1])) {
+			$text = str_replace($file[0], 'attachment:'.$title.'__'.$file[1], $text);
+		}
+	}
+		
+	$text = preg_replace('/\[\[(.*?)\|attachment:(.*?(\.jpeg|\.jpg|\.png|\.gif))(\?.*?)?\]\]/i', 'attachment:$2$4``link=$1``', $text);
+		
+	preg_match_all('/``link=(.*?)``/', $text, $link, PREG_SET_ORDER);
+		
+	foreach ($link as $filelink) {
+		$filelink[1] = str_replace(' ', '_', $filelink[1]);
+		$text = str_replace($filelink[0], '&link='.$filelink[1], $text);
+	}
+	
 	# 파서를 불러온다.
 	require_once("php-namumark.class2.php");
 	$wPage = new PlainWikiPage2("$text");
