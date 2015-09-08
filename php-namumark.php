@@ -688,6 +688,8 @@ class NamuMark {
 				return '<references />';
 			default:
 				if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
+					$include[1] = str_replace(',', '|', $include[1]);
+					$include[1] = urldecode($include[1]);
 					return '{{'.$include[1].'}}'."\n";
 				} elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
 					if(isset($note[2])) {
