@@ -195,6 +195,7 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	//echo htmlspecialchars($text);
 		
 	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m)([^\n])@m', '$1<br>$2', $text);
+	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m)([^\n])@m', '$1<br>$2', $text);
 	
 }	
 ?>
