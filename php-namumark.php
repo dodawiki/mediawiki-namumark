@@ -528,6 +528,7 @@ class NamuMark {
 			$result .= ''
 				.'{{DISPLAYTITLE:'.$match[1].'}}'
 				.'';
+			$block = '';
 		}
 		
 		if(preg_match('/^(.*?)(?<!<nowiki>)attachment:"?(.*?)(\.jpeg|\.jpg|\.png|\.gif)"?([?&][^\| <]+)?(?!<\/nowiki>)(.*)$/i', $block, $match)) {
