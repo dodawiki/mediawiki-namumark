@@ -53,6 +53,16 @@ class NamuMark2 {
 				'close' => '__',
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
+			array(
+				'open'	=> '~~',
+				'close' => '~~',
+				'multiline' => false,
+				'processor' => array($this,'textProcessor')),
+			array(
+				'open'	=> '--',
+				'close' => '--',
+				'multiline' => false,
+				'processor' => array($this,'textProcessor')),
 			);
 			
 		
@@ -428,10 +438,16 @@ private function tableParser($text, &$offset) {
 	}
 	
 	private function textProcessor($text, $type) {
-		if(preg_match('/TOC/', $text)) {
-			return '__'.$text.'__';
-		} else {
-			return '<u>'.$text.'</u>';
+		switch($type) {
+			case '__':
+				if(preg_match('/TOC/', $text)) {
+					return '__'.$text.'__';
+				} else {
+					return '<u>'.$text.'</u>';
+				}
+			case '--':
+			case '~~':
+				return '<s>'.$text.'</s>';
 		}
 		
 	}
