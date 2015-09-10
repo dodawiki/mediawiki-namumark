@@ -18,7 +18,7 @@ $wgExtensionCredits['parserhook'][] = array(
  
    // The version of the extension, which will appear on Special:Version.
    // This can be a number or a string.
-   'version' => '0.4.6', 
+   'version' => '0.4.6.1', 
  
    // Your name, which will appear on Special:Version.
    'author' => 'koreapyj 원본, 김동동 수정',
@@ -192,10 +192,10 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	'<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>',
 	$text);
 	
-	//echo htmlspecialchars($text);
+	//echo $text;
 
-	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m|<t|</t)([^\n])@m', '$1<br>$2', $text);
-	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m|<t|</t)([^\n])@m', '$1<br>$2', $text);
+	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m|<t|</t|<o|</o)([^\n])@m', '$1<br>$2', $text);
+	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m|<t|</t|<o|</o)([^\n])@m', '$1<br>$2', $text);
 	
 }	
 ?>
