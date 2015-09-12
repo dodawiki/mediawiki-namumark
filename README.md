@@ -9,7 +9,9 @@ php-namumark-mediawiki는 나무위키에서 사용하는 나무마크를 미디
 <code>git clone https://github.com/Oriwiki/php-namumark-mediawiki.git NamuMark</code>
 2. NamuMark.php 파일과 namumark.php 파일을 넣습니다. (git으로 한 경우 필요 없습니다.)
 3. LocalSettings.php에 다음을 입력합니다.
-<code>require_once "$IP/extensions/NamuMark/NamuMark.php";</code>
+<code>require_once "$IP/extensions/NamuMark/NamuMark.php";
+$wgRawHtml = true;
+</code>
 
 	
 ## 그 외

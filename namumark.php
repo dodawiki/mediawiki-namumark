@@ -57,6 +57,9 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 	$text = preg_replace('/<span style="color:(.*?)">(.*?)<\/span>\]\]/i', '{{글씨 색|$1|$2}}]]', $text);
 	$text = preg_replace('/<font color="(.*?)">(.*?)<\/font>\]\]/i', '{{글씨 색|$1|$2}}]]', $text);
 	
+	# meta 태그 제거
+	$text = preg_replace('/<meta.*?>/i', '', $text);
+	
 	# 상기의 확인 함수의 반환값과, 현 URI가 히스토리인지 확인하는 함수의 반환값과, 현 문서가 특수:기여 또는 특수:기록인지 확인하는 함수의 반환값을 확인한다.
 	if ($str1 && $str2 && $str3 && $str4 && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/특수:기여/', $title) && !preg_match('/특수:기록/', $title)) {
 		# 문서 구판에 접속시 최상단의 코드를 별도의 변수로 일단 보관하고 제거한다. 파서에 적용되지 않도록 하기 위함. 문서 구판에 접속시 발생하는 버그로 인한 조치.
@@ -138,6 +141,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$text = $fn[0].$text;
 		}
 		
+		
+		
 	}
 
 }
@@ -148,7 +153,6 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 	$text = str_replace('&apos;', "'", $text);
 	$text = str_replace('tablealign', 'table align', $text);
 	$text = str_replace('tablewidth', 'table width', $text);
-	
 	$text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
 	$text = preg_replace('/attachment:([^\/\s]*?(\.jpeg|\.jpg|\.png|\.gif))/i', 'attachment:'.$title.'__$1', $text);
 	preg_match_all('/attachment:[^\/]\S*?\/(\S*(\.jpeg|\.jpg|\.png|\.gif))/', $text, $attachment, PREG_SET_ORDER);
@@ -194,8 +198,9 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	
 	//echo $text;
 
-	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m|<t|</t|<o|</o)([^\n])@m', '$1<br>$2', $text);
-	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|<s|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<d|</u|<m|</m|<t|</t|<o|</o)([^\n])@m', '$1<br>$2', $text);
+
+	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
+	$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
 	
 }	
 ?>

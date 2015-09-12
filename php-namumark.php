@@ -639,7 +639,7 @@ class NamuMark {
 	private function renderProcessor($text, $type) {
 		if(self::startsWithi($text, '#!html')) {
 			
-			return '<nowiki>{{{'.$text.'}}}</nowiki>';
+			return '<html>'.$text.'</html>';
 		} elseif($type == '{{|') {
 			if(preg_match('/\|-/', $text)) {
 				return $type.$text.$type;
@@ -657,7 +657,7 @@ class NamuMark {
 		}
 		
 		$vowels = array('{{{#!html', '}}}');
-		$rpe = array("{{{#!html <xmp>", '</xmp>}}}');
+		$rpe = array("<html><xmp>", '</xmp></html>');
 		$text = str_ireplace($vowels, $rpe, $text);
 		return '<pre>'.$text.'</pre>';
 	}
@@ -672,7 +672,7 @@ class NamuMark {
 		} elseif(self::startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
-					$wikilinks[2] = '{{{#!html <img src="'.$wikilinks[2].'">}}}';
+					$wikilinks[2] = '<html><img src="'.$wikilinks[2].'"></html>';
 				}
 
 				return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
@@ -691,6 +691,11 @@ class NamuMark {
 		} elseif(self::startsWith($text, 'http')) {
 			$text = str_replace('|', ' ', $text);
 			return '['.$text.']';
+		} elseif(self::startsWithi($text, 'html(')) {
+			$html = $text;
+			$html = preg_replace('/html\((.*)\)/i', '$1', $html);
+			$html = htmlspecialchars_decode($html);
+			return '<html>'.$html.'</html>';
 		}
 		return '[['.$this->formatParser($text).']]';
 	}
@@ -765,6 +770,11 @@ class NamuMark {
 			case '<nowiki>':
 				return '<nowiki>'.$text.'</nowiki>';
 			case '{{{':
+				if(self::startsWith($text, '#!html')) {
+					$html = substr($text, 7);
+					$html = htmlspecialchars_decode($html);
+					return '<html>'.$html.'</html>';
+				}
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
 					if(empty($color[1]) && empty($color[2]))
 						return $text;

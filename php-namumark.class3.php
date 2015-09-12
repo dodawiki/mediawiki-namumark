@@ -40,29 +40,13 @@ class NamuMark3 {
 
 		$this->multi_bracket = array(
 			array(
-				'open'	=> '{{{',
-				'close' => '}}}',
-				'multiline' => true,
-				'processor' => array($this,'renderProcessor')),
-			array(
 				'open'	=> '||',
 				'close' => '||',
 				'multiline' => true,
 				'processor' => array($this,'renderProcessor')),				
 			);
 
-		$this->single_bracket = array(
-			array(
-				'open'	=> '{{{',
-				'close' => '}}}',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
-				'open'	=> '[[',
-				'close' => ']]',
-				'multiline' => false,
-				'processor' => array($this,'linkProcessor')),
-			);
+
 			
 		
 		$this->WikiPage = $wtext;
@@ -155,29 +139,11 @@ class NamuMark3 {
 
 	private function formatParser($line) {
 		$line_len = strlen($line);
-		for($j=0;$j<$line_len;self::nextChar($line,$j)) {
-			foreach($this->single_bracket as $bracket) {
-				$nj=$j;
-				if(self::startsWith($line, $bracket['open'], $j) && $innerstr = $this->bracketParser($line, $nj, $bracket)) {
-					$line = substr($line, 0, $j).$innerstr.substr($line, $nj+1);
-					$line_len = strlen($line);
-					$j+=strlen($innerstr)-1;
-					break;
-				}
-			}
-		}
+
 		return $line;
 	}
 
 	private function renderProcessor($text, $type) {
-		if(self::startsWithi($text, '#!html')) {
-			$html = substr($text, 7);
-			$html = htmlspecialchars_decode($html);
-			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
-			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
-			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
-			return $html;
-		}
 		if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match) || preg_match('/^&lt;bgcolor=(#.*?)&gt;/m', $text, $match)) {
 			$text = str_replace($match[0], '', $text);
 			return '<div style="border: 2px solid #d6d2c5; background-color: '.$match[1].'; padding: 1em;"><p>'.$text.'</p></div>';
@@ -185,37 +151,7 @@ class NamuMark3 {
 			return '<div style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;"><p>'.$text.'</p></div>';
 		}
 	}
-
-	private function linkProcessor($text, $type) {
-		if(self::startsWithi($text, 'html(')) {
-			$html = $text;
-			$html = preg_replace('/html\((.*)\)/i', '$1', $html);
-			$html = htmlspecialchars_decode($html);
-			$html = preg_replace('/<\/?(?:object|param)[^>]*>/', '', $html);
-			$html = preg_replace('/<embed([^>]+)>/', '<iframe$1 frameborder="0"></iframe>', $html);
-			$html = preg_replace('/(<img[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//cdn.mirror.wiki/$2$3', $html);
-			$html = preg_replace('/(<(?:iframe|embed)[^>]*[ ]+src=[\'\"]?)(http\:[^\'\"\s]+)([\'\"]?)/', '$1//iframe.mirror.wiki/$2$3', $html);
-			return $html;
-		}
-
 		
-	}
-	
-	private function textProcessor($otext, $type) { 
-		$text = $otext;
-		
-		if(self::startsWithi($text, '#!html')) {
-			$html = substr($text, 7);
-			$html = htmlspecialchars_decode($html);
-			return $html;
-		} elseif(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
-			if(empty($color[1]) && empty($color[2]))
-				return $text;
-			return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
-		}
-	}
-
-	
 	private function lineParser($line, $type) {
 		$result = '';
 		$line_len = strlen($line);
