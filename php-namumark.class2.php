@@ -113,7 +113,7 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 		return $result;
 	}
 
-private function tableParser($text, &$offset) {
+	private function tableParser($text, &$offset) {
 		$tableTable = array();
 		$len = strlen($text);
 		$lineStart = $offset;
@@ -142,7 +142,8 @@ private function tableParser($text, &$offset) {
 				}
 
 				$tdAttr = $tdStyleList = array();
-
+				$trAttr = $trStyleList = array();
+				
 				if($simpleColspan != 0) {
 					$tdAttr['colspan'] = $simpleColspan+1;
 					$simpleColspan = 0;
@@ -214,6 +215,8 @@ private function tableParser($text, &$offset) {
 									case 'bgcolor':
 										$tdStyleList['background-color'] = $match[2];
 										break;
+									case 'rowbgcolor':
+										$trStyleList['background-color'] = $match[2];
 									case 'width':
 										$tdStyleList['width'] = $match[2];
 										break;
@@ -242,10 +245,17 @@ private function tableParser($text, &$offset) {
 				$innerstr = trim($innerstr);
 				
 				$tdAttr['style'] = '';
-				foreach($tdStyleList as $styleName =>$styleValue) {
-					if(empty($styleValue))
+				foreach($tdStyleList as $styleName =>$tdstyleValue) {
+					if(empty($tdstyleValue))
 						continue;
-					$tdAttr['style'] .= $styleName.': '.$styleValue.'; ';
+					$tdAttr['style'] .= $styleName.': '.$tdstyleValue.'; ';
+				}
+				
+				$trAttr['style'] = '';
+				foreach($trStyleList as $styleName =>$trstyleValue) {
+					if(empty($trstyleValue))
+						continue;
+					$trAttr['style'] .= $styleName.': '.$trstyleValue.'; ';
 				}
 
 				$tdAttrStr = '';
@@ -254,9 +264,21 @@ private function tableParser($text, &$offset) {
 						continue;
 					$tdAttrStr .= ' '.$propName.'="'.str_replace('"', '\\"', $propValue).'"';
 				}
+				
+				if (!isset($trAttrStri)) {
+					$trAttrStri = true;
+					$trAttrStr = '';
+					foreach($trAttr as $propName => $propValue) {
+						if(empty($propValue))
+							continue;
+						$trAttrStr .= ' '.$propName.'="'.str_replace('"', '\\"', $propValue).'"';
+					}
+				}
+				
 				$trInnerStr .= '<td'.$tdAttrStr.'>'.$this->blockParser($innerstr).'</td>';
 			}
-			$tableInnerStr .= !empty($trInnerStr)?'<tr>'.$trInnerStr.'</tr>':'';
+			$tableInnerStr .= !empty($trInnerStr)?'<tr'.$trAttrStr.'>'.$trInnerStr.'</tr>':'';
+			unset($trAttrStri);
 		}
 
 		if(empty($tableInnerStr))
@@ -270,10 +292,12 @@ private function tableParser($text, &$offset) {
 		}
 
 		$tableAttrStr = ($tableStyleStr?' style="'.$tableStyleStr.'"':'');
-		$result = '<table class="wikitable"'.$tableAttrStr.'>'.$tableInnerStr.'</table>';
+		$result = '<table class="wikitable"'.$tableAttrStr.'>'.$tableInnerStr."</table>\n";
 		$offset = $i-1;
 		return $result;
 	}
+	
+	
 	private function renderProcessor($text, $type) {
 		
 		if(!preg_match('/\|/', $text)) {
