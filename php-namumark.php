@@ -761,6 +761,19 @@ class NamuMark {
 					
 					return $big_before.$this->formatParser($size[2]).$big_after;
 				}
+				if(preg_match('/^\-([1-5]) (.*)$/', $text, $size)) {
+					for ($i=1; $i<=$size[1]; $i++){
+						if(isset($small_before) && isset($small_after)) {
+							$small_before .= '<small>';
+							$small_after .= '</small>';
+						} else {
+							$small_before = '<small>';
+							$small_after = '</small>';
+						}
+					}
+					
+					return $small_before.$this->formatParser($size[2]).$small_after;
+				}
 				
 				return '<nowiki>'.$text.'</nowiki>';
 		}
