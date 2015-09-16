@@ -476,7 +476,8 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 				}
 			case '--':
 			case '~~':
-				return '<s>'.$text.'</s>';
+				if (!self::startsWith($text, 'QINU'))
+					return '<s>'.$text.'</s>';
 			case '{{{':
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
 					if(empty($color[1]) && empty($color[2]))
