@@ -638,7 +638,7 @@ class NamuMark {
 
 	private function renderProcessor($text, $type) {
 		if(self::startsWithi($text, '#!html')) {
-			
+			$text = substr($text, 7);
 			return '<html>'.$text.'</html>';
 		} elseif($type == '{{|') {
 			if(preg_match('/\|-/', $text)) {
@@ -771,7 +771,7 @@ class NamuMark {
 				return '<nowiki>'.$text.'</nowiki>';
 			case '{{{':
 				if(self::startsWith($text, '#!html')) {
-					$html = substr($text, 7);
+					$html = substr($text, 6);
 					$html = htmlspecialchars_decode($html);
 					return '<html>'.$html.'</html>';
 				}
