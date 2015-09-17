@@ -142,7 +142,13 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		
 	}
-
+	
+	preg_match_all('/<html>(.*?)<\/html>/s', $text, $html);
+	require_once 'XSSfilter.php';
+	foreach ($html[1] as $code) {
+		if (!preg_match('@src="http://ex.\.nicovideo\.jp/thumb_watch/(.*?)"@', $code))
+			$text = str_replace($code, RemoveXSS($code), $text);
+	}
 }
 
 
@@ -177,6 +183,8 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 	$text =  $wEngine->toHtml();	
 	
 #	$text = preg_replace('/^\|\|(.*?)\|\|$/ms', '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">$1</poem>', $text);
+
+	
 		
 }
 
