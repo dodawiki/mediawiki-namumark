@@ -429,6 +429,8 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 		} elseif(preg_match('/^br$/im', $text)) {
 			return '<br>';
+		} else {
+			return '[['.$this->formatParser($text).']]';
 		}
 		
 	}
