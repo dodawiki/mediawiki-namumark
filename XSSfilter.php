@@ -48,7 +48,7 @@ function RemoveXSS($val) {
          } 
          $pattern .= '/i'; 
          $replacement = substr($ra[$i], 0, 2).'<x>'.substr($ra[$i], 2); // add in <> to nerf the tag 
-         $val = preg_replace($pattern, $replacement, $val); // filter out the hex tags 
+         $val = preg_replace($pattern, '', $val); // filter out the hex tags 
          if ($val_before == $val) { 
             // no replacements were made, so exit the loop 
             $found = false; 
