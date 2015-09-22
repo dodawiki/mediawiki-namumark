@@ -202,13 +202,23 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 									}
 								}
 							}
-							elseif(preg_match('/^(\||\-)([0-9]+)$/', $prop, $span)) {
+							elseif(preg_match('/^(\||\-|v|\^)\|?([0-9]+)$/', $prop, $span)) {
 								if($span[1] == '-') {
 									$tdAttr['colspan'] = $span[2];
 									break;
 								}
 								elseif($span[1] == '|') {
 									$tdAttr['rowspan'] = $span[2];
+									break;
+								}
+								elseif($span[1] == '^') {
+									$tdAttr['rowspan'] = $span[2];
+									$tdStyleList['vertical-align'] = 'top';
+									break;
+								}
+								elseif($span[1] == 'v') {
+									$tdAttr['rowspan'] = $span[2];
+									$tdStyleList['vertical-align'] = 'bottom';
 									break;
 								}
 							}
