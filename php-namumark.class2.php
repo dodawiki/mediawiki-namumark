@@ -193,7 +193,8 @@ if(self::startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 											$tableStyleList['background-color'] = $tbprop[2];
 											break;
 										case 'bordercolor':
-											$tableStyleList['border-color'] = $tbprop[2];
+											$tableStyleList['border'] = '2px solid ';
+											$tableStyleList['border'] .= $tbprop[2];
 											break;
 										case 'width':
 											$tableStyleList['width'] = $tbprop[2];
