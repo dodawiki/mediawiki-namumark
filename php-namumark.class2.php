@@ -78,11 +78,11 @@ class NamuMark2 {
 		$now = '';
 		$line = '';
 
-		for($i=0;$i<$len;self::nextChar($text,$i)) {
-			$now = self::getChar($text,$i);
+		for($i=0;$i<$len;$this->wEngine->nextChar($text,$i)) {
+			$now = $this->wEngine->getChar($text,$i);
 
 
-			if(self::startsWith($text, '|', $i) && $table = $this->wEngine->tableParser($text, $i)) {
+			if($this->wEngine->startsWith($text, '|', $i) && $table = $this->wEngine->tableParser($text, $i)) {
 				$result .= ''
 					.$table
 					.'';
@@ -164,61 +164,13 @@ class NamuMark2 {
 		
 
 
-		$result .= $this->formatParser($block);
+		$result .= $this->wEngine->formatParser($block);
 		return $result;
-	}
-
-	private function bracketParser($text, &$now, $bracket) {
-		$len = strlen($text);
-		$cnt = 0;
-		$done = false;
-
-		$openlen = strlen($bracket['open']);
-		$closelen = strlen($bracket['close']);
-
-		for($i=$now;$i<$len;self::nextChar($text,$i)) {
-			if(self::startsWith($text, $bracket['open'], $i) && !($bracket['open']==$bracket['close'] && $cnt>0)) {
-				$cnt++;
-				$done = true;
-				$i+=$openlen-1; // 반복될 때 더해질 것이므로
-			}elseif(self::startsWith($text, $bracket['close'], $i)) {
-				$cnt--;
-				$i+=$closelen-1;
-			}elseif(!$bracket['multiline'] && $text[$i] == "\n")
-				return false;
-
-			if($cnt == 0 && $done) {
-				$innerstr = substr($text, $now+$openlen, $i-$now-($openlen+$closelen)+1);
-
-				if((!strlen($innerstr)) ||($bracket['multiline'] && strpos($innerstr, "\n")===false))
-					return false;
-				$result = call_user_func_array($bracket['processor'],array($innerstr, $bracket['open']));
-				$now = $i;
-				return $result;
-			}
-		}
-		return false;
-	}
-
-	private function formatParser($line) {
-		$line_len = strlen($line);
-		for($j=0;$j<$line_len;self::nextChar($line,$j)) {
-			foreach($this->single_bracket as $bracket) {
-				$nj=$j;
-				if(self::startsWith($line, $bracket['open'], $j) && $innerstr = $this->bracketParser($line, $nj, $bracket)) {
-					$line = substr($line, 0, $j).$innerstr.substr($line, $nj+1);
-					$line_len = strlen($line);
-					$j+=strlen($innerstr)-1;
-					break;
-				}
-			}
-		}
-		return $line;
 	}
 
 	private function linkProcessor($text, $type) {
 		
-		if(self::startsWithi($text, 'wiki')) {
+		if($this->wEngine->startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
 					$wikilinks[2] = '{{{#!html <img src="'.$wikilinks[2].'">}}}';
@@ -231,7 +183,7 @@ class NamuMark2 {
 		} elseif(preg_match('/^br$/im', $text)) {
 			return '<br>';
 		} else {
-			return '[['.$this->formatParser($text).']]';
+			return '[['.$this->wEngine->formatParser($text).']]';
 		}
 		
 	}
@@ -247,7 +199,7 @@ class NamuMark2 {
 					} else {
 					return '[['.$wikilinks[1].']]';
 					}
-				} elseif(!self::startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
+				} elseif(!$this->wEngine->startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
 					return '[['.$text.']]';
 				}
 		}
@@ -265,78 +217,17 @@ class NamuMark2 {
 				}
 			case '--':
 			case '~~':
-				if (!self::startsWith($text, 'QINU'))
+				if (!$this->wEngine->startsWith($text, 'QINU'))
 					return '<s>'.$text.'</s>';
 			case '{{{':
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
 					if(empty($color[1]) && empty($color[2]))
 						return $text;
-					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
+					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->wEngine->formatParser($color[3]).'</span>';
 				}
 		}
 		
 	}
 
-	private static function getChar($string, $pointer){
-		if(!isset($string[$pointer])) return false;
-		$char = ord($string[$pointer]);
-		if($char < 128){
-			return $string[$pointer];
-		}else{
-			if($char < 224){
-				$bytes = 2;
-			}elseif($char < 240){
-				$bytes = 3;
-			}elseif($char < 248){
-				$bytes = 4;
-			}elseif($char == 252){
-				$bytes = 5;
-			}else{
-				$bytes = 6;
-			}
-			$str = substr($string, $pointer, $bytes);
-			return $str;
-		}
-	}
 
-	private static function nextChar($string, &$pointer){
-		if(!isset($string[$pointer])) return false;
-		$char = ord($string[$pointer]);
-		if($char < 128){
-			return $string[$pointer++];
-		}else{
-			if($char < 224){
-				$bytes = 2;
-			}elseif($char < 240){
-				$bytes = 3;
-			}elseif($char < 248){
-				$bytes = 4;
-			}elseif($char == 252){
-				$bytes = 5;
-			}else{
-				$bytes = 6;
-			}
-			$str = substr($string, $pointer, $bytes);
-			$pointer += $bytes;
-			return $str;
-		}
-	}
-
-	private static function startsWith($haystack, $needle, $offset = 0) {
-		$len = strlen($needle);
-		if(($offset+$len)>strlen($haystack))
-			return false;
-		return $needle == substr($haystack, $offset, $len);
-	}
-
-	private static function startsWithi($haystack, $needle, $offset = 0) {
-		$len = strlen($needle);
-		if(($offset+$len)>strlen($haystack))
-			return false;
-		return strtolower($needle) == strtolower(substr($haystack, $offset, $len));
-	}
-
-	private static function seekEndOfLine($text, $offset=0) {
-		return ($r=strpos($text, "\n", $offset))===false?strlen($text):$r;
-	}
 }

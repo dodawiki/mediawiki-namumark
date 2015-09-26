@@ -631,7 +631,7 @@ class NamuMark {
 		return false;
 	}
 
-	private function formatParser($line) {
+	public function formatParser($line) {
 		$line_len = strlen($line);
 		for($j=0;$j<$line_len;self::nextChar($line,$j)) {
 			foreach($this->single_bracket as $bracket) {
@@ -935,7 +935,7 @@ class NamuMark {
 		return $needle == substr($haystack, $offset, $len);
 	}
 
-	private static function startsWithi($haystack, $needle, $offset = 0) {
+	public static function startsWithi($haystack, $needle, $offset = 0) {
 		$len = strlen($needle);
 		if(($offset+$len)>strlen($haystack))
 			return false;
