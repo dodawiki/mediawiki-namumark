@@ -41,6 +41,7 @@ class NamuMark3 {
 		$this->fn = array();
 		$this->fn_cnt = 0;
 		$this->prefix = '';
+		$this->wEngine = new NamuMark($wtext);
 	}
 
 	public function toHtml() {
@@ -56,11 +57,11 @@ class NamuMark3 {
 		$line = '';
 
 
-		for($i=0;$i<$len;self::nextChar($text,$i)) {
-			$now = self::getChar($text,$i);
+		for($i=0;$i<$len;$this->wEngine->nextChar($text,$i)) {
+			$now = $this->wEngine->getChar($text,$i);
 
 			foreach($this->multi_bracket as $bracket) {
-				if(self::startsWith($text, $bracket['open'], $i) && $innerstr = $this->bracketParser($text, $i, $bracket)) {
+				if($this->wEngine->startsWith($text, $bracket['open'], $i) && $innerstr = $this->wEngine->bracketParser($text, $i, $bracket)) {
 					$result .= ''
 						.$this->lineParser($line, '')
 						.$innerstr
@@ -83,52 +84,6 @@ class NamuMark3 {
 		return $result;
 	}
 
-	private function blockParser($block) {
-		$result = '';
-		$block_len = strlen($block);
-
-		$result .= $this->formatParser($block);
-		return $result;
-	}
-
-	private function bracketParser($text, &$now, $bracket) {
-		$len = strlen($text);
-		$cnt = 0;
-		$done = false;
-
-		$openlen = strlen($bracket['open']);
-		$closelen = strlen($bracket['close']);
-
-		for($i=$now;$i<$len;self::nextChar($text,$i)) {
-			if(self::startsWith($text, $bracket['open'], $i) && !($bracket['open']==$bracket['close'] && $cnt>0)) {
-				$cnt++;
-				$done = true;
-				$i+=$openlen-1; // �ݺ��� �� ������ ���̹Ƿ�
-			}elseif(self::startsWith($text, $bracket['close'], $i)) {
-				$cnt--;
-				$i+=$closelen-1;
-			}elseif(!$bracket['multiline'] && $text[$i] == "\n")
-				return false;
-
-			if($cnt == 0 && $done) {
-				$innerstr = substr($text, $now+$openlen, $i-$now-($openlen+$closelen)+1);
-
-				if((!strlen($innerstr)) ||($bracket['multiline'] && strpos($innerstr, "\n")===false))
-					return false;
-				$result = call_user_func_array($bracket['processor'],array($innerstr, $bracket['open']));
-				$now = $i;
-				return $result;
-			}
-		}
-		return false;
-	}
-
-	private function formatParser($line) {
-		$line_len = strlen($line);
-
-		return $line;
-	}
-
 	private function renderProcessor($text, $type) {
 		if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match) || preg_match('/^&lt;bgcolor=(#.*?)&gt;/m', $text, $match)) {
 			$text = str_replace($match[0], '', $text);
@@ -140,10 +95,6 @@ class NamuMark3 {
 		
 	private function lineParser($line, $type) {
 		$result = '';
-		$line_len = strlen($line);
-
-
-		$line = $this->blockParser($line);
 
 		if($type == 'notn') {
 			return $line;
@@ -152,66 +103,4 @@ class NamuMark3 {
 		}
 	}
 
-	private static function getChar($string, $pointer){
-		if(!isset($string[$pointer])) return false;
-		$char = ord($string[$pointer]);
-		if($char < 128){
-			return $string[$pointer];
-		}else{
-			if($char < 224){
-				$bytes = 2;
-			}elseif($char < 240){
-				$bytes = 3;
-			}elseif($char < 248){
-				$bytes = 4;
-			}elseif($char == 252){
-				$bytes = 5;
-			}else{
-				$bytes = 6;
-			}
-			$str = substr($string, $pointer, $bytes);
-			return $str;
-		}
-	}
-
-	private static function nextChar($string, &$pointer){
-		if(!isset($string[$pointer])) return false;
-		$char = ord($string[$pointer]);
-		if($char < 128){
-			return $string[$pointer++];
-		}else{
-			if($char < 224){
-				$bytes = 2;
-			}elseif($char < 240){
-				$bytes = 3;
-			}elseif($char < 248){
-				$bytes = 4;
-			}elseif($char == 252){
-				$bytes = 5;
-			}else{
-				$bytes = 6;
-			}
-			$str = substr($string, $pointer, $bytes);
-			$pointer += $bytes;
-			return $str;
-		}
-	}
-
-	private static function startsWith($haystack, $needle, $offset = 0) {
-		$len = strlen($needle);
-		if(($offset+$len)>strlen($haystack))
-			return false;
-		return $needle == substr($haystack, $offset, $len);
-	}
-
-	private static function startsWithi($haystack, $needle, $offset = 0) {
-		$len = strlen($needle);
-		if(($offset+$len)>strlen($haystack))
-			return false;
-		return strtolower($needle) == strtolower(substr($haystack, $offset, $len));
-	}
-
-	private static function seekEndOfLine($text, $offset=0) {
-		return ($r=strpos($text, "\n", $offset))===false?strlen($text):$r;
-	}
 }

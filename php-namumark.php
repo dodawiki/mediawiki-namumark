@@ -599,7 +599,7 @@ class NamuMark {
 		return $result;
 	}
 
-	private function bracketParser($text, &$now, $bracket) {
+	public function bracketParser($text, &$now, $bracket) {
 		$len = strlen($text);
 		$cnt = 0;
 		$done = false;
@@ -883,7 +883,7 @@ class NamuMark {
 		return $result;
 	}
 
-	private static function getChar($string, $pointer){
+	public static function getChar($string, $pointer){
 		if(!isset($string[$pointer])) return false;
 		$char = ord($string[$pointer]);
 		if($char < 128){
@@ -905,7 +905,7 @@ class NamuMark {
 		}
 	}
 
-	private static function nextChar($string, &$pointer){
+	public static function nextChar($string, &$pointer){
 		if(!isset($string[$pointer])) return false;
 		$char = ord($string[$pointer]);
 		if($char < 128){
@@ -928,7 +928,7 @@ class NamuMark {
 		}
 	}
 
-	private static function startsWith($haystack, $needle, $offset = 0) {
+	public static function startsWith($haystack, $needle, $offset = 0) {
 		$len = strlen($needle);
 		if(($offset+$len)>strlen($haystack))
 			return false;

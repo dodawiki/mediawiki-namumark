@@ -63,6 +63,7 @@ class NamuMark2 {
 		$this->fn = array();
 		$this->fn_cnt = 0;
 		$this->prefix = '';
+		$this->wEngine = new NamuMark($wtext);
 	}
 
 	public function toHtml() {
@@ -76,17 +77,12 @@ class NamuMark2 {
 		$len = strlen($text);
 		$now = '';
 		$line = '';
-		
-		
-		
-		$wEngine = new NamuMark($text);
-
 
 		for($i=0;$i<$len;self::nextChar($text,$i)) {
 			$now = self::getChar($text,$i);
 
 
-			if(self::startsWith($text, '|', $i) && $table = $wEngine->tableParser($text, $i)) {
+			if(self::startsWith($text, '|', $i) && $table = $this->wEngine->tableParser($text, $i)) {
 				$result .= ''
 					.$table
 					.'';
@@ -97,14 +93,14 @@ class NamuMark2 {
 
 
 			if($now == "\n") { // line parse
-				$result .= $wEngine->lineParser($line, '');
+				$result .= $this->wEngine->lineParser($line, '');
 				$line = '';
 			}
 			else
 				$line.=$now;
 		}
 		if($line != '')
-			$result .= $wEngine->lineParser($line, 'notn');
+			$result .= $this->wEngine->lineParser($line, 'notn');
 		return $result;
 	}
 	
