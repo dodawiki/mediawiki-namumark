@@ -78,6 +78,7 @@ class NamuMark2 {
 		$now = '';
 		$line = '';
 
+
 		for($i=0;$i<$len;$this->wEngine->nextChar($text,$i)) {
 			$now = $this->wEngine->getChar($text,$i);
 
@@ -93,17 +94,17 @@ class NamuMark2 {
 
 
 			if($now == "\n") { // line parse
-				$result .= $this->wEngine->lineParser($line, '');
+				$result .= $this->lineParser($line, '');
 				$line = '';
 			}
 			else
 				$line.=$now;
 		}
 		if($line != '')
-			$result .= $this->wEngine->lineParser($line, 'notn');
+			$result .= $this->lineParser($line, 'notn');
 		return $result;
 	}
-	
+
 	private function renderProcessor($text, $type) {
 		
 		if(!preg_match('/\|/', $text)) {
@@ -164,8 +165,56 @@ class NamuMark2 {
 		
 
 
-		$result .= $this->wEngine->formatParser($block);
+		$result .= $this->formatParser($block);
 		return $result;
+	}
+
+	private function bracketParser($text, &$now, $bracket) {
+		$len = strlen($text);
+		$cnt = 0;
+		$done = false;
+
+		$openlen = strlen($bracket['open']);
+		$closelen = strlen($bracket['close']);
+
+		for($i=$now;$i<$len;$this->wEngine->nextChar($text,$i)) {
+			if($this->wEngine->startsWith($text, $bracket['open'], $i) && !($bracket['open']==$bracket['close'] && $cnt>0)) {
+				$cnt++;
+				$done = true;
+				$i+=$openlen-1; // 반복될 때 더해질 것이므로
+			}elseif($this->wEngine->startsWith($text, $bracket['close'], $i)) {
+				$cnt--;
+				$i+=$closelen-1;
+			}elseif(!$bracket['multiline'] && $text[$i] == "\n")
+				return false;
+
+			if($cnt == 0 && $done) {
+				$innerstr = substr($text, $now+$openlen, $i-$now-($openlen+$closelen)+1);
+
+				if((!strlen($innerstr)) ||($bracket['multiline'] && strpos($innerstr, "\n")===false))
+					return false;
+				$result = call_user_func_array($bracket['processor'],array($innerstr, $bracket['open']));
+				$now = $i;
+				return $result;
+			}
+		}
+		return false;
+	}
+
+	private function formatParser($line) {
+		$line_len = strlen($line);
+		for($j=0;$j<$line_len;$this->wEngine->nextChar($line,$j)) {
+			foreach($this->single_bracket as $bracket) {
+				$nj=$j;
+				if($this->wEngine->startsWith($line, $bracket['open'], $j) && $innerstr = $this->bracketParser($line, $nj, $bracket)) {
+					$line = substr($line, 0, $j).$innerstr.substr($line, $nj+1);
+					$line_len = strlen($line);
+					$j+=strlen($innerstr)-1;
+					break;
+				}
+			}
+		}
+		return $line;
 	}
 
 	private function linkProcessor($text, $type) {
@@ -183,7 +232,7 @@ class NamuMark2 {
 		} elseif(preg_match('/^br$/im', $text)) {
 			return '<br>';
 		} else {
-			return '[['.$this->wEngine->formatParser($text).']]';
+			return '[['.$this->formatParser($text).']]';
 		}
 		
 	}
@@ -207,6 +256,20 @@ class NamuMark2 {
 		return '['.$text.']';
 	}
 
+	private function lineParser($line, $type) {
+		$result = '';
+		$line_len = strlen($line);
+
+
+		$line = $this->blockParser($line);
+
+		if($type == 'notn') {
+			return $line;
+		} else {
+		return $line."\n";
+		}
+	}
+	
 	private function textProcessor($text, $type) {
 		switch($type) {
 			case '__':
@@ -223,11 +286,12 @@ class NamuMark2 {
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
 					if(empty($color[1]) && empty($color[2]))
 						return $text;
-					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->wEngine->formatParser($color[3]).'</span>';
+					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
 				}
 		}
 		
 	}
+
 
 
 }
