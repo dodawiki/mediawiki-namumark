@@ -177,7 +177,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 	
 	# 파서를 불러온다.
 	require_once("php-namumark.class2.php");
-	$wPage = new PlainWikiPage2("$text");
+	$wPage = new PlainWikiPage("$text");
 	$wEngine = new NamuMark2($wPage);
 	$wEngine->prefix = "";
 	$text =  $wEngine->toHtml();	
@@ -191,7 +191,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 function NamuMarkHTML2( &$parser, &$text ) {
 	# 파서를 불러온다.
 	require_once("php-namumark.class3.php");
-	$wPage = new PlainWikiPage3("$text");
+	$wPage = new PlainWikiPage("$text");
 	$wEngine = new NamuMark3($wPage);
 	$wEngine->prefix = "";
 	$text =  $wEngine->toHtml();

@@ -18,20 +18,6 @@
  * 
  */
 
-class PlainWikiPage3 {
-	public $title, $text, $lastchanged;
-	function __construct($text) {
-		$this->title = '(inline wikitext)';
-		$this->text = $text;
-		$this->lastchanged = time();
-	}
-
-	function getPage($name) {
-		return new PlainWikiPage3('');
-	}
-}
-
-
 class NamuMark3 {
 	public $prefix, $lastchange;
 

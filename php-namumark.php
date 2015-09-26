@@ -247,7 +247,7 @@ class NamuMark {
 		return '<blockquote>'.$innerhtml.'</blockquote>';
 	}
 
-	private function tableParser($text, &$offset) {
+	public function tableParser($text, &$offset) {
 		$tableTable = array();
 		$len = strlen($text);
 		$lineStart = $offset;
@@ -541,7 +541,7 @@ class NamuMark {
 		return $result;
 	}
 
-	private function lineParser($line, $type) {
+	public function lineParser($line, $type) {
 		$result = '';
 
 		$line = $this->blockParser($line);
