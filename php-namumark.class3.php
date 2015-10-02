@@ -19,7 +19,6 @@
  */
 
 class NamuMark3 {
-	public $prefix, $lastchange;
 
 	function __construct($wtext) {
 
@@ -45,7 +44,7 @@ class NamuMark3 {
 	}
 
 	public function toHtml() {
-		$this->whtml = $this->WikiPage->text;
+		$this->whtml = $this->WikiPage;
 		$this->whtml = $this->htmlScan($this->whtml);
 		return $this->whtml;
 	}

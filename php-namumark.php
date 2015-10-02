@@ -18,22 +18,9 @@
  * 
  */
 
-class PlainWikiPage {
-	public $title, $text, $lastchanged;
-	function __construct($text) {
-		$this->title = '(inline wikitext)';
-		$this->text = $text;
-		$this->lastchanged = time();
-	}
-
-	function getPage($name) {
-		return new PlainWikiPage('');
-	}
-}
 
 
 class NamuMark {
-	public $prefix, $lastchange;
 
 	function __construct($wtext) {
 
@@ -159,7 +146,7 @@ class NamuMark {
 	}
 
 	public function toHtml() {
-		$this->whtml = $this->WikiPage->text;
+		$this->whtml = $this->WikiPage;
 		$this->whtml = $this->htmlScan($this->whtml);
 		return $this->whtml;
 	}

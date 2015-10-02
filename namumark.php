@@ -99,9 +99,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		# 파서를 불러온다.
 		require_once("php-namumark.php");
-		$wPage = new PlainWikiPage("$text");
-		$wEngine = new NamuMark($wPage);
-		$wEngine->prefix = "";
+		//$wPage = new PlainWikiPage("$text");
+		$wEngine = new NamuMark($text);
 		$text =  $wEngine->toHtml();
 				
 		#$text = preg_replace('/(\{\{.*?\}\})/', "$1\n", $text);
@@ -168,9 +167,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 	
 		# 파서를 불러온다.
 		require_once("php-namumark.class2.php");
-		$wPage = new PlainWikiPage("$text");
-		$wEngine = new NamuMark2($wPage);
-		$wEngine->prefix = "";
+		$wEngine = new NamuMark2($text);
 		$text =  $wEngine->toHtml();	
 	}
 	
@@ -181,9 +178,7 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"])) {
 		# 파서를 불러온다.
 		require_once("php-namumark.class3.php");
-		$wPage = new PlainWikiPage("$text");
-		$wEngine = new NamuMark3($wPage);
-		$wEngine->prefix = "";
+		$wEngine = new NamuMark3($text);
 		$text =  $wEngine->toHtml();
 	
 	
