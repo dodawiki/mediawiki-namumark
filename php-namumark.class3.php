@@ -18,7 +18,7 @@
  * 
  */
 
-class NamuMark3 {
+class NamuMark3 extends NamuMark {
 
 	function __construct($wtext) {
 
@@ -40,7 +40,6 @@ class NamuMark3 {
 		$this->fn = array();
 		$this->fn_cnt = 0;
 		$this->prefix = '';
-		$this->wEngine = new NamuMark($wtext);
 	}
 
 	public function toHtml() {
@@ -56,11 +55,11 @@ class NamuMark3 {
 		$line = '';
 
 
-		for($i=0;$i<$len;$this->wEngine->nextChar($text,$i)) {
-			$now = $this->wEngine->getChar($text,$i);
+		for($i=0;$i<$len;$this->nextChar($text,$i)) {
+			$now = $this->getChar($text,$i);
 
 			foreach($this->multi_bracket as $bracket) {
-				if($this->wEngine->startsWith($text, $bracket['open'], $i) && $innerstr = $this->wEngine->bracketParser($text, $i, $bracket)) {
+				if($this->startsWith($text, $bracket['open'], $i) && $innerstr = $this->bracketParser($text, $i, $bracket)) {
 					$result .= ''
 						.$this->lineParser($line, '')
 						.$innerstr
@@ -83,7 +82,7 @@ class NamuMark3 {
 		return $result;
 	}
 
-	public function renderProcessor($text, $type) {
+	protected function renderProcessor($text, $type) {
 		if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match) || preg_match('/^&lt;bgcolor=(#.*?)&gt;/m', $text, $match)) {
 			$text = str_replace($match[0], '', $text);
 			return '<div style="border: 2px solid #d6d2c5; background-color: '.$match[1].'; padding: 1em;"><p>'.$text.'</p></div>';
@@ -92,7 +91,7 @@ class NamuMark3 {
 		}
 	}
 		
-	private function lineParser($line, $type) {
+	protected function lineParser($line, $type) {
 		$result = '';
 
 		if($type == 'notn') {

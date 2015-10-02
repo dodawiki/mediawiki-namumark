@@ -18,7 +18,7 @@
  * 
  */
 
-class NamuMark2 {
+class NamuMark2 extends NamuMark {
 
 	function __construct($wtext) {
 
@@ -62,7 +62,6 @@ class NamuMark2 {
 		$this->fn = array();
 		$this->fn_cnt = 0;
 		$this->prefix = '';
-		$this->wEngine = new NamuMark($wtext);
 	}
 
 	public function toHtml() {
@@ -78,11 +77,11 @@ class NamuMark2 {
 		$line = '';
 
 
-		for($i=0;$i<$len;$this->wEngine->nextChar($text,$i)) {
-			$now = $this->wEngine->getChar($text,$i);
+		for($i=0;$i<$len;$this->nextChar($text,$i)) {
+			$now = $this->getChar($text,$i);
 
 
-			if($this->wEngine->startsWith($text, '|', $i) && $table = $this->wEngine->tableParser($text, $i)) {
+			if($this->startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
 				$result .= ''
 					.$table
 					.'';
@@ -103,22 +102,8 @@ class NamuMark2 {
 			$result .= $this->lineParser($line, 'notn');
 		return $result;
 	}
-
-	private function renderProcessor($text, $type) {
-		
-		if(!preg_match('/\|/', $text)) {
-			$text = str_replace("\n", '<br>', $text);
-			$text = preg_replace('/<br>:+/', '<br> ', $text);
-			if(preg_match('/^&lt;(#.*?)&gt;/m', $text, $match)) {
-				$text = str_replace($match[0], '', $text);
-				return '<div style="border: 2px solid #d6d2c5; background-color: '.$match[1].'; padding: 1em;"><p>'.$text.'</p></div>';
-			} else {
-				return '<div style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;"><p>'.$text.'</p></div>';
-			}
-		}
-	}
 	
-	private function blockParser($block) {
+	protected function blockParser($block) {
 		$result = '';
 		$block_len = strlen($block);
 		
@@ -168,57 +153,9 @@ class NamuMark2 {
 		return $result;
 	}
 
-	private function bracketParser($text, &$now, $bracket) {
-		$len = strlen($text);
-		$cnt = 0;
-		$done = false;
-
-		$openlen = strlen($bracket['open']);
-		$closelen = strlen($bracket['close']);
-
-		for($i=$now;$i<$len;$this->wEngine->nextChar($text,$i)) {
-			if($this->wEngine->startsWith($text, $bracket['open'], $i) && !($bracket['open']==$bracket['close'] && $cnt>0)) {
-				$cnt++;
-				$done = true;
-				$i+=$openlen-1; // 반복될 때 더해질 것이므로
-			}elseif($this->wEngine->startsWith($text, $bracket['close'], $i)) {
-				$cnt--;
-				$i+=$closelen-1;
-			}elseif(!$bracket['multiline'] && $text[$i] == "\n")
-				return false;
-
-			if($cnt == 0 && $done) {
-				$innerstr = substr($text, $now+$openlen, $i-$now-($openlen+$closelen)+1);
-
-				if((!strlen($innerstr)) ||($bracket['multiline'] && strpos($innerstr, "\n")===false))
-					return false;
-				$result = call_user_func_array($bracket['processor'],array($innerstr, $bracket['open']));
-				$now = $i;
-				return $result;
-			}
-		}
-		return false;
-	}
-
-	private function formatParser($line) {
-		$line_len = strlen($line);
-		for($j=0;$j<$line_len;$this->wEngine->nextChar($line,$j)) {
-			foreach($this->single_bracket as $bracket) {
-				$nj=$j;
-				if($this->wEngine->startsWith($line, $bracket['open'], $j) && $innerstr = $this->bracketParser($line, $nj, $bracket)) {
-					$line = substr($line, 0, $j).$innerstr.substr($line, $nj+1);
-					$line_len = strlen($line);
-					$j+=strlen($innerstr)-1;
-					break;
-				}
-			}
-		}
-		return $line;
-	}
-
-	private function linkProcessor($text, $type) {
+	protected function linkProcessor($text, $type) {
 		
-		if($this->wEngine->startsWithi($text, 'wiki')) {
+		if($this->startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
 					$wikilinks[2] = '{{{#!html <img src="'.$wikilinks[2].'">}}}';
@@ -236,7 +173,7 @@ class NamuMark2 {
 		
 	}
 	
-	private function macroProcessor($text, $type) {
+	protected function macroProcessor($text, $type) {
 		switch(strtolower($text)) {
 			case 'br':
 				return '<br>';
@@ -247,7 +184,7 @@ class NamuMark2 {
 					} else {
 					return '[['.$wikilinks[1].']]';
 					}
-				} elseif(!$this->wEngine->startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
+				} elseif(!$this->startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
 					return '[['.$text.']]';
 				}
 		}
@@ -255,21 +192,7 @@ class NamuMark2 {
 		return '['.$text.']';
 	}
 
-	private function lineParser($line, $type) {
-		$result = '';
-		$line_len = strlen($line);
-
-
-		$line = $this->blockParser($line);
-
-		if($type == 'notn') {
-			return $line;
-		} else {
-		return $line."\n";
-		}
-	}
-	
-	private function textProcessor($text, $type) {
+	protected function textProcessor($text, $type) {
 		switch($type) {
 			case '__':
 				if(preg_match('/TOC/', $text)) {
@@ -279,7 +202,7 @@ class NamuMark2 {
 				}
 			case '--':
 			case '~~':
-				if (!$this->wEngine->startsWith($text, 'QINU'))
+				if (!$this->startsWith($text, 'QINU'))
 					return '<s>'.$text.'</s>';
 			case '{{{':
 				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {

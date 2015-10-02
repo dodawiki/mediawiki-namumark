@@ -34,6 +34,7 @@ $wgHooks['ParserBeforeStrip'][] = 'NamuMark';
 $wgHooks['InternalParseBeforeLinks'][] = 'NamuMarkHTML';
 $wgHooks['ParserBeforeTidy'][] = 'NamuMarkHTML2';
 
+require_once('php-namumark.php');
 
 function NamuMark(&$parser, &$text, &$strip_state) {
 	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
@@ -67,7 +68,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		$text = str_replace('|| <', '||<', $text);
 		
-		//echo $text;
 		
 		$text = preg_replace('/^ \|\|/m', '||', $text); // 테이블 맨 앞(||)의 바로 앞에 공백이 있을 경우 제거하도록 한다.
 		
@@ -98,12 +98,10 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$text = str_replace('tablewidth', 'table width', $text);
 		
 		# 파서를 불러온다.
-		require_once("php-namumark.php");
-		//$wPage = new PlainWikiPage("$text");
-		$wEngine = new NamuMark($text);
+		require_once("php-namumark.class1.php");
+		$wEngine = new NamuMark1($text);
 		$text =  $wEngine->toHtml();
 				
-		#$text = preg_replace('/(\{\{.*?\}\})/', "$1\n", $text);
 		
 		preg_match_all('/<math>.*?<\/math>/', $text, $math); // [내부항목] 태그로 인해 수식의 [내용]이 [[내용]]으로 대괄호 하나가 덧붙는 버그를 제거하기 위하여 모든 수식을 가져오고,
     
