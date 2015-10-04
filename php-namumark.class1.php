@@ -377,7 +377,7 @@ class NamuMark1 extends NamuMark {
 		return $result;
 	}
 
-	private function renderProcessor($text, $type) {
+	protected function renderProcessor($text, $type) {
 		if(self::startsWithi($text, '#!html')) {
 			$text = substr($text, 7);
 			return '<html>'.$text.'</html>';
