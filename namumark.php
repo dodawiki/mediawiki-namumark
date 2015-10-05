@@ -33,6 +33,7 @@ $wgExtensionCredits['parserhook'][] = array(
 $wgHooks['ParserBeforeStrip'][] = 'NamuMark';
 $wgHooks['InternalParseBeforeLinks'][] = 'NamuMarkHTML';
 $wgHooks['ParserBeforeTidy'][] = 'NamuMarkHTML2';
+$wgHooks['ParserAfterTidy'][] = 'NamuMarkExtraHTML';
 
 require_once('php-namumark.php');
 
@@ -96,6 +97,11 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		$text = str_replace('tablealign', 'table align', $text);
 		$text = str_replace('tablewidth', 'table width', $text);
+		
+		# 보조 파서를 불러온다.
+		require_once("NamuMarkExtra.php");
+		$Extra = new NamuMarkExtra;
+		$text = $Extra->output($text, false);
 		
 		# 파서를 불러온다.
 		require_once("php-namumark.class1.php");
@@ -189,5 +195,11 @@ function NamuMarkHTML2( &$parser, &$text ) {
 		$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
 		$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
 	}
-}	
+}
+
+function NamuMarkExtraHTML ( &$parser, &$text ) {
+	$Extra = new NamuMarkExtra;
+	$text = $Extra->output($text, true);
+}
+
 ?>

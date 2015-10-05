@@ -24,22 +24,11 @@ class NamuMark1 extends NamuMark {
 
 		$this->list_tag = array(
 			array('*', 'ul'),
-			#array('1.', 'ol class="decimal"'),
-			array('A.', 'ol class="upper-alpha"'),
-			array('a.', 'ol class="lower-alpha"'),
-			array('I.', 'ol class="upper-roman"'),
-			array('i.', 'ol class="lower-roman"')
-			);
-
-		$this->h_tag = array(
-			array('/^====== (.*) ======$/', 6),
-			array('/^===== (.*) =====$/', 5),
-			array('/^==== (.*) ====$/', 4),
-			array('/^=== (.*) ===$/', 3),
-			array('/^== (.*) ==$/', 2),
-			array('/^= (.*) =$/', 1),
-
-			null
+			array('1.', 'ol'),
+			array('A.', 'ol style="list-style-type:upper-alpha"'),
+			array('a.', 'ol style="list-style-type:lower-alpha"'),
+			array('I.', 'ol style="list-style-type:upper-roman"'),
+			array('i.', 'ol style="list-style-type:lower-roman"')
 			);
 
 		$this->multi_bracket = array(
