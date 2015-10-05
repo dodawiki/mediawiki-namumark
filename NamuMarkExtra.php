@@ -17,6 +17,21 @@ class NamuMarkExtra {
 		} elseif(!$is_html) {
 			$text = $this->title($text);
 			$text = $this->dd($text);
+			$text = $this->attachment_link($text);
+		}
+		
+		return $text;
+	}
+	
+	private function attachment_link($text) {
+		$text = preg_replace('/\[\[(.*?)[\| ]attachment:(.*?(\.jpeg|\.jpg|\.png|\.gif))(\?.*?)?\]\]/i', 'attachment:$2$4``link=$1``', $text);
+		
+		preg_match_all('/``link=(.*?)``/', $text, $link, PREG_SET_ORDER);
+		
+		foreach ($link as $filelink) {
+			$filelink[1] = str_replace(' ', '_', $filelink[1]);
+			$filelink[1] = preg_replace('/wiki:"(.*)"/', '$1', $filelink[1]);
+			$text = str_replace($filelink[0], '&link='.$filelink[1], $text);
 		}
 		
 		return $text;

@@ -84,17 +84,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 			}
 		}
 		
-		$text = preg_replace('/\[\[(.*?)\|attachment:(.*?(\.jpeg|\.jpg|\.png|\.gif))(\?.*?)?\]\]/i', 'attachment:$2$4``link=$1``', $text);
-		
-		preg_match_all('/``link=(.*?)``/', $text, $link, PREG_SET_ORDER);
-		
-		foreach ($link as $filelink) {
-			$filelink[1] = str_replace(' ', '_', $filelink[1]);
-			$text = str_replace($filelink[0], '&link='.$filelink[1], $text);
-		}
-		
-		
-		
 		$text = str_replace('tablealign', 'table align', $text);
 		$text = str_replace('tablewidth', 'table width', $text);
 		
