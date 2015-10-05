@@ -198,8 +198,12 @@ function NamuMarkHTML2( &$parser, &$text ) {
 }
 
 function NamuMarkExtraHTML ( &$parser, &$text ) {
-	$Extra = new NamuMarkExtra;
-	$text = $Extra->output($text, true);
+	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
+	
+	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"])) {
+		$Extra = new NamuMarkExtra;
+		$text = $Extra->output($text, true);
+	}
 }
 
 ?>
