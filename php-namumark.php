@@ -179,6 +179,9 @@ class NamuMark {
 					$tdAttr['colspan'] = $simpleColspan+1;
 					$simpleColspan = 0;
 				}
+				
+				$innerstr = preg_replace('/\s+?</', '<', $innerstr);
+				
 				while(self::startsWith($innerstr, '<')) {
 					$dummy=0;
 					$prop = $this->bracketParser($innerstr, $dummy, array('open'	=> '<', 'close' => '>','multiline' => false,'processor' => function($str) { return $str; }));
