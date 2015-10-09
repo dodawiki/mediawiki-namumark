@@ -107,12 +107,17 @@ class NamuMark2 extends NamuMark {
 		$result = '';
 		$block_len = strlen($block);
 		
-		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ]+)(?!<\/nowiki>)(.*)$/', $block, $match)) {
+		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ]+)(?!<\/nowiki>)(.*)$/i', $block, $match)) {
 			$vowels = array('?', '&');
 			$match[4] = str_replace($vowels, ' ', $match[4]);
+
+			$match[4] = str_ireplace('align=left', '', $match[4]);
+			$match[4] = str_ireplace('align=center', 'style="display:block; margin-left:auto; margin-right:auto;"', $match[4]);
+
 			$result .= ''
-				.$match[1].'<img src="'.$match[2].$match[3].'"'.$match[4].'>'
-				.'';
+				. $match[1] . '<img src="' . $match[2] . $match[3] . '"' . $match[4] . '>'
+				. '';
+
 			$block = $this->blockParser($match[5]);
 		}
 		
