@@ -18,7 +18,7 @@ $wgExtensionCredits['parserhook'][] = array(
  
    // The version of the extension, which will appear on Special:Version.
    // This can be a number or a string.
-   'version' => '1.0.2',
+   'version' => '1.0.3',
  
    // Your name, which will appear on Special:Version.
    'author' => 'koreapyj 원본, 김동동 수정',
@@ -60,9 +60,9 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		}
 		
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
-		
+
 		$text = preg_replace('/src="http:\/\/www\.youtube\.com/', 'src="//www.youtube.com', $text); // HHTPS 환경에서 비 SSL 유튜브 URL 첨부시 재생이 안 되는 버그를 위해 SSL URL로 변경.
-		
+
 		$text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
 		
 		$text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
@@ -86,7 +86,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		$text = str_replace('tablealign', 'table align', $text);
 		$text = str_replace('tablewidth', 'table width', $text);
-		
+
 		# 보조 파서를 불러온다.
 		require_once("NamuMarkExtra.php");
 		$Extra = new NamuMarkExtra;
@@ -181,6 +181,7 @@ function NamuMarkHTML2( &$parser, &$text ) {
 		'<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>',
 		$text);
 
+		$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
 		$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
 		$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
 	}
