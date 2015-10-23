@@ -18,7 +18,7 @@ $wgExtensionCredits['parserhook'][] = array(
  
    // The version of the extension, which will appear on Special:Version.
    // This can be a number or a string.
-   'version' => '1.0.3',
+   'version' => '1.0.4',
  
    // Your name, which will appear on Special:Version.
    'author' => 'koreapyj 원본, 김동동 수정',
@@ -74,15 +74,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		
 		
 		$text = str_replace('> <', '><', $text);
-		
-		$text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
-		$text = preg_replace('/attachment:([^\/\s]*?(\.jpeg|\.jpg|\.png|\.gif))/i', 'attachment:'.$title.'__$1', $text);
-		preg_match_all('/attachment:[^\/]\S*?\/(\S*(\.jpeg|\.jpg|\.png|\.gif))/', $text, $attachment, PREG_SET_ORDER);
-		foreach ($attachment as $file) {
-			if(!preg_match('/__/', $file[1])) {
-				$text = str_replace($file[0], 'attachment:'.$title.'__'.$file[1], $text);
-			}
-		}
 		
 		$text = str_replace('tablealign', 'table align', $text);
 		$text = str_replace('tablewidth', 'table width', $text);
