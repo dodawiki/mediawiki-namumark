@@ -215,6 +215,32 @@ class NamuMark2 extends NamuMark {
 						return $text;
 					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
 				}
+				if(preg_match('/^\+([1-5]) (.*)$/', $text, $size)) {
+					for ($i=1; $i<=$size[1]; $i++){
+						if(isset($big_before) && isset($big_after)) {
+							$big_before .= '<big>';
+							$big_after .= '</big>';
+						} else {
+							$big_before = '<big>';
+							$big_after = '</big>';
+						}
+					}
+
+					return $big_before.$this->formatParser($size[2]).$big_after;
+				}
+				if(preg_match('/^\-([1-5]) (.*)$/', $text, $size)) {
+					for ($i=1; $i<=$size[1]; $i++){
+						if(isset($small_before) && isset($small_after)) {
+							$small_before .= '<small>';
+							$small_after .= '</small>';
+						} else {
+							$small_before = '<small>';
+							$small_after = '</small>';
+						}
+					}
+
+					return $small_before.$this->formatParser($size[2]).$small_after;
+				}
 		}
 		
 	}
