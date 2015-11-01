@@ -2,14 +2,15 @@
 
 class NamuMarkExtra {
 	
-	function output($text, $is_html) {
+	public function output($text, $is_html) {
 		if($is_html) {
 			preg_match('/(<div id="specialchars".*<\/div>)/s', $text, $charinsert);
 			$text = preg_replace('/(<div id="specialchars".*<\/div>)/s', '', $text);
 			
 			$text = $this->external($text);
 			$text = $this->imageurl($text);
-			
+            $text = $this->printTemplateParameter($text);
+
 			if( count( $charinsert ) > 0 ) {
 				$text = $text.$charinsert[0];
 			}
@@ -17,6 +18,7 @@ class NamuMarkExtra {
 		} elseif(!$is_html) {
 			$text = $this->title($text);
 			$text = $this->dd($text);
+			$this->getTemplateParameter($text);
 		}
 		
 		return $text;
@@ -86,6 +88,38 @@ class NamuMarkExtra {
 		return $text;
 		
 	}
+
+	private function getTemplateParameter($text) {
+        if(preg_match_all('/\{\{(.*?)\}\}/', $text, $includes, PREG_SET_ORDER)) {
+            foreach($includes as $include) {
+                $GLOBALS['template'] = explode('|', $include[1]);
+            }
+        }
+        if(preg_match_all('/\{\{(.*?)\}\}/s', $text, $includes, PREG_SET_ORDER)) {
+            foreach($includes as $include) {
+                $GLOBALS['template'] = explode('|', $include[1]);
+            }
+        }
+    }
+
+    private function printTemplateParameter($text) {
+        $properties = $GLOBALS['template'];
+        $i = 1;
+        foreach($properties as $property) {
+            if($property == $properties[0])
+                continue;
+            $property = explode('=', $property);
+            $property[0] = trim($property[0]);
+            if(isset($property[1])) {
+                $text = str_replace('@'.$property[0].'@', $property[1], $text);
+            } else {
+                $text = str_replace('@'.$i.'@', $property[0], $text);
+                $i++;
+            }
+        }
+
+        return $text;
+    }
 	
 	
 }

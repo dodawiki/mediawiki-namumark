@@ -108,7 +108,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$text = $fn[0].$text;
 		}
 
-        
+
 	}
 
 }

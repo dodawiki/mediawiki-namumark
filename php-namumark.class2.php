@@ -267,7 +267,8 @@ class NamuMark2 extends NamuMark {
     protected function renderProcessor($text, $type) {
         if(self::startsWithi($text, '#!html')) {
             $text = substr($text, 7);
-            return '<html>'.$text.'</html>';
+            $text = htmlspecialchars_decode($text);
+            return $text;
         }
     }
 

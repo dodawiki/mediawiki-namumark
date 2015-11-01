@@ -28,12 +28,12 @@ class NamuMark3 extends NamuMark {
 				'open'	=> '||',
 				'close' => '||',
 				'multiline' => true,
-				'processor' => array($this,'renderProcessor')),				
+				'processor' => array($this,'renderProcessor')),
 			);
 
 
-			
-		
+
+
 		$this->WikiPage = $wtext;
 
 		$this->toc = array();
