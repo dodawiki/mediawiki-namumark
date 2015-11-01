@@ -49,10 +49,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		# 미디어위키에서 지원하는 글씨 색 방식으로 바꾼다.
 		$text = preg_replace('/<span style="color:(.*?)">(.*?)<\/span>\]\]/i', '{{글씨 색|$1|$2}}]]', $text);
 		$text = preg_replace('/<font color="(.*?)">(.*?)<\/font>\]\]/i', '{{글씨 색|$1|$2}}]]', $text);
-		
-		# meta 태그 제거
-		$text = preg_replace('/<meta.*?>/i', '', $text);
-		
+
 		# 문서 구판에 접속시 최상단의 코드를 별도의 변수로 일단 보관하고 제거한다. 파서에 적용되지 않도록 하기 위함. 문서 구판에 접속시 발생하는 버그로 인한 조치.
 		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"])) {
 			preg_match('/^.*$/m', $text, $fn);
