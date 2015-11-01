@@ -22,6 +22,14 @@ class NamuMark2 extends NamuMark {
 
 	function __construct($wtext) {
 
+		$this->multi_bracket = array(
+			array(
+				'open'	=> '{{{',
+				'close' => '}}}',
+				'multiline' => true,
+				'processor' => array($this,'renderProcessor')),
+		);
+
 		$this->single_bracket = array(
 			array(
 				'open'	=> '[[',
@@ -90,6 +98,17 @@ class NamuMark2 extends NamuMark {
 				continue;
 			}
 
+			foreach($this->multi_bracket as $bracket) {
+				if(self::startsWith($text, $bracket['open'], $i) && $innerstr = $this->bracketParser($text, $i, $bracket)) {
+					$result .= ''
+						.$this->lineParser($line, '')
+						.$innerstr
+						.'';
+					$line = '';
+					$now = '';
+					break;
+				}
+			}
 
 			if($now == "\n") { // line parse
 				$result .= $this->lineParser($line, '');
@@ -245,6 +264,11 @@ class NamuMark2 extends NamuMark {
 		
 	}
 
-
+    protected function renderProcessor($text, $type) {
+        if(self::startsWithi($text, '#!html')) {
+            $text = substr($text, 7);
+            return '<html>'.$text.'</html>';
+        }
+    }
 
 }

@@ -107,17 +107,10 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"])) {
 		$text = $fn[0].$text;
 		}
-		
-		preg_match_all('/<html>(.*?)<\/html>/s', $text, $html);
-		require_once 'XSSfilter.php';
-		foreach ($html[1] as $code) {
-			if (!preg_match('@src="http://ex.\.nicovideo\.jp/thumb_watch/(.*?)"@', $code))
-				$text = str_replace($code, RemoveXSS($code), $text);
-		}
-		
+
+        
 	}
-	
-	
+
 }
 
 
@@ -149,7 +142,13 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 		# 파서를 불러온다.
 		require_once("php-namumark.class2.php");
 		$wEngine = new NamuMark2($text);
-		$text =  $wEngine->toHtml();	
+		$text =  $wEngine->toHtml();
+
+		preg_match_all('/<html>(.*?)<\/html>/s', $text, $html);
+		require_once 'XSSfilter.php';
+        foreach ($html[1] as $code) {
+		    $text = str_replace($code, RemoveXSS($code), $text);
+        }
 	}
 	
 }
