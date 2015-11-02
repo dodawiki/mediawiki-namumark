@@ -108,6 +108,12 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$text = $fn[0].$text;
 		}
 
+		preg_match_all('/<html>(.*?)<\/html>/s', $text, $html);
+		require_once 'XSSfilter.php';
+		foreach ($html[1] as $code) {
+			$xss = new XssHtml($code);
+			$text = str_replace($code, $xss->getHtml(), $text);
+		}
 
 	}
 
@@ -144,13 +150,8 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 		$wEngine = new NamuMark2($text);
 		$text =  $wEngine->toHtml();
 
-		preg_match_all('/<html>(.*?)<\/html>/s', $text, $html);
-		require_once 'XSSfilter.php';
-        foreach ($html[1] as $code) {
-		    $text = str_replace($code, RemoveXSS($code), $text);
-        }
 	}
-	
+
 }
 
 function NamuMarkHTML2( &$parser, &$text ) {

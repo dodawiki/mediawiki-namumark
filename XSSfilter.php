@@ -1,64 +1,187 @@
 <?php
+/**
+ * PHP İ£ÙşÜâXSS???
+ *
+ * @package XssHtml
+ * @version 1.0.0
+ * @link http://phith0n.github.io/XssHtml
+ * @since 20140621
+ * @copyright (c) Phithon All Rights Reserved
+ *
+ */
 
-function RemoveXSS($val) {
-   # meta ÅÂ±× Á¦°Å
-   $val = preg_replace('/<meta.*?>/i', '', $val);
+#
+# Written by Phithon <root@leavesongs.com> in 2014 and placed in
+# the public domain.
+#
+# phithon <root@leavesongs.com> ??éÍ20140621
+# From: XDSEC <www.xdsec.org> & ??Ê° <www.leavesongs.com>
+# Usage: 
+# <?php
+# require('xsshtml.class.php');
+# $html = '<html code>';
+# $xss = new XssHtml($html);
+# $html = $xss->getHtml();
+# ?\>
+# 
+# âÍÏ´£º
+# PHP Version > 5.0
+# ??Ğï÷úÜâ£ºIE7+ ûäĞìöâ??Ğï£¬ÙéÛöÛÁåÙIE6Ğàì¤ù»÷úÜâ??ĞïñéîÜXSS
+# ÌÚÒıŞÅéÄ??? http://phith0n.github.io/XssHtml
 
-   // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed 
-   // this prevents some character re-spacing such as <java\0script> 
-   // note that you have to handle splits with \n, \r, and \t later since they *are* 
-   // allowed in some inputs 
-   $val = preg_replace('/([\x00-\x08][\x0b-\x0c][\x0e-\x20])/', '', $val); 
-    
-   // straight replacements, the user should never need these since they're normal characters 
-   // this prevents like <IMG SRC=&#X40&#X61&#X76&#X61&#X73&#X63&#X72&#X69&#X70&#X74&
-   // #X3A&#X61&#X6C&#X65&#X72&#X74&#X28&#X27&#X58&#X53&#X53&#X27&#X29> 
-   $search = 'abcdefghijklmnopqrstuvwxyz'; 
-   $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
-   $search .= '1234567890!@#$%^&*()'; 
-   $search .= '~`";:?+/={}[]-_|\'\\'; 
-   for ($i = 0; $i < strlen($search); $i++) { 
-   // ;? matches the ;, which is optional 
-   // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars 
-    
-   // &#x0040 @ search for the hex values 
-      $val = preg_replace('/(&#[x|X]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val); 
-      // with a ; 
+class XssHtml {
+   private $m_dom;
+   private $m_xss;
+   private $m_ok;
+   private $m_AllowAttr = array('title', 'src', 'href', 'id', 'class', 'style', 'width', 'height', 'alt', 'target', 'align');
+   private $m_AllowTag = array('a', 'img', 'br', 'strong', 'b', 'code', 'pre', 'p', 'div', 'em', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'ul', 'ol', 'tr', 'th', 'td', 'hr', 'li', 'u', 'iframe', 'embed', 'object');
 
-      // @ @ 0{0,7} matches '0' zero to seven times 
-      $val = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $val); // with a ; 
-   } 
-    
-   // now the only remaining whitespace attacks are \t, \n, and \r 
-   $ra1 = Array('javascript', 'vbscript', 'expression', 'applet', 'xml', 'blink', 'link',
-'script', 'frameset', 'ilayer', 'layer', 'bgsound', 'base'); 
-   $ra2 = Array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload'); 
-   $ra = array_merge($ra1, $ra2); 
-    
-   $found = true; // keep replacing as long as the previous round replaced something 
-   while ($found == true) { 
-      $val_before = $val; 
-      for ($i = 0; $i < sizeof($ra); $i++) { 
-         $pattern = '/'; 
-         for ($j = 0; $j < strlen($ra[$i]); $j++) { 
-            if ($j > 0) { 
-               $pattern .= '('; 
-               $pattern .= '(&#[x|X]0{0,8}([9][a][b]);?)?'; 
-               $pattern .= '|(&#0{0,8}([9][10][13]);?)?'; 
-               $pattern .= ')?'; 
-            } 
-            $pattern .= $ra[$i][$j]; 
-         } 
-         $pattern .= '/i'; 
-         $replacement = substr($ra[$i], 0, 2).'<x>'.substr($ra[$i], 2); // add in <> to nerf the tag 
-         $val = preg_replace($pattern, '', $val); // filter out the hex tags 
-         if ($val_before == $val) { 
-            // no replacements were made, so exit the loop 
-            $found = false; 
-         } 
-      } 
-   } 
-   return $val; 
-} 
+   /**
+    * ?ğãùŞ?
+    *
+    * @param string $html Óâ??îÜÙşÜâ
+    * @param string $charset ÙşÜâ??£¬Ùù?utf-8
+    * @param array $AllowTag ëÃ?îÜ??£¬åıÍıÜô?õ¢?ÜÁò¥Ùù?£¬Ùù?ì«ùäËÌÓŞİ»İÂÍíÒö£¬Üôé©ñòÊ¥êË???
+    */
+   public function __construct($html, $charset = 'utf-8', $AllowTag = array()){
+      $this->m_AllowTag = empty($AllowTag) ? $this->m_AllowTag : $AllowTag;
+      $this->m_xss = strip_tags($html, '<' . implode('><', $this->m_AllowTag) . '>');
+      if (empty($this->m_xss)) {
+         $this->m_ok = FALSE;
+         return ;
+      }
+      $this->m_xss = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset={$charset}\"><nouse>" . $this->m_xss . "</nouse>";
+      $this->m_dom = new DOMDocument();
+      $this->m_dom->strictErrorChecking = FALSE;
+      $this->m_ok = @$this->m_dom->loadHTML($this->m_xss);
+   }
 
+   /**
+    * ?Ôğ??ı¨îÜ?é»
+    */
+   public function getHtml()
+   {
+      if (!$this->m_ok) {
+         return '';
+      }
+      $nodeList = $this->m_dom->getElementsByTagName('*');
+      for ($i = 0; $i < $nodeList->length; $i++){
+         $node = $nodeList->item($i);
+         if (in_array($node->nodeName, $this->m_AllowTag)) {
+            if (method_exists($this, "__node_{$node->nodeName}")) {
+               call_user_func(array($this, "__node_{$node->nodeName}"), $node);
+            }else{
+               call_user_func(array($this, '__node_default'), $node);
+            }
+         }
+      }
+      $html = strip_tags($this->m_dom->saveHTML(), '<' . implode('><', $this->m_AllowTag) . '>');
+      $html = preg_replace('/^\n(.*)\n$/s', '$1', $html);
+      return $html;
+   }
+
+   private function __true_url($url){
+      if (preg_match('#^https?://.+#is', $url)) {
+         return $url;
+      }else{
+         return 'http://' . $url;
+      }
+   }
+
+   private function __get_style($node){
+      if ($node->attributes->getNamedItem('style')) {
+         $style = $node->attributes->getNamedItem('style')->nodeValue;
+         $style = str_replace('\\', ' ', $style);
+         $style = str_replace(array('&#', '/*', '*/'), ' ', $style);
+         $style = preg_replace('#e.*x.*p.*r.*e.*s.*s.*i.*o.*n#Uis', ' ', $style);
+         return $style;
+      }else{
+         return '';
+      }
+   }
+
+   private function __get_link($node, $att){
+      $link = $node->attributes->getNamedItem($att);
+      if ($link) {
+         return $this->__true_url($link->nodeValue);
+      }else{
+         return '';
+      }
+   }
+
+   private function __setAttr($dom, $attr, $val){
+      if (!empty($val)) {
+         $dom->setAttribute($attr, $val);
+      }
+   }
+
+   private function __set_default_attr($node, $attr, $default = '')
+   {
+      $o = $node->attributes->getNamedItem($attr);
+      if ($o) {
+         $this->__setAttr($node, $attr, $o->nodeValue);
+      }else{
+         $this->__setAttr($node, $attr, $default);
+      }
+   }
+
+   private function __common_attr($node)
+   {
+      $list = array();
+      foreach ($node->attributes as $attr) {
+         if (!in_array($attr->nodeName,
+             $this->m_AllowAttr)) {
+            $list[] = $attr->nodeName;
+         }
+      }
+      foreach ($list as $attr) {
+         $node->removeAttribute($attr);
+      }
+      $style = $this->__get_style($node);
+      $this->__setAttr($node, 'style', $style);
+      $this->__set_default_attr($node, 'title');
+      $this->__set_default_attr($node, 'id');
+      $this->__set_default_attr($node, 'class');
+   }
+
+   private function __node_img($node){
+      $this->__common_attr($node);
+
+      $this->__set_default_attr($node, 'src');
+      $this->__set_default_attr($node, 'width');
+      $this->__set_default_attr($node, 'height');
+      $this->__set_default_attr($node, 'alt');
+      $this->__set_default_attr($node, 'align');
+
+   }
+
+   private function __node_a($node){
+      $this->__common_attr($node);
+      $href = $this->__get_link($node, 'href');
+
+      $this->__setAttr($node, 'href', $href);
+      $this->__set_default_attr($node, 'target', '_blank');
+   }
+
+   private function __node_embed($node){
+      $this->__common_attr($node);
+      $link = $this->__get_link($node, 'src');
+
+      $this->__setAttr($node, 'src', $link);
+      $this->__setAttr($node, 'allowscriptaccess', 'never');
+      $this->__set_default_attr($node, 'width');
+      $this->__set_default_attr($node, 'height');
+   }
+
+   private function __node_default($node){
+      $this->__common_attr($node);
+   }
+}
+
+// if(php_sapi_name() == "cli"){
+// 	$html = $argv[1];
+// 	$xss = new XssHtml($html);
+// 	$html = $xss->getHtml();
+// 	echo "'$html'";
+// }
 ?>
