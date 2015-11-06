@@ -143,7 +143,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 			$filelink[1] = str_replace(' ', '_', $filelink[1]);
 			$text = str_replace($filelink[0], '&link='.$filelink[1], $text);
 		}
-	
+
 	
 		# 파서를 불러온다.
 		require_once("php-namumark.class2.php");
