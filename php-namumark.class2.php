@@ -268,7 +268,9 @@ class NamuMark2 extends NamuMark {
         if(self::startsWithi($text, '#!html')) {
             $text = substr($text, 7);
             $text = htmlspecialchars_decode($text);
-            return $text;
+			require_once("XSSfilter.php");
+			$xss = new XssHtml($text);
+            return $xss->getHtml();
         }
     }
 
