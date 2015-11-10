@@ -21,15 +21,15 @@
 class NamuMark {
 
 	protected function lineParser($line, $type) {
-		$result = '';
+		if($line == '----')
+			return '<hr>';
 
 		$line = $this->blockParser($line);
 
-		if($type == 'notn') {
+		if($type == 'notn')
 			return $line;
-		} else {
-		return $line."\n";
-		}
+		else
+            return $line."\n";
 	}
 
 	protected function formatParser($line) {
