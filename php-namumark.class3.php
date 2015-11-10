@@ -22,7 +22,6 @@ class NamuMark3 extends NamuMark {
 
 	function __construct($wtext) {
 
-
 		$this->multi_bracket = array(
 			array(
 				'open'	=> '||',
@@ -31,8 +30,13 @@ class NamuMark3 extends NamuMark {
 				'processor' => array($this,'renderProcessor')),
 			);
 
-
-
+		$this->single_bracket = array(
+            array(
+                'open'	=> '{{{',
+                'close' => '}}}',
+                'multiline' => false,
+                'processor' => array($this,'textProcessor')),
+		);
 
 		$this->WikiPage = $wtext;
 
@@ -90,15 +94,21 @@ class NamuMark3 extends NamuMark {
 			return '<div style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;"><p>'.$text.'</p></div>';
 		}
 	}
-		
-	protected function lineParser($line, $type) {
-		$result = '';
 
-		if($type == 'notn') {
-			return $line;
-		} else {
-		return $line."\n";
-		}
-	}
+    protected function textProcessor($text, $type) {
+        if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
+            if(empty($color[1]) && empty($color[2]))
+                return $text;
+            return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
+        }
+    }
+
+    protected function blockParser($block) {
+        $result = '';
+        $block_len = strlen($block);
+
+        $result .= $this->formatParser($block);
+        return $result;
+    }
 
 }
