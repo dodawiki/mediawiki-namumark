@@ -124,22 +124,7 @@ class NamuMark2 extends NamuMark {
 	
 	protected function blockParser($block) {
 		$result = '';
-		$block_len = strlen($block);
-		
-		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ]+)(?!<\/nowiki>)(.*)$/i', $block, $match)) {
-			$vowels = array('?', '&');
-			$match[4] = str_replace($vowels, ' ', $match[4]);
 
-			$match[4] = str_ireplace('align=left', '', $match[4]);
-			$match[4] = str_ireplace('align=center', 'style="display:block; margin-left:auto; margin-right:auto;"', $match[4]);
-
-			$result .= ''
-				. $match[1] . '<img src="' . $match[2] . $match[3] . '"' . $match[4] . '>'
-				. '';
-
-			$block = $this->blockParser($match[5]);
-		}
-		
 		if(preg_match('/^(.*?)(?<!<nowiki>)attachment:"?(.*?)(\.jpeg|\.jpg|\.png|\.gif)"?([?&][^\| <]+)?(?!<\/nowiki>)(.*)$/i', $block, $match)) {
 
 			$match[2] = preg_replace('/^\//', '', $match[2]);
@@ -162,8 +147,20 @@ class NamuMark2 extends NamuMark {
 
 			$block = $this->blockParser($match[5]);
 		}
-		
 
+		if(preg_match('/^(.*?)(?<!<nowiki>)(https?.*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ]+)(?!<\/nowiki>)(.*)$/i', $block, $match)) {
+			$vowels = array('?', '&');
+			$match[4] = str_replace($vowels, ' ', $match[4]);
+
+			$match[4] = str_ireplace('align=left', '', $match[4]);
+			$match[4] = str_ireplace('align=center', 'style="display:block; margin-left:auto; margin-right:auto;"', $match[4]);
+
+			$result .= ''
+				. $match[1] . '<img src="' . $match[2] . $match[3] . '"' . $match[4] . '>'
+				. '';
+
+			$block = $this->blockParser($match[5]);
+		}
 
 		$result .= $this->formatParser($block);
 		return $result;
