@@ -449,8 +449,11 @@ class NamuMark1 extends NamuMark {
 		switch($type) {
 			case '--':
 			case '~~':
-				return '<s>'.$text.'</s>';
-			 case '__':
+				if(!self::startsWith($text, 'item-'))
+				    return '<s>'.$text.'</s>';
+                else
+                    return $type.$text.$type;
+            case '__':
 				if(preg_match('/TOC/', $text)) {
 					return '__'.$text.'__';
 				} else {
