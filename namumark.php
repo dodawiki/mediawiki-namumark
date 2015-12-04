@@ -55,9 +55,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		}
 		
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
-
-		$text = preg_replace('/src="http:\/\/www\.youtube\.com/', 'src="//www.youtube.com', $text); // HHTPS 환경에서 비 SSL 유튜브 URL 첨부시 재생이 안 되는 버그를 위해 SSL URL로 변경.
-
+        
 		$text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
 		
 		$text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
@@ -175,7 +173,7 @@ function NamuMarkHTML2( &$parser, &$text ) {
 
 function NamuMarkExtraHTML ( &$parser, &$text ) {
 	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
-	
+
 	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"])) {
 		$Extra = new NamuMarkExtra;
 		$text = $Extra->output($text, true);
