@@ -103,22 +103,24 @@ class NamuMarkExtra {
     }
 
     private function printTemplateParameter($text) {
-        $properties = $GLOBALS['template'];
-        $i = 1;
-		if (is_array($properties)) {
-            foreach ($properties as $property) {
-                if ($property == $properties[0])
-                    continue;
-                $property = explode('=', $property);
-                $property[0] = trim($property[0]);
-                if (isset($property[1])) {
-                    $text = str_replace('@' . $property[0] . '@', $property[1], $text);
-                } else {
-                    $text = str_replace('@' . $i . '@', $property[0], $text);
-                    $i++;
-                }
-            }
-        }
+		if(isset($GLOBALS['template'])) {
+			$properties = $GLOBALS['template'];
+			$i = 1;
+			if (is_array($properties)) {
+				foreach ($properties as $property) {
+					if ($property == $properties[0])
+						continue;
+					$property = explode('=', $property);
+					$property[0] = trim($property[0]);
+					if (isset($property[1])) {
+						$text = str_replace('@' . $property[0] . '@', $property[1], $text);
+					} else {
+						$text = str_replace('@' . $i . '@', $property[0], $text);
+						$i++;
+					}
+				}
+			}
+		}
 
         return $text;
     }
