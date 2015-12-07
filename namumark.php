@@ -55,7 +55,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		}
 		
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
-        
+
 		$text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
 		
 		$text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
@@ -165,9 +165,12 @@ function NamuMarkHTML2( &$parser, &$text ) {
 		'<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>',
 		$text);
 
-		$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
-		$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
-		$text = preg_replace('@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m', '$1<br>$2', $text);
+        // 엔터 한 번 개행
+        $br_regex = '@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m';
+        do {
+		$text = preg_replace($br_regex, '$1<br>$2', $text);
+        } while(preg_match($br_regex, $text));
+
 	}
 }
 
