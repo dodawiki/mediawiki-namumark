@@ -21,15 +21,7 @@
 class NamuMark3 extends NamuMark {
 
 	function __construct($wtext) {
-
-		$this->multi_bracket = array(
-			array(
-				'open'	=> '||',
-				'close' => '||',
-				'multiline' => true,
-				'processor' => array($this,'renderProcessor')),
-			);
-
+		
 		$this->single_bracket = array(
             array(
                 'open'	=> '{{{',
@@ -61,18 +53,6 @@ class NamuMark3 extends NamuMark {
 
 		for($i=0;$i<$len;$this->nextChar($text,$i)) {
 			$now = $this->getChar($text,$i);
-
-			foreach($this->multi_bracket as $bracket) {
-				if($this->startsWith($text, $bracket['open'], $i) && $innerstr = $this->bracketParser($text, $i, $bracket)) {
-					$result .= ''
-						.$this->lineParser($line, '')
-						.$innerstr
-						.'';
-					$line = '';
-					$now = '';
-					break;
-				}
-			}
 
 			if($now == "\n") { // line parse
 				$result .= $this->lineParser($line, '');

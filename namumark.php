@@ -15,7 +15,7 @@ $wgExtensionCredits['parserhook'][] = array(
 
 	// The version of the extension, which will appear on Special:Version.
 	// This can be a number or a string.
-	'version' => '1.0.7',
+	'version' => '1.0.8',
  
 	// Your name, which will appear on Special:Version.
 	'author' => 'koreapyj 원본, 김동동 수정',
@@ -42,7 +42,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 	# 상기의 확인 함수의 반환값과, 현 URI가 히스토리인지 확인하는 함수의 반환값과, 현 문서가 특수:기여 또는 특수:기록인지 확인하는 함수의 반환값을 확인한다.
 	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"])) {
 		$text = html_entity_decode($text,  ENT_QUOTES | ENT_HTML5);   // HTML 엔티티를 디코드한다.
-		
+
 		# '[[내부 링크|<span style="color:색깔값">표시내용<span>]]'와 같은 내부 링크 글씨의 색깔을 지정하는 방식이 버그를 일으키므로
 		# 미디어위키에서 지원하는 글씨 색 방식으로 바꾼다.
 		$text = preg_replace('/<span style="color:(.*?)">(.*?)<\/span>\]\]/i', '{{글씨 색|$1|$2}}]]', $text);
@@ -53,23 +53,27 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 			preg_match('/^.*$/m', $text, $fn);
 			$text = str_replace("$fn[0]", '', $text);
 		}
-		
+
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
 
 		$text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
-		
+
 		$text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
-		
+
 		$text = str_replace('|| <', '||<', $text);
-		
-		
+
+
 		$text = preg_replace('/^ \|\|/m', '||', $text); // 테이블 맨 앞(||)의 바로 앞에 공백이 있을 경우 제거하도록 한다.
-		
-		
+
+
 		$text = str_replace('> <', '><', $text);
-		
+
 		$text = str_replace('tablealign', 'table align', $text);
 		$text = str_replace('tablewidth', 'table width', $text);
+
+		preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
+		foreach($tables[1] as $table)
+			$text = str_replace($table, str_replace("\n", '<br />', $table), $text);
 
 		# 보조 파서를 불러온다.
 		require_once("NamuMarkExtra.php");
@@ -122,7 +126,11 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 		$text = str_replace('&apos;', "'", $text);
 		$text = str_replace('tablealign', 'table align', $text);
 		$text = str_replace('tablewidth', 'table width', $text);
-		$text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
+        preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
+        foreach($tables[1] as $table)
+            $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
+
+        $text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
 		$text = preg_replace('/attachment:([^\/\s]*?(\.jpeg|\.jpg|\.png|\.gif))/i', 'attachment:'.$title.'__$1', $text);
 		preg_match_all('/attachment:[^\/]\S*?\/(\S*(\.jpeg|\.jpg|\.png|\.gif))/', $text, $attachment, PREG_SET_ORDER);
 		foreach ($attachment as $file) {

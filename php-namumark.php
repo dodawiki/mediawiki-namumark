@@ -60,7 +60,7 @@ class NamuMark {
 			if(self::startsWith($text, $bracket['open'], $i) && !($bracket['open']==$bracket['close'] && $cnt>0)) {
 				$cnt++;
 				$done = true;
-				$i+=$openlen-1; // ¹Ýº¹µÉ ¶§ ´õÇØÁú °ÍÀÌ¹Ç·Î
+				$i+=$openlen-1; // ï¿½Ýºï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¹Ç·ï¿½
 			}elseif(self::startsWith($text, $bracket['close'], $i)) {
 				$cnt--;
 				$i+=$closelen-1;
@@ -280,9 +280,9 @@ class NamuMark {
 					elseif(self::seekEndOfLine($innerstr)>0 && $innerstr[self::seekEndOfLine($innerstr)-1] == ' ') {
 						$tdStyleList['text-align'] = null;
 					}
-					elseif(self::startsWith($innerstr, ' ')) {
-						$tdStyleList['text-align'] = 'right';
-					}
+//					elseif(self::startsWith($innerstr, ' ')) {
+//						$tdStyleList['text-align'] = 'right';
+//					}
 					else {
 						$tdStyleList['text-align'] = null;
 					}
