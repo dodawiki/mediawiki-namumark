@@ -112,18 +112,10 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
             $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
 
         $text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
-		$text = preg_replace('/attachment:([^\/\s]*?(\.jpeg|\.jpg|\.png|\.gif))/i', 'attachment:'.$title.'__$1', $text);
-		preg_match_all('/attachment:[^\/]\S*?\/(\S*(\.jpeg|\.jpg|\.png|\.gif))/', $text, $attachment, PREG_SET_ORDER);
-		foreach ($attachment as $file) {
-			if(!preg_match('/__/', $file[1])) {
-				$text = str_replace($file[0], 'attachment:'.$title.'__'.$file[1], $text);
-			}
-		}
-		
+
+        /** 파일 링크 */
 		$text = preg_replace('/\[\[(.*?)\|attachment:(.*?(\.jpeg|\.jpg|\.png|\.gif))(\?.*?)?\]\]/i', 'attachment:$2$4``link=$1``', $text);
-		
 		preg_match_all('/``link=(.*?)``/', $text, $link, PREG_SET_ORDER);
-		
 		foreach ($link as $filelink) {
 			$filelink[1] = str_replace(' ', '_', $filelink[1]);
 			$text = str_replace($filelink[0], '&link='.$filelink[1], $text);
@@ -132,7 +124,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 	
 		# 파서를 불러온다.
 		require_once("php-namumark.class2.php");
-		$wEngine = new NamuMark2($text);
+		$wEngine = new NamuMark2($text, $title);
 		$text =  $wEngine->toHtml();
 
 	}

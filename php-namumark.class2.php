@@ -20,7 +20,7 @@
 
 class NamuMark2 extends NamuMark {
 
-	function __construct($wtext) {
+	function __construct($wtext, $title=null) {
 
 		$this->multi_bracket = array(
 			array(
@@ -65,6 +65,7 @@ class NamuMark2 extends NamuMark {
 			
 		
 		$this->WikiPage = $wtext;
+        $this->title = $title;
 
 		$this->toc = array();
 		$this->fn = array();
@@ -127,9 +128,15 @@ class NamuMark2 extends NamuMark {
 
 		if(preg_match('/^(.*?)(?<!<nowiki>)attachment:"?(.*?)(\.jpeg|\.jpg|\.png|\.gif)"?([?&][^\| <]+)?(?!<\/nowiki>)(.*)$/i', $block, $match)) {
 
-			$match[2] = preg_replace('/^\//', '', $match[2]);
+            if(preg_match('@^/@', $match[2]))
+                $match[2] = substr($match[2], 1);
+            elseif(preg_match('@/@', $match[2]))
+                $match[2] = str_replace('/', '__', $match[2]);
+            else
+                $match[2] = str_replace('/', '__', $this->title).'__'.$match[2];
 
-			if(strlen($match[4]) == 0) {
+
+			if(!strlen($match[4])) {
 				$result .= ''
 					.$match[1].'[[파일:'.$match[2].$match[3].']]'
 					.'';
