@@ -17,6 +17,7 @@ class NamuMarkExtra {
 			
 		} elseif(!$is_html) {
 			$text = $this->title($text);
+			$text = $this->table($text);
 			$text = $this->dd($text);
 			$this->getTemplateParameter($text);
 		}
@@ -124,6 +125,18 @@ class NamuMarkExtra {
 
         return $text;
     }
+
+	private function table($text) {
+        $text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
+        $text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
+        $text = preg_replace('/^ \|\|/m', '||', $text); // 테이블 맨 앞(||)의 바로 앞에 공백이 있을 경우 제거하도록 한다.
+        $text = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $text);
+        preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
+        foreach($tables[1] as $table)
+            $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
+
+        return $text;
+	}
 	
 	
 }

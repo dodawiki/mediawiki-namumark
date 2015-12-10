@@ -56,25 +56,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
 
-		$text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
-
-		$text = preg_replace('/^\|\|\s+/m', '||', $text); // 테이블 맨 앞(||)의 바로 뒤에 공백이 있을 경우 제거하도록 한다.
-
-		$text = str_replace('|| <', '||<', $text);
-
-
-		$text = preg_replace('/^ \|\|/m', '||', $text); // 테이블 맨 앞(||)의 바로 앞에 공백이 있을 경우 제거하도록 한다.
-
-
-		$text = str_replace('> <', '><', $text);
-
-		$text = str_replace('tablealign', 'table align', $text);
-		$text = str_replace('tablewidth', 'table width', $text);
-
-		preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
-		foreach($tables[1] as $table)
-			$text = str_replace($table, str_replace("\n", '<br />', $table), $text);
-
 		# 보조 파서를 불러온다.
 		require_once("NamuMarkExtra.php");
 		$Extra = new NamuMarkExtra;
