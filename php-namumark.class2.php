@@ -135,10 +135,9 @@ class NamuMark2 extends NamuMark {
 					.'';
 
 			} else {
-				$vowels = array('?', '&');
-				$match[4] = str_replace($vowels, '|', $match[4]);
+				$match[4] = str_replace(array('?', '&'), '|', $match[4]);
 				$match[4] = preg_replace('/width=(\d*)/i', '$1px', $match[4]);
-				$match[4] = str_replace('align=', '', $match[4]);
+				$match[4] = str_replace(['align=', 'pxpx'], ['', 'px'], $match[4]);
 
 				$result .= ''
 					.$match[1].'[[파일:'.$match[2].$match[3].$match[4].']]'
