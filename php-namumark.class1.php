@@ -322,8 +322,7 @@ class NamuMark1 extends NamuMark {
 
 	protected function blockParser($block) {
 		$result = '';
-		$block_len = strlen($block);
-		
+
 		if(preg_match('/^#title (.*)$/', $block, $match)) {
 			$result .= ''
 				.'{{DISPLAYTITLE:'.$match[1].'}}'
@@ -362,41 +361,41 @@ class NamuMark1 extends NamuMark {
 	}
 
 	protected function linkProcessor($text, $type) {
-		if(preg_match('/^br$/im', $text)) {
+		if(strtolower($text) == 'br')
 			return '<br>';
-		} elseif(preg_match('/^목차$/m', $text)) {
+		elseif($text == '목차')
 			return '__TOC__';
-		} elseif(preg_match('/^각주$/m', $text)) {
+		elseif($text == '각주')
 			return '<references />';
-		} elseif(self::startsWithi($text, 'wiki')) {
+		elseif(self::startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
-				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
+				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2]))
 					$wikilinks[2] = '<html><img src="'.$wikilinks[2].'"></html>';
-				}
-
 				return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-			}	
-		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks)) {
+			}
+		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks))
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-		} elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
+		elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include))
 			return '{{'.$include[1].'}}'."\n";
-		} elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
+		elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
 			$youtube_code[1] = preg_replace('/,(.*)/', '', $youtube_code[1]);
 			return '{{#ev:youtube|'.$youtube_code[1].'}}';
-		} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
+		} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code))
 			return '{{#ev:nico|'.$nico_code[1].'}}';
-		} elseif(preg_match('/anchor\((.*?)\)/i', $text, $anchor)) {
+		elseif(preg_match('/anchor\((.*?)\)/i', $text, $anchor))
 			return '<span id="'.$anchor[1].'"></span>';
-		} elseif(self::startsWith($text, 'http')) {
+		elseif(self::startsWith($text, 'http')) {
 			$text = str_replace('|', ' ', $text);
 			return '['.$text.']';
 		} elseif(self::startsWithi($text, 'html(')) {
-			$html = $text;
-			$html = preg_replace('/html\((.*)\)/i', '$1', $html);
-			$html = htmlspecialchars_decode($html);
-			return '<html>'.$html.'</html>';
-		}
-		return '[['.$this->formatParser($text).']]';
+            $html = $text;
+            $html = preg_replace('/html\((.*)\)/i', '$1', $html);
+            $html = htmlspecialchars_decode($html);
+            return '<html>' . $html . '</html>';
+        }elseif(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
+			return $filelink[2].'&link='.$filelink[1];
+		else
+			return '[[' . $this->formatParser($text) . ']]';
 	}
 
 	protected function macroProcessor($text, $type) {

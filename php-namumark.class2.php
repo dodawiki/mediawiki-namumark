@@ -124,6 +124,7 @@ class NamuMark2 extends NamuMark {
 	}
 	
 	protected function blockParser($block) {
+        $block = $this->formatParser($block);
 		$result = '';
 
 		if(preg_match('/^(.*?)(?<!<nowiki>)attachment:"?(.*?)(\.jpeg|\.jpg|\.png|\.gif)"?([?&][^\| <]+)?(?!<\/nowiki>)(.*)$/i', $block, $match)) {
@@ -168,12 +169,12 @@ class NamuMark2 extends NamuMark {
 			$block = $this->blockParser($match[5]);
 		}
 
-		$result .= $this->formatParser($block);
+		$result .= $block;
 		return $result;
 	}
 
 	protected function linkProcessor($text, $type) {
-		
+
 		if($this->startsWithi($text, 'wiki')) {
 			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
 				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
@@ -182,13 +183,14 @@ class NamuMark2 extends NamuMark {
 
 				return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 			}	
-		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks)) {
+		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks))
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-		} elseif(preg_match('/^br$/im', $text)) {
-			return '<br>';
-		} else {
+		elseif(strtolower($text) == 'br')
+            return '<br>';
+        elseif(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
+            return $filelink[2].'&link='.$filelink[1];
+		else
 			return '[['.$this->formatParser($text).']]';
-		}
 		
 	}
 	
