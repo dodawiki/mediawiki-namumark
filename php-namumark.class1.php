@@ -354,9 +354,23 @@ class NamuMark1 extends NamuMark {
 			}
 		}
 		
-		$vowels = array('{{{#!html', '}}}');
-		$rpe = array("<html><xmp>", '</xmp></html>');
-		$text = str_ireplace($vowels, $rpe, $text);
+		$text = str_ireplace(array('{{{#!html', '}}}'), array("<html><xmp>", '</xmp></html>'), $text);
+		$lines = explode("\n", $text);
+        $text = '';
+        foreach($lines as $key => $line) {
+            if( (!$key && !$lines[$key]) || ($key == count($lines) - 1 && !$lines[$key]) )
+                continue;
+            if (preg_match('/^(:+)/', $line, $match)) {
+                $line = substr($line, strlen($match[1]));
+                $add = '';
+                for ($i = 1; $i <= strlen($match[1]); $i++)
+                    $add .= ' ';
+                $line = $add . $line;
+                $text .= $line . "\n";
+            } else {
+                $text .= $line . "\n";
+            }
+        }
 		return '<pre>'.$text.'</pre>';
 	}
 
