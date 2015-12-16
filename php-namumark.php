@@ -204,17 +204,13 @@ class NamuMark {
 									switch($tbprop[1]) {
 										case 'align':
 											switch($tbprop[2]) {
-												case 'left':
-													$tableStyleList['margin-left'] = null;
-													$tableStyleList['margin-right'] = 'auto';
-													break;
 												case 'center':
 													$tableStyleList['margin-left'] = 'auto';
 													$tableStyleList['margin-right'] = 'auto';
 													break;
 												case 'right':
-													$tableStyleList['margin-left'] = 'auto';
-													$tableStyleList['margin-right'] = null;
+													$tableStyleList['float'] = 'right';
+													$tableStyleList['margin-left'] = '10px';
 													break;
 											}
 											break;

@@ -15,7 +15,7 @@ $wgExtensionCredits['parserhook'][] = array(
 
 	// The version of the extension, which will appear on Special:Version.
 	// This can be a number or a string.
-	'version' => '1.0.8',
+	'version' => '1.0.9',
  
 	// Your name, which will appear on Special:Version.
 	'author' => 'koreapyj 원본, 김동동 수정',
@@ -34,6 +34,7 @@ $wgHooks['ParserBeforeTidy'][] = 'NamuMarkHTML2';
 $wgHooks['ParserAfterTidy'][] = 'NamuMarkExtraHTML';
 
 require_once('php-namumark.php');
+require_once("NamuMarkExtra.php");
 
 function NamuMark(&$parser, &$text, &$strip_state) {
 	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
@@ -57,7 +58,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
 
 		# 보조 파서를 불러온다.
-		require_once("NamuMarkExtra.php");
 		$Extra = new NamuMarkExtra;
 		$text = $Extra->output($text, false);
 		
@@ -112,7 +112,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
             $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
 
         $text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
-        
+
 		# 파서를 불러온다.
 		require_once("php-namumark.class2.php");
 		$wEngine = new NamuMark2($text, $title);
