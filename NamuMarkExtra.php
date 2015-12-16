@@ -42,7 +42,7 @@ class NamuMarkExtra {
 				$each_tar_in_q = preg_quote($each_tar_in, '/');
 				preg_match('/^( +?)'.$each_tar_in_q.'$/m', $text, $blank);
 				if (isset($blank[0]) && strlen($blank[0]) > 1) {
-					if(!preg_match('/^ 1\.|^ A\.|^ I\./i', $blank[0])) {				
+					if(!preg_match('/^\s+1\.|^\s+A\.|^\s+I\./i', $blank[0])) {
 						$blank[1] = preg_replace('/ /', ':', $blank[1]);
 						$text = str_replace($blank[0], $blank[1].$each_tar_in, $text);
 					}
@@ -128,8 +128,8 @@ class NamuMarkExtra {
 
 	private function table($text) {
         $text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
-        $text = preg_replace('/^\|\|\s+/m', '||', $text); // Å×ÀÌºí ¸Ç ¾Õ(||)ÀÇ ¹Ù·Î µÚ¿¡ °ø¹éÀÌ ÀÖÀ» °æ¿ì Á¦°ÅÇÏµµ·Ï ÇÑ´Ù.
-        $text = preg_replace('/^ \|\|/m', '||', $text); // Å×ÀÌºí ¸Ç ¾Õ(||)ÀÇ ¹Ù·Î ¾Õ¿¡ °ø¹éÀÌ ÀÖÀ» °æ¿ì Á¦°ÅÇÏµµ·Ï ÇÑ´Ù.
+        $text = preg_replace('/^\|\|\s+/m', '||', $text); // ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ ï¿½ï¿½(||)ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
+        $text = preg_replace('/^ \|\|/m', '||', $text); // ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ ï¿½ï¿½(||)ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
         $text = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $text);
         preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
         foreach($tables[1] as $table)
