@@ -367,12 +367,10 @@ class NamuMark1 extends NamuMark {
 			return '__TOC__';
 		elseif($text == '각주')
 			return '<references />';
-		elseif(self::startsWithi($text, 'wiki')) {
-			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
-				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2]))
-					$wikilinks[2] = '<html><img src="'.$wikilinks[2].'"></html>';
-				return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-			}
+		elseif(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
+			if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2]))
+				$wikilinks[2] = '<html><img src="'.$wikilinks[2].'"></html>';
+			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks))
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 		elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include))
