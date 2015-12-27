@@ -41,7 +41,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 
 	
 	# 상기의 확인 함수의 반환값과, 현 URI가 히스토리인지 확인하는 함수의 반환값과, 현 문서가 특수:기여 또는 특수:기록인지 확인하는 함수의 반환값을 확인한다.
-	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"])) {
+	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
 		$text = html_entity_decode($text,  ENT_QUOTES | ENT_HTML5);   // HTML 엔티티를 디코드한다.
 
 		# '[[내부 링크|<span style="color:색깔값">표시내용<span>]]'와 같은 내부 링크 글씨의 색깔을 지정하는 방식이 버그를 일으키므로
@@ -103,7 +103,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 
 function NamuMarkHTML( Parser &$parser, &$text ) {
 	$title = $parser->getTitle();
-	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"])) {
+	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
 		$text = str_replace('&apos;', "'", $text);
 		$text = str_replace('tablealign', 'table align', $text);
 		$text = str_replace('tablewidth', 'table width', $text);
@@ -124,7 +124,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 
 function NamuMarkHTML2( &$parser, &$text ) {
 	$title = $parser->getTitle();
-	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"])) {
+	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
 		# 파서를 불러온다.
 		require_once("php-namumark.class3.php");
 		$wEngine = new NamuMark3($text);
@@ -149,7 +149,7 @@ function NamuMarkHTML2( &$parser, &$text ) {
 function NamuMarkExtraHTML ( &$parser, &$text ) {
 	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
 
-	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"])) {
+	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
 		$Extra = new NamuMarkExtra;
 		$text = $Extra->output($text, true);
 	}
