@@ -222,7 +222,7 @@ class NamuMark2 extends NamuMark {
 				}
 			case '--':
 			case '~~':
-				if (!self::startsWith($text, 'QINU') && !preg_match('/^(nowiki|ref|html|pre)-.*-QINU/', $text) && !self::startsWith($text, 'h-') && !self::startsWith($text, 'item-'))
+				if (!self::startsWith($text, 'QINU') && !preg_match('/^.*?-.*-QINU/', $text) && !self::startsWith($text, 'h-') && !self::startsWith($text, 'item-'))
 					return '<s>'.$text.'</s>';
 				else
 					return $type.$text.$type;
