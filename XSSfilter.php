@@ -1,66 +1,68 @@
 <?php
 /**
- * PHP İ£ÙşÜâXSS???
- *
- * @package XssHtml
- * @version 1.0.0
- * @link http://phith0n.github.io/XssHtml
- * @since 20140621
- * @copyright (c) Phithon All Rights Reserved
- *
- */
+* PHP å¯Œæ–‡æœ¬XSS???
+*
+* @package XssHtml
+* @version 1.0.0
+* @link http://phith0n.github.io/XssHtml
+* @since 20140621
+* @copyright (c) Phithon All Rights Reserved
+*
+*/
 
 #
 # Written by Phithon <root@leavesongs.com> in 2014 and placed in
 # the public domain.
 #
-# phithon <root@leavesongs.com> ??éÍ20140621
-# From: XDSEC <www.xdsec.org> & ??Ê° <www.leavesongs.com>
-# Usage: 
+# phithon <root@leavesongs.com> ??äº20140621
+# From: XDSEC <www.xdsec.org> & ??æ­Œ <www.leavesongs.com>
+# Usage:
 # <?php
 # require('xsshtml.class.php');
 # $html = '<html code>';
 # $xss = new XssHtml($html);
 # $html = $xss->getHtml();
 # ?\>
-# 
-# âÍÏ´£º
+#
+# éœ€æ±‚ï¼š
 # PHP Version > 5.0
-# ??Ğï÷úÜâ£ºIE7+ ûäĞìöâ??Ğï£¬ÙéÛöÛÁåÙIE6Ğàì¤ù»÷úÜâ??ĞïñéîÜXSS
-# ÌÚÒıŞÅéÄ??? http://phith0n.github.io/XssHtml
+# ??å™¨ç‰ˆæœ¬ï¼šIE7+ æˆ–å…¶ä»–??å™¨ï¼Œæ— æ³•é˜²å¾¡IE6åŠä»¥ä¸‹ç‰ˆæœ¬??å™¨ä¸­çš„XSS
+# æ›´å¤šä½¿ç”¨??? http://phith0n.github.io/XssHtml
 
 class XssHtml {
-   private $m_dom;
-   private $m_xss;
-   private $m_ok;
-   private $m_AllowAttr = array('title', 'src', 'href', 'id', 'class', 'style', 'width', 'height', 'alt', 'target', 'align');
-   private $m_AllowTag = array('a', 'img', 'br', 'strong', 'b', 'code', 'pre', 'p', 'div', 'em', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'ul', 'ol', 'tr', 'th', 'td', 'hr', 'li', 'u', 'iframe', 'embed', 'object');
+    private $m_dom;
+    private $m_xss;
+    private $m_ok;
+    private $m_AllowAttr = array('title', 'src', 'href', 'id', 'class', 'style', 'width', 'height', 'alt', 'target', 'align');
+    private $m_AllowTag = array('a', 'img', 'br', 'strong', 'b', 'code', 'pre', 'p', 'div', 'em', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'ul', 'ol', 'tr', 'th', 'td', 'hr', 'li', 'u', 'iframe');
 
-   /**
-    * ?ğãùŞ?
+    /**
+    * ?é€ å‡½?
     *
-    * @param string $html Óâ??îÜÙşÜâ
-    * @param string $charset ÙşÜâ??£¬Ùù?utf-8
-    * @param array $AllowTag ëÃ?îÜ??£¬åıÍıÜô?õ¢?ÜÁò¥Ùù?£¬Ùù?ì«ùäËÌÓŞİ»İÂÍíÒö£¬Üôé©ñòÊ¥êË???
+    * @param string $html å¾…??çš„æ–‡æœ¬
+    * @param string $charset æ–‡æœ¬??ï¼Œé»˜?utf-8
+    * @param array $AllowTag å…?çš„??ï¼Œå¦‚æœä¸?æ¥š?ä¿æŒé»˜?ï¼Œé»˜?å·²æ¶µç›–å¤§éƒ¨åˆ†åŠŸèƒ½ï¼Œä¸è¦å¢åŠ å±???
     */
-   public function __construct($html, $charset = 'utf-8', $AllowTag = array()){
-      $this->m_AllowTag = empty($AllowTag) ? $this->m_AllowTag : $AllowTag;
-      $this->m_xss = strip_tags($html, '<' . implode('><', $this->m_AllowTag) . '>');
-      if (empty($this->m_xss)) {
-         $this->m_ok = FALSE;
-         return ;
-      }
-      $this->m_xss = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset={$charset}\"><nouse>" . $this->m_xss . "</nouse>";
-      $this->m_dom = new DOMDocument();
-      $this->m_dom->strictErrorChecking = FALSE;
-      $this->m_ok = @$this->m_dom->loadHTML($this->m_xss);
-   }
+    public function __construct($html, $charset = 'utf-8', $AllowTag = array()){
+        $this->m_AllowTag = empty($AllowTag) ? $this->m_AllowTag : $AllowTag;
+        if(!$this->isMobile())
+            array_push($this->m_AllowTag, 'embed', 'object');
+        $this->m_xss = strip_tags($html, '<' . implode('><', $this->m_AllowTag) . '>');
+        if (empty($this->m_xss)) {
+            $this->m_ok = FALSE;
+            return;
+        }
+        $this->m_xss = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset={$charset}\"><nouse>" . $this->m_xss . "</nouse>";
+        $this->m_dom = new DOMDocument();
+        $this->m_dom->strictErrorChecking = FALSE;
+        $this->m_ok = @$this->m_dom->loadHTML($this->m_xss);
+    }
 
-   /**
-    * ?Ôğ??ı¨îÜ?é»
+    /**
+    * ?å¾—??åçš„?å®¹
     */
-   public function getHtml()
-   {
+    public function getHtml()
+    {
       if (!$this->m_ok) {
          return '';
       }
@@ -78,17 +80,32 @@ class XssHtml {
       $html = strip_tags($this->m_dom->saveHTML(), '<' . implode('><', $this->m_AllowTag) . '>');
       $html = preg_replace('/^\n(.*)\n$/s', '$1', $html);
       return $html;
-   }
+    }
 
-   private function __true_url($url){
+    private function isMobile() {
+      $arr_browser = array ("iphone", "android", "ipod", "iemobile", "mobile", "lgtelecom", "ppc", "symbianos", "blackberry", "ipad");
+      $httpUserAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+      // ê¸°ë³¸ê°’ìœ¼ë¡œ ëª¨ë°”ì¼ ë¸Œë¼ìš°ì €ê°€ ì•„ë‹Œê²ƒìœ¼ë¡œ ê°„ì£¼í•¨
+      $mobile_browser = false;
+      // ëª¨ë°”ì¼ë¸Œë¼ìš°ì €ì— í•´ë‹¹í•˜ëŠ” ë¬¸ìì—´ì´ ìˆëŠ” ê²½ìš° $mobile_browser ë¥¼ trueë¡œ ì„¤ì •
+      for($indexi = 0 ; $indexi < count($arr_browser) ; $indexi++){
+         if(strpos($httpUserAgent, $arr_browser[$indexi]) == true){
+            $mobile_browser = true;
+            break;
+         }
+      }
+      return $mobile_browser;
+    }
+
+    private function __true_url($url){
       if (preg_match('#^https?://.+#is', $url)) {
          return $url;
       }else{
          return 'http://' . $url;
       }
-   }
+    }
 
-   private function __get_style($node){
+    private function __get_style($node){
       if ($node->attributes->getNamedItem('style')) {
          $style = $node->attributes->getNamedItem('style')->nodeValue;
          $style = str_replace('\\', ' ', $style);
@@ -98,35 +115,35 @@ class XssHtml {
       }else{
          return '';
       }
-   }
+    }
 
-   private function __get_link($node, $att){
+    private function __get_link($node, $att){
       $link = $node->attributes->getNamedItem($att);
       if ($link) {
          return $this->__true_url($link->nodeValue);
       }else{
          return '';
       }
-   }
+    }
 
-   private function __setAttr($dom, $attr, $val){
+    private function __setAttr($dom, $attr, $val){
       if (!empty($val)) {
          $dom->setAttribute($attr, $val);
       }
-   }
+    }
 
-   private function __set_default_attr($node, $attr, $default = '')
-   {
+    private function __set_default_attr($node, $attr, $default = '')
+    {
       $o = $node->attributes->getNamedItem($attr);
       if ($o) {
          $this->__setAttr($node, $attr, $o->nodeValue);
       }else{
          $this->__setAttr($node, $attr, $default);
       }
-   }
+    }
 
-   private function __common_attr($node)
-   {
+    private function __common_attr($node)
+    {
       $list = array();
       foreach ($node->attributes as $attr) {
          if (!in_array($attr->nodeName,
@@ -142,9 +159,9 @@ class XssHtml {
       $this->__set_default_attr($node, 'title');
       $this->__set_default_attr($node, 'id');
       $this->__set_default_attr($node, 'class');
-   }
+    }
 
-   private function __node_img($node){
+    private function __node_img($node){
       $this->__common_attr($node);
 
       $this->__set_default_attr($node, 'src');
@@ -153,17 +170,17 @@ class XssHtml {
       $this->__set_default_attr($node, 'alt');
       $this->__set_default_attr($node, 'align');
 
-   }
+    }
 
-   private function __node_a($node){
+    private function __node_a($node){
       $this->__common_attr($node);
       $href = $this->__get_link($node, 'href');
 
       $this->__setAttr($node, 'href', $href);
       $this->__set_default_attr($node, 'target', '_blank');
-   }
+    }
 
-   private function __node_embed($node){
+    private function __node_embed($node){
       $this->__common_attr($node);
       $link = $this->__get_link($node, 'src');
 
@@ -171,17 +188,17 @@ class XssHtml {
       $this->__setAttr($node, 'allowscriptaccess', 'never');
       $this->__set_default_attr($node, 'width');
       $this->__set_default_attr($node, 'height');
-   }
+    }
 
-   private function __node_default($node){
+    private function __node_default($node){
       $this->__common_attr($node);
-   }
+    }
 }
 
-// if(php_sapi_name() == "cli"){
-// 	$html = $argv[1];
-// 	$xss = new XssHtml($html);
-// 	$html = $xss->getHtml();
-// 	echo "'$html'";
-// }
+    // if(php_sapi_name() == "cli"){
+    // 	$html = $argv[1];
+    // 	$xss = new XssHtml($html);
+    // 	$html = $xss->getHtml();
+    // 	echo "'$html'";
+    // }
 ?>
