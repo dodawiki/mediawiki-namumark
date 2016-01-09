@@ -127,13 +127,15 @@ class NamuMarkExtra {
     }
 
 	private function table($text) {
-        $text = preg_replace('/^(\|\|<table.*?>)(\|\|+)/im', '$2$1', $text);
-        $text = preg_replace('/^\|\|\s+/m', '||', $text); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
         $text = preg_replace('/^ \|\|/m', '||', $text); // ���̺� �� ��(||)�� �ٷ� �տ� ������ ���� ��� �����ϵ��� �Ѵ�.
-        $text = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $text);
+        
         preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
         foreach($tables[1] as $table)
             $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
+
+        $text = preg_replace('/^(\|\|<table.*?\>)(\|\|+)/im', '$2$1', $text);
+        $text = preg_replace('/^\|\|\s+/m', '||', $text); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
+        $text = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $text);
 
         return $text;
 	}
