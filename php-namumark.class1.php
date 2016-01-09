@@ -375,6 +375,7 @@ class NamuMark1 extends NamuMark {
 	}
 
 	protected function linkProcessor($text, $type) {
+		$text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
 		if(strtolower($text) == 'br')
 			return '<br>';
 		elseif($text == '목차')
@@ -444,7 +445,8 @@ class NamuMark1 extends NamuMark {
 					return '[['.$wikilinks[1].']]';
 					}
 				} elseif(!self::startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
-					return '[['.$text.']]';
+                    $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
+                    return '[['.$text.']]';
 				} 
 
 		}
