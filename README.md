@@ -22,6 +22,7 @@ php-namumark-mediawiki는 [나무위키](https://namu.wiki)에서 사용하는 [
     ```php
     require_once "$IP/extensions/NamuMark/namumark.php";
     $wgRawHtml = true;
+    $wgAllowImageTag = true;
     ```
 
 	
