@@ -380,11 +380,8 @@ class NamuMark1 extends NamuMark {
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 		elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include))
 			return '{{'.$include[1].'}}'."\n";
-		elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
-			$youtube_code[1] = preg_replace('/,(.*)/', '', $youtube_code[1]);
-			return '{{#ev:youtube|'.$youtube_code[1].'}}';
-		} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code))
-			return '{{#ev:nico|'.$nico_code[1].'}}';
+        elseif(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
+            return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
 		elseif(preg_match('/anchor\((.*?)\)/i', $text, $anchor))
 			return '<span id="'.$anchor[1].'"></span>';
 		elseif(self::startsWith($text, 'http')) {
@@ -423,11 +420,8 @@ class NamuMark1 extends NamuMark {
 					if(isset($note[2])) {
 						return "<ref>$note[2]</ref>";
 					}
-				} elseif(preg_match('/youtube\((.*)\)/', $text, $youtube_code)) {
-					$youtube_code[1] = preg_replace('/,(.*)/', '', $youtube_code[1]);
-					return '{{#ev:youtube|'.$youtube_code[1].'}}';
-				} elseif(preg_match('/nicovideo\((.*)\)/', $text, $nico_code)) {
-					return '{{#ev:nico|'.$nico_code[1].'}}';
+				} elseif(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code)) {
+                    return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
 				} elseif(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks) || preg_match('/^wiki:(.*)/', $text, $wikilinks)) {
 					if(isset($wikilinks[2]) && $wikilinks[2] !== '') {
 					return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
@@ -516,5 +510,41 @@ class NamuMark1 extends NamuMark {
 		}
 		return $type.$text.$type;
 	}
+
+    private function videoProcessor($text, $service) {
+        $options = explode(",", $text);
+        $text = '';
+
+        foreach($options as $key => $value) {
+            if($key == 0) {
+                $service = str_replace('nicovideo', 'nico', $service);
+                $text .= '{{#evt:service='.$service.'|id='.$value;
+                continue;
+            }
+
+            $option = explode("=", $value);
+            if($option[0] == 'width') {
+                $width = $option[1];
+                continue;
+            } elseif ($option[0] == 'height') {
+                $height = $option[1];
+                continue;
+            }
+
+            $text .= '|'.$value;
+        }
+
+        if(isset($width) && isset($height))
+            $text .= '|dimensions='.$width.'x'.$height;
+        elseif(isset($width))
+            $text .= '|dimensions='.$width;
+        elseif(isset($height))
+            $text .= '|dimensions=x'.$height;
+
+        return $text.'}}';
+
+    }
+
+
 	
 }
