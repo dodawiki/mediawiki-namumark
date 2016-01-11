@@ -10,6 +10,7 @@ php-namumark-mediawiki는 [나무위키](https://namu.wiki)에서 사용하는 [
 * [EmbedVideo 확장기능](https://www.mediawiki.org/wiki/Extension:EmbedVideo)
 * [Cite 확장기능](https://www.mediawiki.org/wiki/Extension:Cite)
 * [Math 확장기능](https://www.mediawiki.org/wiki/Extension:Math) 또는 [SimpleMathJax 확장기능](https://www.mediawiki.org/wiki/Extension:SimpleMathJax)
+* [Poem 확장기능](https://www.mediawiki.org/wiki/Extension:Poem)
 
 ## 사용 방법
 1. 미디어위키 extensions 폴더에 NamuMark 폴더를 새로 생성합니다. 또는 서버에 직접 git을 이용하실 수 있으면 설치된 미디어위키의 extensions 폴더에서 다음과 같이 명령합니다.
