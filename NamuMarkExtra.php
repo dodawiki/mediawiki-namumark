@@ -133,7 +133,7 @@ class NamuMarkExtra {
         foreach($tables[1] as $table)
             $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
 
-        $text = preg_replace('/^(\|\|<table.*?\>)(\|\|+)/im', '$2$1', $text);
+        $text = preg_replace('/^(\|\|+)(<table.*?\>)(\|\|+)/im', '$1$3$2', $text);
         $text = preg_replace('/^\|\|\s+/m', '||', $text); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
         $text = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $text);
 
