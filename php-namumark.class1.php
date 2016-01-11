@@ -336,22 +336,12 @@ class NamuMark1 extends NamuMark {
 
 	protected function renderProcessor($text, $type) {
 		if(self::startsWithi($text, '#!html')) {
-			$text = substr($text, 7);
-			return '<html>'.$text.'</html>';
+			return '<html>'.preg_replace('/UNIQ--.*?--QINU/', '', substr($text, 7)).'</html>';
 		} elseif($type == '{{|') {
-			if(preg_match('/\|-/', $text)) {
+			if(preg_match('/\|-/', $text))
 				return $type.$text.$type;
-			} else {
-				if(preg_match('/<#(.*?)>/', $text, $color)) {
-					$text = str_replace($color[0], '', $text);
-					return '<poem style="border: 2px solid #d6d2c5; background-color: #'.$color[1].'; padding: 1em;">'.$text.'</poem>';
-				} elseif(preg_match('/<tablewidth=(.*?)>/', $text, $width)) {
-					$text = str_replace($width[0], '', $text);
-					return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; width: '.$width[1].'; padding: 1em;">'.$text.'</poem>';
-				} else {
+			else
 				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
-				}
-			}
 		}
 		
 		$text = str_ireplace(array('{{{#!html', '}}}'), array("<html><xmp>", '</xmp></html>'), $text);
