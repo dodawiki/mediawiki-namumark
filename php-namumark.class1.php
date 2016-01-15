@@ -365,35 +365,34 @@ class NamuMark1 extends NamuMark {
 	}
 
 	protected function linkProcessor($text, $type) {
+        if(preg_match('/^(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/', $text))
+            return '['.str_replace('|', ' ', $text).']';
 		$text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
 		if(strtolower($text) == 'br')
 			return '<br>';
-		elseif($text == '목차')
+		if($text == '목차')
 			return '__TOC__';
-		elseif($text == '각주')
+		if($text == '각주')
 			return '<references />';
-		elseif(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks))
+		if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks))
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-		elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks))
+		if(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks))
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-		elseif(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include))
+		if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include))
 			return '{{'.$include[1].'}}'."\n";
-        elseif(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
+        if(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
             return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
-		elseif(preg_match('/anchor\((.*?)\)/i', $text, $anchor))
+		if(preg_match('/anchor\((.*?)\)/i', $text, $anchor))
 			return '<span id="'.$anchor[1].'"></span>';
-		elseif(self::startsWith($text, 'http')) {
-			$text = str_replace('|', ' ', $text);
-			return '['.$text.']';
-		} elseif(self::startsWithi($text, 'html(')) {
+		if(self::startsWithi($text, 'html(')) {
             $html = $text;
             $html = preg_replace('/html\((.*)\)/i', '$1', $html);
             $html = htmlspecialchars_decode($html);
             return '<html>' . $html . '</html>';
-        }elseif(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
+        }
+        if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
 			return $filelink[2].'&link='.$filelink[1];
-		else
-			return '[[' . $this->formatParser($text) . ']]';
+        return '[[' . $this->formatParser($text) . ']]';
 	}
 
 	protected function macroProcessor($text, $type) {
