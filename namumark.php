@@ -60,7 +60,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		# 보조 파서를 불러온다.
 		$Extra = new NamuMarkExtra;
 		$text = $Extra->output($text, false);
-		
+
 		# 파서를 불러온다.
 		require_once("php-namumark.class1.php");
 		$wEngine = new NamuMark1($text);
@@ -85,9 +85,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		}
 				
 		# 상기에서 볃도로 보관한 변수의 값을 본문의 바로 앞에 추가한다.
-		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"])) {
-		$text = $fn[0].$text;
-		}
+		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"]))
+			$text = $fn[0].$text;
 
 		preg_match_all('/<html>(.*?)<\/html>/s', $text, $html);
 		require_once 'XSSfilter.php';

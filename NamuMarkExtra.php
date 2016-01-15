@@ -26,31 +26,16 @@ class NamuMarkExtra {
 	}
 
 	private function dd($text) {
-		preg_match_all('/^ +(.*)$/m', $text, $indent);
-		foreach ($indent[1] as $each_indent) {
-			if (!isset($i)) {
-				$i = 0;
-			}
-			if(!preg_match('/^(\*|\|)/m', $each_indent)) {
-				$tar_in[$i] = $each_indent;
-				$i++;
-			}
-		
-		}
-		if (isset($tar_in)) {
-			foreach($tar_in as $each_tar_in) {
-				$each_tar_in_q = preg_quote($each_tar_in, '/');
-				preg_match('/^( +?)'.$each_tar_in_q.'$/m', $text, $blank);
-				if (isset($blank[0]) && strlen($blank[0]) > 1) {
-					if(!preg_match('/^\s+1\.|^\s+A\.|^\s+I\./i', $blank[0])) {
-						$blank[1] = preg_replace('/ /', ':', $blank[1]);
-						$text = str_replace($blank[0], $blank[1].$each_tar_in, $text);
-					}
-				}
-			}
-		}
-	
-		return $text;
+		if(preg_match_all('/^( +)(.*)$/m', $text, $indent, PREG_SET_ORDER)) {
+            foreach ($indent as $each_indent) {
+                if (!preg_match('/^(1\.|^A\.|^I\.)/i', $each_indent[2])) {
+                    $each_indent[1] = str_replace(' ', ':', $each_indent[1]);
+                    $text = preg_replace('/^'.preg_quote($each_indent[0], '/').'$/m', $each_indent[1].$each_indent[2], $text);
+                }
+            }
+        }
+
+        return $text;
 	}
 	
 	private function title($text) {
@@ -130,12 +115,12 @@ class NamuMarkExtra {
         $text = preg_replace('/^ \|\|/m', '||', $text); // ���̺� �� ��(||)�� �ٷ� �տ� ������ ���� ��� �����ϵ��� �Ѵ�.
 
         preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
-        foreach($tables[1] as $table)
+        foreach($tables[1] as $table) {
+            $table = preg_replace('/^(\|\|+)(<table.*?\>)(\|\|+)/im', '$1$3$2', $table);
+            $table = preg_replace('/^\|\|\s+/m', '||', $table); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
+            $table = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $table);
             $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
-
-        $text = preg_replace('/^(\|\|+)(<table.*?\>)(\|\|+)/im', '$1$3$2', $text);
-        $text = preg_replace('/^\|\|\s+/m', '||', $text); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
-        $text = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $text);
+        }
 
         return $text;
 	}

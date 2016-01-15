@@ -336,7 +336,24 @@ class NamuMark1 extends NamuMark {
 
 	protected function renderProcessor($text, $type) {
 		if(self::startsWithi($text, '#!html')) {
-			return '<html>'.preg_replace('/UNIQ--.*?--QINU/', '', substr($text, 7)).'</html>';
+            $lines = explode("\n", substr($text, 7));
+            $text = '';
+            foreach($lines as $key => $line) {
+                if( (!$key && !$lines[$key]) || ($key == count($lines) - 1 && !$lines[$key]) )
+                    continue;
+                if (preg_match('/^(:+)/', $line, $match)) {
+                    $line = substr($line, strlen($match[1]));
+                    $add = '';
+                    for ($i = 1; $i <= strlen($match[1]); $i++)
+                        $add .= ' ';
+                    $line = $add . $line;
+                    $text .= $line . "\n";
+                } else {
+                    $text .= $line . "\n";
+                }
+            }
+
+            return '<html>'.preg_replace('/UNIQ--.*?--QINU/', '', $text).'</html>';
 		} elseif($type == '{{|') {
 			if(preg_match('/\|-/', $text))
 				return $type.$text.$type;
@@ -344,23 +361,6 @@ class NamuMark1 extends NamuMark {
 				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
 		}
 		
-		$text = str_ireplace(array('{{{#!html', '}}}'), array("<html><xmp>", '</xmp></html>'), $text);
-		$lines = explode("\n", $text);
-        $text = '';
-        foreach($lines as $key => $line) {
-            if( (!$key && !$lines[$key]) || ($key == count($lines) - 1 && !$lines[$key]) )
-                continue;
-            if (preg_match('/^(:+)/', $line, $match)) {
-                $line = substr($line, strlen($match[1]));
-                $add = '';
-                for ($i = 1; $i <= strlen($match[1]); $i++)
-                    $add .= ' ';
-                $line = $add . $line;
-                $text .= $line . "\n";
-            } else {
-                $text .= $line . "\n";
-            }
-        }
 		return '<pre>'.$text.'</pre>';
 	}
 
