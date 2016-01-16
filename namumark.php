@@ -91,7 +91,23 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		preg_match_all('/<html>(.*?)<\/html>/s', $text, $html);
 		require_once 'XSSfilter.php';
 		foreach ($html[1] as $code) {
-			$xss = new XssHtml($code);
+			$lines = explode("\n", $code);
+			$code_ex = '';
+			foreach($lines as $key => $line) {
+				if( (!$key && !$lines[$key]) || ($key == count($lines) - 1 && !$lines[$key]) )
+					continue;
+				if (preg_match('/^(:+)/', $line, $match)) {
+					$line = substr($line, strlen($match[1]));
+					$add = '';
+					for ($i = 1; $i <= strlen($match[1]); $i++)
+						$add .= ' ';
+					$line = $add . $line;
+                    $code_ex .= $line . "\n";
+				} else {
+                    $code_ex .= $line . "\n";
+				}
+			}
+			$xss = new XssHtml($code_ex);
 			$text = str_replace($code, $xss->getHtml(), $text);
 		}
 
