@@ -190,6 +190,13 @@ class XssHtml {
       $this->__set_default_attr($node, 'height');
     }
 
+    private function __node_iframe($node) {
+        $this->__common_attr($node);
+        $link = $this->__get_link($node, 'src');
+
+        $this->__setAttr($node, 'src', $link);
+    }
+
     private function __node_default($node){
       $this->__common_attr($node);
     }
