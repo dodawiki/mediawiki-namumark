@@ -110,15 +110,11 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 function NamuMarkHTML( Parser &$parser, &$text ) {
 	$title = $parser->getTitle();
 	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
-		$text = str_replace('&apos;', "'", $text);
-		$text = str_replace('tablealign', 'table align', $text);
-		$text = str_replace('tablewidth', 'table width', $text);
-        preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
-        foreach($tables[1] as $table)
-            $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
-
+		$text = str_replace(array('&apos;', '&lt;', '&gt;'), array("'", '<', '>'), $text);
+		$Extra = new NamuMarkExtra;
+		$text = $Extra->table($text);
         $text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
-
+        
 		# 파서를 불러온다.
 		require_once("php-namumark.class2.php");
 		$wEngine = new NamuMark2($text, $title);

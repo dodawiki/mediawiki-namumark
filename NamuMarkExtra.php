@@ -111,15 +111,15 @@ class NamuMarkExtra {
         return $text;
     }
 
-	private function table($text) {
+	public function table($text) {
         $text = preg_replace('/^ \|\|/m', '||', $text); // ���̺� �� ��(||)�� �ٷ� �տ� ������ ���� ��� �����ϵ��� �Ѵ�.
 
         preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
         foreach($tables[1] as $table) {
-            $table = preg_replace('/^(\|\|+)(<table.*?\>)(\|\|+)/im', '$1$3$2', $table);
-            $table = preg_replace('/^\|\|\s+/m', '||', $table); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
-            $table = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $table);
-            $text = str_replace($table, str_replace("\n", '<br />', $table), $text);
+            $newtable = preg_replace('/^(\|\|+)(<table.*?\>)(\|\|+)/im', '$1$3$2', $table);
+			$newtable = preg_replace('/^\|\|\s+/m', '||', $newtable); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
+			$newtable = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $newtable);
+            $text = str_replace($table, str_replace("\n", '<br />', $newtable), $text);
         }
 
         return $text;
