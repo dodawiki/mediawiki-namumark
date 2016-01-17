@@ -71,17 +71,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
     
 		# 가져온 수식 중 '[['과 ']]'를 모두 각각 '[', ']'로 바꾼다.
 		foreach ($math as $tex) {
-			foreach ($tex as $rtex) {
-				$vowels = array(
-				"]]",
-				"[["
-				);
-				$rpe = array(
-				"]",
-				"["
-				);
-				$text = str_replace($rtex, str_replace($vowels, $rpe, $rtex), $text);
-			}
+			foreach ($tex as $rtex)
+				$text = str_replace($rtex, str_replace(array("]]", "[["), array("]", "["), $rtex), $text);
 		}
 				
 		# 상기에서 볃도로 보관한 변수의 값을 본문의 바로 앞에 추가한다.

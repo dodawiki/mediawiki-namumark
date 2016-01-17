@@ -34,7 +34,7 @@ class XssHtml {
     private $m_xss;
     private $m_ok;
     private $m_AllowAttr = array('title', 'src', 'href', 'id', 'class', 'style', 'width', 'height', 'alt', 'target', 'align');
-    private $m_AllowTag = array('a', 'img', 'br', 'strong', 'b', 'code', 'pre', 'p', 'div', 'em', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'ul', 'ol', 'tr', 'th', 'td', 'hr', 'li', 'u', 'iframe');
+    private $m_AllowTag = array('a', 'img', 'br', 'strong', 'b', 'code', 'pre', 'p', 'div', 'em', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'ul', 'ol', 'tr', 'th', 'td', 'hr', 'li', 'u', 'iframe', 'embed');
 
     /**
     * ?造函?
@@ -45,8 +45,6 @@ class XssHtml {
     */
     public function __construct($html, $charset = 'utf-8', $AllowTag = array()){
         $this->m_AllowTag = empty($AllowTag) ? $this->m_AllowTag : $AllowTag;
-        if(!$this->isMobile())
-            array_push($this->m_AllowTag, 'embed', 'object');
         $this->m_xss = strip_tags($html, '<' . implode('><', $this->m_AllowTag) . '>');
         if (empty($this->m_xss)) {
             $this->m_ok = FALSE;
@@ -82,21 +80,6 @@ class XssHtml {
       return $html;
     }
 
-    private function isMobile() {
-      $arr_browser = array ("iphone", "android", "ipod", "iemobile", "mobile", "lgtelecom", "ppc", "symbianos", "blackberry", "ipad");
-      $httpUserAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
-      // 기본값으로 모바일 브라우저가 아닌것으로 간주함
-      $mobile_browser = false;
-      // 모바일브라우저에 해당하는 문자열이 있는 경우 $mobile_browser 를 true로 설정
-      for($indexi = 0 ; $indexi < count($arr_browser) ; $indexi++){
-         if(strpos($httpUserAgent, $arr_browser[$indexi]) == true){
-            $mobile_browser = true;
-            break;
-         }
-      }
-      return $mobile_browser;
-    }
-
     private function __true_url($url){
       if (preg_match('#^https?://.+#is', $url)) {
          return $url;
@@ -130,6 +113,29 @@ class XssHtml {
       if (!empty($val)) {
          $dom->setAttribute($attr, $val);
       }
+    }
+
+    private function __setName(DOMNode $oldNode, $newName, $newNS = null) {
+        if (isset($newNS))
+        {
+            $newNode = $oldNode->ownerDocument->createElementNS($newNS, $newName);
+        }
+        else
+        {
+            $newNode = $oldNode->ownerDocument->createElement($newName);
+        }
+
+        foreach ($oldNode->attributes as $attr)
+        {
+            $newNode->appendChild($attr->cloneNode());
+        }
+
+        foreach ($oldNode->childNodes as $child)
+        {
+            $newNode->appendChild($child->cloneNode(true));
+        }
+
+        $oldNode->parentNode->replaceChild($newNode, $oldNode);
     }
 
     private function __set_default_attr($node, $attr, $default = '')
@@ -181,13 +187,16 @@ class XssHtml {
     }
 
     private function __node_embed($node){
-      $this->__common_attr($node);
-      $link = $this->__get_link($node, 'src');
+        $this->__common_attr($node);
+        $link = $this->__get_link($node, 'src');
 
-      $this->__setAttr($node, 'src', $link);
-      $this->__setAttr($node, 'allowscriptaccess', 'never');
-      $this->__set_default_attr($node, 'width');
-      $this->__set_default_attr($node, 'height');
+        if(preg_match('@^http:(//www\.youtube\.com.*)@', $link))
+            $this->__setName($node, 'iframe');
+
+        $this->__setAttr($node, 'src', $link);
+        $this->__setAttr($node, 'allowscriptaccess', 'never');
+        $this->__set_default_attr($node, 'width');
+        $this->__set_default_attr($node, 'height');
     }
 
     private function __node_iframe($node) {
