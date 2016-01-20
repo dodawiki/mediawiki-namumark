@@ -81,7 +81,7 @@ class XssHtml {
     }
 
     private function __true_url($url){
-      if (preg_match('#^https?://.+#is', $url)) {
+      if (preg_match('#^(https?:)?//.+#is', $url)) {
          return $url;
       }else{
          return 'http://' . $url;
@@ -190,11 +190,11 @@ class XssHtml {
         $this->__common_attr($node);
         $link = $this->__get_link($node, 'src');
 
-        if(preg_match('@^http:(//www\.youtube\.com.*)@', $link)) {
+        if(preg_match('@^(https?:)?//www\.youtube\.com.*@', $link)) {
             $link = preg_replace('@^http://@', '//', $link);
             $this->__setName($node, 'iframe');
         }
-        
+
         $this->__setAttr($node, 'src', $link);
         $this->__setAttr($node, 'allowscriptaccess', 'never');
         $this->__set_default_attr($node, 'width');
