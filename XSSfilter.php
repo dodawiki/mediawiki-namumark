@@ -191,6 +191,7 @@ class XssHtml {
         $link = $this->__get_link($node, 'src');
 
         if(preg_match('@^(https?:)?//www\.youtube\.com.*@', $link)) {
+            $link = preg_replace('@^((?:https?:)?//www\.youtube\.com)/v/(.*)@', '$1/embed/$2', $link);
             $link = preg_replace('@^http://@', '//', $link);
             $this->__setName($node, 'iframe');
         }
