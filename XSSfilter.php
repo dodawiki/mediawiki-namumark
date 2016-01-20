@@ -190,10 +190,11 @@ class XssHtml {
         $this->__common_attr($node);
         $link = $this->__get_link($node, 'src');
 
-        if(preg_match('@^(https?:)?//www\.youtube\.com.*@', $link)) {
-            $link = preg_replace('@^((?:https?:)?//www\.youtube\.com)/v/(.*)@', '$1/embed/$2', $link);
-            $link = preg_replace('@^http://@', '//', $link);
+        if(preg_match('@^(?:https?:)?//www\.youtube\.com/v/(.*)@', $link, $youtube)) {
+            $link = '//www.youtube.com/embed/'.$youtube[1];
+            $this->__setAttr($node, 'src', $link);
             $this->__setName($node, 'iframe');
+            return;
         }
 
         $this->__setAttr($node, 'src', $link);
