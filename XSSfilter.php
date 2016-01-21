@@ -207,6 +207,8 @@ class XssHtml {
         $this->__common_attr($node);
         $link = $this->__get_link($node, 'src');
 
+        $link = preg_replace('@^http://www\.youtube\.com@', '//www.youtube.com', $link);
+        
         $this->__setAttr($node, 'src', $link);
     }
 
