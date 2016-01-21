@@ -528,7 +528,11 @@ class NamuMark1 extends NamuMark {
             } elseif ($option[0] == 'height') {
                 $height = $option[1];
                 continue;
-            }
+            } elseif (preg_match('/(\d+)x(\d+)/', $value, $match)) {
+				$width = $match[1];
+				$height = $match[2];
+				continue;
+			}
 
             $text .= '|'.$value;
         }
