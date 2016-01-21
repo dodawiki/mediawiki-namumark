@@ -509,6 +509,7 @@ class NamuMark1 extends NamuMark {
 	}
 
     private function videoProcessor($text, $service) {
+		$text = str_replace('|', ',', $text);
         $options = explode(",", $text);
         $text = '';
 
