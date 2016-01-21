@@ -335,8 +335,13 @@ class NamuMark1 extends NamuMark {
 	}
 
 	protected function renderProcessor($text, $type) {
-		if(self::startsWithi($text, '#!html')) {
-            $lines = explode("\n", substr($text, 7));
+        if($type == '{{|') {
+            if(preg_match('/\|-/', $text))
+                return $type.$text.$type;
+            else
+                return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+        } else {
+            $lines = explode("\n", $text);
             $text = '';
             foreach($lines as $key => $line) {
                 if( (!$key && !$lines[$key]) || ($key == count($lines) - 1 && !$lines[$key]) )
@@ -353,15 +358,11 @@ class NamuMark1 extends NamuMark {
                 }
             }
 
-            return '<html>'.preg_replace('/UNIQ--.*?--QINU/', '', $text).'</html>';
-		} elseif($type == '{{|') {
-			if(preg_match('/\|-/', $text))
-				return $type.$text.$type;
-			else
-				return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
-		}
-		
-		return '<pre>'.$text.'</pre>';
+            if(self::startsWithi($text, '#!html'))
+                return '<html>'.preg_replace('/UNIQ--.*?--QINU/', '', substr($text, 7)).'</html>';
+            else
+                return '<pre>'.$text.'</pre>';
+        }
 	}
 
 	protected function linkProcessor($text, $type) {
