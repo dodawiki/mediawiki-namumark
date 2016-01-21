@@ -208,7 +208,8 @@ class XssHtml {
         $link = $this->__get_link($node, 'src');
 
         $link = preg_replace('@^http://www\.youtube\.com@', '//www.youtube.com', $link);
-        
+        $link = preg_replace('@^http://videofarm\.daum\.net@', '//videofarm.daum.net', $link);
+
         $this->__setAttr($node, 'src', $link);
     }
 
