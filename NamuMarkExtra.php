@@ -18,17 +18,17 @@ class NamuMarkExtra {
 		} elseif(!$is_html) {
 			$text = $this->title($text);
 			$text = $this->table($text);
-			$text = $this->dd($text);
+			$text = $this->indent($text);
 			$this->getTemplateParameter($text);
 		}
 		
 		return $text;
 	}
 
-	private function dd($text) {
-		if(preg_match_all('/^( +)(.*)$/m', $text, $indent, PREG_SET_ORDER)) {
+	private function indent($text) {
+		if(preg_match_all('/^( +)([^*]*)$/m', $text, $indent, PREG_SET_ORDER)) {
             foreach ($indent as $each_indent) {
-                if (!preg_match('/^(1\.|^A\.|^I\.)/i', $each_indent[2])) {
+                if (!preg_match('/^(1\.|A\.|I\.)/i', $each_indent[2])) {
                     $each_indent[1] = str_replace(' ', ':', $each_indent[1]);
                     $text = preg_replace('/^'.preg_quote($each_indent[0], '/').'$/m', $each_indent[1].$each_indent[2], $text);
                 }
