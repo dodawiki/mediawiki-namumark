@@ -402,6 +402,7 @@ class NamuMark1 extends NamuMark {
 			case 'br':
 				return '<br>';
 			case 'date':
+            case 'datetime':
 				return date('Y-m-d H:i:s');
 			case '목차':
 			case 'tableofcontents':
