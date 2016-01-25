@@ -32,7 +32,7 @@ class NamuMarkExtra {
             if(preg_match('/^( +)([^*]*)$/', $line, $indent) && !preg_match('/^(1\.|A\.|I\.)/i', $indent[2]))
                 $text .= str_replace(' ', ':', $indent[1]).$indent[2]."\n";
             else
-                $text .= $line;
+                $text .= $line."\n";
         }
 
         return $text;
