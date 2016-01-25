@@ -26,13 +26,13 @@ class NamuMarkExtra {
 	}
 
 	private function indent($text) {
-		if(preg_match_all('/^( +)([^*]*)$/m', $text, $indent, PREG_SET_ORDER)) {
-            foreach ($indent as $each_indent) {
-                if (!preg_match('/^(1\.|A\.|I\.)/i', $each_indent[2])) {
-                    $each_indent[1] = str_replace(' ', ':', $each_indent[1]);
-                    $text = preg_replace('/^'.preg_quote($each_indent[0], '/').'$/m', $each_indent[1].$each_indent[2], $text);
-                }
-            }
+        $lines = explode("\n", $text);
+        $text = '';
+        foreach($lines as $line) {
+            if(preg_match('/^( +)([^*]*)$/', $line, $indent) && !preg_match('/^(1\.|A\.|I\.)/i', $indent[2]))
+                $text .= str_replace(' ', ':', $indent[1]).$indent[2]."\n";
+            else
+                $text .= $line."\n";
         }
 
         return $text;
