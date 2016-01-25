@@ -371,6 +371,8 @@ class NamuMark1 extends NamuMark {
 		$text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
 		if(strtolower($text) == 'br')
 			return '<br>';
+        if(strtolower($text) == 'date')
+            return date('Y-m-d H:i:s');
 		if($text == '목차')
 			return '__TOC__';
 		if($text == '각주')
