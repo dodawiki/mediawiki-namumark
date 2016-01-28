@@ -66,6 +66,11 @@ class NamuMark1 extends NamuMark {
 				'close' => ']]',
 				'multiline' => false,
 				'processor' => array($this,'linkProcessor')),
+            array(
+                'open'	=> '{{',
+                'close' => '}}',
+                'multiline' => false,
+                'processor' => array($this,'mediawikiProcessor')),
 			array(
 				'open'	=> '[',
 				'close' => ']',
@@ -417,22 +422,23 @@ class NamuMark1 extends NamuMark {
 					$include[1] = str_replace(',', '|', $include[1]);
 					$include[1] = urldecode($include[1]);
 					return '{{'.$include[1].'}}'."\n";
-				} elseif(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
-					if(isset($note[2])) {
+				}
+				if(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
+					if(isset($note[2]))
 						return "<ref>$note[2]</ref>";
-					}
-				} elseif(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code)) {
+				}
+				if(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
                     return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
-				} elseif(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks) || preg_match('/^wiki:(.*)/', $text, $wikilinks)) {
-					if(isset($wikilinks[2]) && $wikilinks[2] !== '') {
-					return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-					} else {
-					return '[['.$wikilinks[1].']]';
-					}
-				} elseif(!self::startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
+				if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks) || preg_match('/^wiki:(.*)/', $text, $wikilinks)) {
+					if(isset($wikilinks[2]) && $wikilinks[2] !== '')
+						return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
+					else
+						return '[['.$wikilinks[1].']]';
+				}
+				if(!self::startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
                     $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
                     return '[['.$text.']]';
-				} 
+				}
 
 		}
 		$text = str_replace('|', ' ', $text);
@@ -549,6 +555,11 @@ class NamuMark1 extends NamuMark {
 
         return $text.'}}';
 
+    }
+
+    protected function mediawikiProcessor($text, $type) {
+        if($type == '{{')
+            return '{{'.$text.'}}';
     }
 
 

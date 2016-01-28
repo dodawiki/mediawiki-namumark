@@ -15,7 +15,7 @@ $wgExtensionCredits['parserhook'][] = array(
 
 	// The version of the extension, which will appear on Special:Version.
 	// This can be a number or a string.
-	'version' => '1.0.12',
+	'version' => '1.0.13',
  
 	// Your name, which will appear on Special:Version.
 	'author' => 'koreapyj 원본, 김동동 수정',
