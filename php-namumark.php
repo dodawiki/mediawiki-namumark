@@ -186,12 +186,14 @@ class NamuMark {
 				}
 				
 				$innerstr = preg_replace('/\s+?</', '<', $innerstr);
-				
+
 				while(self::startsWith($innerstr, '<')) {
 					$dummy=0;
 					$prop = $this->bracketParser($innerstr, $dummy, array('open'	=> '<', 'close' => '>','multiline' => false,'processor' => function($str) { return $str; }));
+                    $prop = str_replace(array('tablealign', 'tablewidth'), array('table align', 'table width'), $prop);
 					$innerstr = substr($innerstr, $dummy+1);
-					switch($prop) {
+
+                    switch($prop) {
 						case '(':
 							break;
 						case ':':
@@ -227,6 +229,8 @@ class NamuMark {
 											$tableStyleList['border'] .= $tbprop[2];
 											break;
 										case 'width':
+                                            if(is_numeric($tbprop[2]))
+                                                $tbprop[2] .= 'px';
 											$tableStyleList['width'] = $tbprop[2];
 											break;
 									}
@@ -271,6 +275,8 @@ class NamuMark {
 										break;
 								}
 							}
+                            else
+                                $tdStyleList['background-color'] = $prop;
 					}
 				}
 
@@ -288,7 +294,8 @@ class NamuMark {
 						$tdStyleList['text-align'] = null;
 					}
 				}
-				$innerstr = trim($innerstr);
+                $innerstr = trim($innerstr);
+
 				
 				$tdAttr['style'] = '';
 				foreach($tdStyleList as $styleName =>$tdstyleValue) {

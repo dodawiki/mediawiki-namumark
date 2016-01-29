@@ -117,9 +117,9 @@ class NamuMarkExtra {
 
         preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
         foreach($tables[1] as $table) {
-            $newtable = preg_replace('/^(\|\|+)(<table.*?\>)(\|\|+)/im', '$1$3$2', $table);
+            $newtable = preg_replace('/^((?:\|\|)+)(<table.*?\>)((?:\|\|)+)(.+)/im', '$1$3$2$4', $table);
 			$newtable = preg_replace('/^\|\|\s+/m', '||', $newtable); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
-			$newtable = str_replace(['|| <', '> <', 'tablealign', 'tablewidth'], ['||<', '><', 'table align', 'table width'], $newtable);
+			$newtable = str_replace(['|| <', '> <'], ['||<', '><'], $newtable);
             $text = str_replace($table, str_replace("\n", '<br />', $newtable), $text);
         }
 
