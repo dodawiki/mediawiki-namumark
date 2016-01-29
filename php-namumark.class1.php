@@ -458,11 +458,10 @@ class NamuMark1 extends NamuMark {
                 else
                     return $type.$text.$type;
             case '__':
-				if(preg_match('/TOC/', $text)) {
-					return '__'.$text.'__';
-				} else {
+				if(preg_match('/TOC/', $text))
+					return $type.$text.$type;
+				else
 					return '<u>'.$text.'</u>';
-				}
 			case '^^':
 				return '<sup>'.$text.'</sup>';
 			case ',,':

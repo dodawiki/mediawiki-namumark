@@ -139,6 +139,11 @@ class NamuMark {
 		return strtolower($needle) == strtolower(substr($haystack, $offset, $len));
 	}
 
+	protected static function endsWith($haystack, $needle) {
+		// search forward starting from end minus needle length characters
+		return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
+	}
+
 	
 	protected static function seekEndOfLine($text, $offset=0) {
 		return ($r=strpos($text, "\n", $offset))===false?strlen($text):$r;
