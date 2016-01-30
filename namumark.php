@@ -110,7 +110,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 function NamuMarkHTML( Parser &$parser, &$text ) {
 	$title = $parser->getTitle();
 	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
-		$text = str_replace(array('&apos;', '&lt;', '&gt;'), array("'", '<', '>'), $text);
 		$Extra = new NamuMarkExtra;
 		$text = $Extra->table($text);
 
