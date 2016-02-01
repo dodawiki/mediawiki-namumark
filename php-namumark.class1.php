@@ -382,9 +382,7 @@ class NamuMark1 extends NamuMark {
 			return '__TOC__';
 		if($text == '각주')
 			return '<references />';
-		if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks))
-			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-		if(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks))
+		if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/', $text, $wikilinks))
 			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 		if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include))
 			return '{{'.$include[1].'}}'."\n";
@@ -399,7 +397,7 @@ class NamuMark1 extends NamuMark {
             return '<html>' . $html . '</html>';
         }
         if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
-			return $filelink[2].'&link='.$filelink[1];
+			return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
         return '[[' . $this->formatParser($text) . ']]';
 	}
 
@@ -429,8 +427,9 @@ class NamuMark1 extends NamuMark {
 				}
 				if(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
                     return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
-				if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks) || preg_match('/^wiki:(.*)/', $text, $wikilinks)) {
-					if(isset($wikilinks[2]) && $wikilinks[2] !== '')
+				if(preg_match('/^wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks) || preg_match('/^wiki:(.*)/', $text, $wikilinks)) {
+                    $wikilinks[2] = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $wikilinks[2]);
+                    if(isset($wikilinks[2]) && $wikilinks[2] !== '')
 						return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
 					else
 						return '[['.$wikilinks[1].']]';

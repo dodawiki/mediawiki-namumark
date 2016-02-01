@@ -173,23 +173,23 @@ class NamuMark2 extends NamuMark {
 	}
 
 	protected function linkProcessor($text, $type) {
-
-		if($this->startsWithi($text, 'wiki')) {
-			if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks)) {
-				if(preg_match('/https?.*?(\.jpeg|\.jpg|\.png|\.gif)/' ,$wikilinks[2])) {
-					$wikilinks[2] = '{{{#!html <img src="'.$wikilinks[2].'">}}}';
-				}
-
-				return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-			}	
-		} elseif(preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks))
-			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-		elseif(strtolower($text) == 'br')
+        if(preg_match('/^(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/', $text))
+            return '['.str_replace('|', ' ', $text).']';
+        $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
+        if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/', $text, $wikilinks))
+            if(isset($wikilinks[2]) && $wikilinks[2] !== '')
+                if(self::startsWithi($wikilinks[2], 'attachment:'))
+                    return $wikilinks[2].'&link='.str_replace(' ', '_',$wikilinks[1]);
+                else
+                    return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
+            else
+                return '[['.$wikilinks[1].']]';
+        if(strtolower($text) == 'br')
             return '<br>';
-        elseif(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
-            return $filelink[2].'&link='.$filelink[1];
-		else
-			return '[['.$this->formatParser($text).']]';
+        if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
+            return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
+
+        return '[['.$this->formatParser($text).']]';
 		
 	}
 	
@@ -198,15 +198,18 @@ class NamuMark2 extends NamuMark {
 			case 'br':
 				return '<br>';
 			default:
-				if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks)) {
-					if($wikilinks[2] !== '') {
-					return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-					} else {
-					return '[['.$wikilinks[1].']]';
-					}
-				} elseif(!$this->startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
-					return '[['.$text.']]';
+                if(preg_match('/^wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks) || preg_match('/^wiki:(.*)/', $text, $wikilinks)) {
+                    $wikilinks[2] = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $wikilinks[2]);
+                    if(isset($wikilinks[2]) && $wikilinks[2] !== '')
+                        if(self::startsWithi($wikilinks[2], 'attachment:'))
+                            return $wikilinks[2].'&link='.str_replace(' ', '_',$wikilinks[1]);
+                        else
+                            return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
+                    else
+                        return '[['.$wikilinks[1].']]';
 				}
+                if(!$this->startsWith($text, '[') && !preg_match('/^https?/m', $text))
+					return '[['.$text.']]';
 		}
 	
 		return '['.$text.']';
