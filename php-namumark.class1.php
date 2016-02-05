@@ -66,6 +66,11 @@ class NamuMark1 extends NamuMark {
 				'close' => ']]',
 				'multiline' => false,
 				'processor' => array($this,'linkProcessor')),
+			array(
+				'open'	=> '{{|',
+				'close' => '|}}',
+				'multiline' => false,
+				'processor' => array($this,'textProcessor')),
             array(
                 'open'	=> '{{',
                 'close' => '}}',
@@ -109,11 +114,6 @@ class NamuMark1 extends NamuMark {
 			array(
 				'open'	=> '<!--',
 				'close' => '-->',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
-				'open'	=> '{{|',
-				'close' => '|}}',
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
 			array(
