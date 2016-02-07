@@ -155,7 +155,7 @@ class NamuMark2 extends NamuMark {
 			$block = $this->blockParser($match[5]);
 		}
 
-		if(preg_match("/^(.*?)(?<!<nowiki>)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
+		if(preg_match("/^(.*?)(?<!<nowiki>)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
 			$match[4] = str_replace(array('?', '&'), ' ', $match[4]);
 
 			$match[4] = str_ireplace('align=left', '', $match[4]);
