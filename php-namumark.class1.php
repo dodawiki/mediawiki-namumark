@@ -315,12 +315,12 @@ class NamuMark1 extends NamuMark {
 
 		$tag = $arr[0]['tag'];
 		$start = $arr[0]['start'];
-		$result = '<'.($tag=='indent'?'div class="indent"':$tag.($start!=1?' start="'.$start.'"':'')).'>';
+		$result = ($tag=='indent'?'':'<'.$tag.($start!=1?' start="'.$start.'"':'').'>');
 		foreach($arr as $li) {
 			$text = $this->blockParser($li['text']).$this->listDraw($li['childNodes']);
 			$result .= $tag=='indent'?$text:'<li>'.$text.'</li>';
 		}
-		$result .= '</'.($tag=='indent'?'div':$tag).'>';
+		$result .= ($tag=='indent'?'':'</'.$tag.'>');
 		$result .= "\n";
 		return $result;
 	}
