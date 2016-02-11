@@ -26,7 +26,7 @@ class NamuMarkExtra {
 	}
 
 	private function indent($text) {
-		if(preg_match_all('/^( +)([^*][^\n]*)$/m', $text, $indent, PREG_SET_ORDER)) {
+		if(preg_match_all('/^( +)([^* ][^\n]*)$/m', $text, $indent, PREG_SET_ORDER)) {
             foreach ($indent as $each_indent) {
                 if (!preg_match('/^(1\.|A\.|I\.)/i', $each_indent[2])) {
 					if(preg_match('/^>/', $each_indent[2]))
