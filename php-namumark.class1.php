@@ -388,8 +388,6 @@ class NamuMark1 extends NamuMark {
 			return '{{'.$include[1].'}}'."\n";
         if(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
             return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
-		if(preg_match('/anchor\((.*?)\)/i', $text, $anchor))
-			return '<span id="'.$anchor[1].'"></span>';
 		if(self::startsWithi($text, 'html(')) {
             $html = $text;
             $html = preg_replace('/html\((.*)\)/i', '$1', $html);

@@ -188,6 +188,8 @@ class NamuMark2 extends NamuMark {
             return '<br>';
         if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
             return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
+		if(preg_match('/^anchor\((.*?)\)/i', $text, $anchor))
+			return '<span id="'.$anchor[1].'"></span>';
 
         return '[['.$this->formatParser($text).']]';
 		
