@@ -438,7 +438,7 @@ class NamuMark1 extends NamuMark {
 				}
 
 		}
-		$text = str_replace('|', ' ', $text);
+		$text = preg_replace('/^(\S+)\|\B(.*)/', '$1 $2', $text);
 		return '['.$text.']';
 	}
 
