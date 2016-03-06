@@ -450,7 +450,7 @@ class NamuMark1 extends NamuMark {
 		switch($type) {
 			case '--':
 			case '~~':
-				if(!self::startsWith($text, 'item-'))
+				if(!self::startsWith($text, 'item-') && !self::endsWith($text, 'UNIQ'))
 				    return '<s>'.$text.'</s>';
                 else
                     return $type.$text.$type;
