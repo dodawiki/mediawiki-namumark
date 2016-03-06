@@ -125,6 +125,7 @@ class NamuMarkExtra {
 			$newtable = str_replace(['|| <', '> <'], ['||<', '><'], $newtable);
             $text = str_replace($table, str_replace("\n", '<br />', $newtable), $text);
         }
+		$text = preg_replace('/\n\|\|$/', '||', $text);
 
         return $text;
 	}

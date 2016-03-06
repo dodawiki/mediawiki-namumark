@@ -190,7 +190,7 @@ class NamuMark {
                 // 끝에 붙어 있는 표 속성 앞으로 옮기기
                 $innerstr = preg_replace('@(.*?)((?:<[^</]*?>)*?)$@', '$2$1', $innerstr);
 
-				while(self::startsWith($innerstr, '<') && !preg_match('/^<[^<]*?>([^<]*?)<\/.*?>/', $innerstr)) {
+				while(self::startsWith($innerstr, '<') && !preg_match('/^<[^<]*?>([^<]*?)<\/.*?>/', $innerstr) && !self::startsWithi($innerstr, '<br')) {
 					$dummy=0;
 					$prop = $this->bracketParser($innerstr, $dummy, array('open'	=> '<', 'close' => '>','multiline' => false,'processor' => function($str) { return $str; }));
                     $prop = str_replace(array('tablealign', 'tablewidth'), array('table align', 'table width'), $prop);
