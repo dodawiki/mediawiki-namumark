@@ -220,11 +220,10 @@ class NamuMark2 extends NamuMark {
 	protected function textProcessor($text, $type) {
 		switch($type) {
 			case '__':
-				if(preg_match('/TOC/', $text)) {
+				if(preg_match('/TOC/', $text) || preg_match('/^.*?(\.jpeg|\.jpg|\.png|\.gif)/', $text))
 					return '__'.$text.'__';
-				} else {
+				else
 					return '<u>'.$text.'</u>';
-				}
 			case '--':
 			case '~~':
 				if (!self::startsWith($text, 'QINU') && !preg_match('/^.*?-.*-QINU/', $text) && !self::startsWith($text, 'h-') && !self::startsWith($text, 'item-') && !self::endsWith($text, 'UNIQ'))
