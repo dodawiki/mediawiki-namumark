@@ -396,6 +396,45 @@ class NamuMark1 extends NamuMark {
         }
         if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
 			return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
+		if(preg_match('/^(파일:.*?(?!\.jpeg|\.jpg|\.png|\.gif))\|(.*)/i', $text, $namu_image)) {
+            $properties = explode("&", $namu_image[2]);
+
+            foreach($properties as $n => $each_property) {
+                if(preg_match('/^width=(.*)/i', $each_property, $width)) {
+                    if(self::endsWith($width[1], '%'))
+                        continue;
+                    $imgwidth[1] = str_ireplace('px', '', $width[1]);
+                    unset($properties[$n]);
+                    continue;
+                }
+
+                if(preg_match('/^height=(.*)/i', $each_property, $height)) {
+                    if(self::endsWith($height[1], '%'))
+                        continue;
+                    $imgheight[1] = str_ireplace('px', '', $height[1]);
+                    unset($properties[$n]);
+                    continue;
+                }
+
+                $properties[$n] = str_ireplace('align=', '', $each_property);
+            }
+
+
+            $property = '|';
+            foreach($properties as $n => $each_property)
+                $property .= $each_property.'|';
+
+            if(isset($imgwidth) && isset($imgheight))
+                $property .= $imgwidth[1] . 'x' . $imgheight[1] . 'px|';
+            elseif(isset($imgwidth))
+                $property .= $imgwidth[1].'px|';
+            elseif(isset($imgheight))
+                $property .= 'x'.$imgheight[1].'px|';
+
+            $property = substr($property, 0, -1);
+
+            return '[['.$namu_image[1].$property.']]';
+        }
         return '[[' . $this->formatParser($text) . ']]';
 	}
 
