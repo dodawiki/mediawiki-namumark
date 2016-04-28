@@ -156,12 +156,13 @@ class NamuMark {
 		
 		$tableInnerStr = '';
 		$tableStyleList = array();
-		for($i=$offset;$i<$len;$i=self::seekEndOfLine($text, $i)+1) {
+        $caption = '';
+        for($i=$offset;$i<$len;$i=self::seekEndOfLine($text, $i)+1) {
 			$now = self::getChar($text,$i);
 			$eol = self::seekEndOfLine($text, $i);
-			if(!self::startsWith($text, '||', $i)) {
+			if(!self::startsWith($text, '||', $i) && !preg_match('/^\|.*?\|/m', $text)) {
 				// table end
-				break;
+                break;
 			}
 			$line = substr($text, $i, $eol-$i);
 			$td = explode('||', $line);
@@ -169,13 +170,17 @@ class NamuMark {
 
 			$trInnerStr = '';
 			$simpleColspan = 0;
-			for($j=1;$j<$td_cnt-1;$j++) {
+			for($j=0;$j<$td_cnt-1;$j++) {
 				$innerstr = htmlspecialchars_decode($td[$j]);
 
 				if($innerstr=='') {
 					$simpleColspan += 1;
 					continue;
-				}
+				} elseif(preg_match('/^\|.*?\|/', $innerstr)) {
+                    $caption_r = explode('|', $innerstr);
+                    $caption = '<caption>'.$caption_r[1].'</caption>';
+                    $innerstr = $caption_r[2];
+                }
 
 				$tdAttr = $tdStyleList = array();
 				$trAttr = $trStyleList = array();
@@ -189,6 +194,7 @@ class NamuMark {
 
                 // 끝에 붙어 있는 표 속성 앞으로 옮기기
                 $innerstr = preg_replace('@(.*?)((?:<[^</]*?>)*?)$@', '$2$1', $innerstr);
+
 
 				while(self::startsWith($innerstr, '<') && !preg_match('/^<[^<]*?>([^<]*?)<\/.*?>/', $innerstr) && !self::startsWithi($innerstr, '<br')) {
 					$dummy=0;
@@ -349,7 +355,7 @@ class NamuMark {
 		}
 
 		$tableAttrStr = ($tableStyleStr?' style="'.$tableStyleStr.'"':'');
-		$result = '<table class="wikitable"'.$tableAttrStr.'>'.$tableInnerStr."</table>\n";
+		$result = '<table class="wikitable"'.$tableAttrStr.'>'.$caption.$tableInnerStr."</table>\n";
 		$offset = $i-1;
 		return $result;
 	}
