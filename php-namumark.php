@@ -160,7 +160,7 @@ class NamuMark {
         for($i=$offset;$i<$len;$i=self::seekEndOfLine($text, $i)+1) {
 			$now = self::getChar($text,$i);
 			$eol = self::seekEndOfLine($text, $i);
-			if(!self::startsWith($text, '||', $i) && !preg_match('/^\|.*?\|/m', $text)) {
+			if(!self::startsWith($text, '||', $i)) {
 				// table end
                 break;
 			}
@@ -170,7 +170,7 @@ class NamuMark {
 
 			$trInnerStr = '';
 			$simpleColspan = 0;
-			for($j=0;$j<$td_cnt-1;$j++) {
+			for($j=1;$j<$td_cnt-1;$j++) {
 				$innerstr = htmlspecialchars_decode($td[$j]);
 
 				if($innerstr=='') {
@@ -242,6 +242,8 @@ class NamuMark {
                                                 $tbprop[2] .= 'px';
 											$tableStyleList['width'] = $tbprop[2];
 											break;
+										case 'caption':
+											$caption = '<caption>'.$tbprop[2].'</caption>';
 									}
 								}
 							}
