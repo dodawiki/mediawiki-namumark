@@ -15,7 +15,7 @@ $wgExtensionCredits['parserhook'][] = array(
 
 	// The version of the extension, which will appear on Special:Version.
 	// This can be a number or a string.
-	'version' => '1.0.20',
+	'version' => '1.0.21',
  
 	// Your name, which will appear on Special:Version.
 	'author' => 'koreapyj 원본, 김동동 수정',
@@ -136,7 +136,8 @@ function NamuMarkHTML2( &$parser, &$text ) {
 	
 	
 		$text = str_replace("<br /></p>\n<p>", '<br />', $text);
-	
+		$text = str_replace("<p><br />\n</p>", '', $text);
+
 		$text = preg_replace('/<a rel="nofollow" target="_blank" class="external autonumber" href="(.*?)">\[(\[\d+\])\]<\/a>/',
 		'<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>',
 		$text);
@@ -144,10 +145,36 @@ function NamuMarkHTML2( &$parser, &$text ) {
         $text = preg_replace('@^<ol><li><ol><li>.*?</li></ol></li></ol>$@ms', '', $text);
 
         // 엔터 한 번 개행
-        $br_regex = '@^(.*?)(?<!<br/>|<br>|<br />)\n(?!<p>|<h|</p|<e|<u|<l|편집한 내용은 아직|이것을 입력하지|<a onclick|<br|</ol|</li|<if|<div|</div|<dl|<dd|</u|<m|</m|<t|</t|<o|</o|<blockquote)([^\n])@m';
-        do {
-		$text = preg_replace($br_regex, '$1<br>$2', $text);
-        } while(preg_match($br_regex, $text));
+		$lines = explode("\n", $text);
+		$text = '';
+		foreach($lines as $line_n => $line) {
+			$line = preg_replace('/^\s*/', '', $line);
+
+			if(preg_match('@<pre>@i', $line)) {
+				// pre 태그 시작
+				$text .= $line . "\n";
+				$is_pre = true;
+				continue;
+			} elseif(isset($is_pre) && $is_pre === true && preg_match('@</pre>@i', $line)) {
+				// pre 태그 끝
+				$is_pre = false;
+			} elseif(isset($is_pre) && $is_pre === true) {
+				$text .= $line . "\n";
+				continue;
+			}
+
+			if(!isset($lines[$line_n - 1])) {
+				$text .= $line . "\n";
+				continue;
+			} else {
+				$prev_line = preg_replace('/^\s*/', '', $lines[$line_n - 1]);
+			}
+
+			if( $line === '' || $prev_line === '' ||preg_match('/^<[^>]*>$/', $line) || preg_match('/^<[^>]*>$/', $prev_line) || preg_match('@(</li>|</div>|</ul>|</h\d>|</table>|<br/>|<br>|<br />|</dl>|<ol.*>|</ol>)$@i', $prev_line) || preg_match('@^(</?p>|<a onclick|<dl>|<dd>|<ul>|<li>|<ol>)@i', $line) )
+				$text .= $line . "\n";
+			else
+				$text .= '<br>' . $line . "\n";
+		}
 
 	}
 }
