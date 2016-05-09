@@ -130,6 +130,42 @@ class NamuMarkExtra {
 
         return $text;
 	}
+
+	public function enter($text) {
+		$lines = explode("\n", $text);
+		$text = '';
+		foreach($lines as $line_n => $line) {
+			$line = preg_replace('/^\s*/', '', $line);
+
+			if(preg_match('@<pre>@i', $line)) {
+				// pre 태그 시작
+				$text .= $line . "\n";
+				$is_pre = true;
+				continue;
+			} elseif(isset($is_pre) && $is_pre === true && preg_match('@</pre>@i', $line)) {
+				// pre 태그 끝
+				$is_pre = false;
+			} elseif(isset($is_pre) && $is_pre === true) {
+				$text .= $line . "\n";
+				continue;
+			}
+
+			if(!isset($lines[$line_n - 1])) {
+				$text .= $line . "\n";
+				continue;
+			} else {
+				$prev_line = preg_replace('/^\s*/', '', $lines[$line_n - 1]);
+			}
+
+			if( $line === '' || $prev_line === '' || preg_match('/^<[^>]*>$/', $line) || preg_match('/^<[^>]*>$/', $prev_line) || preg_match('@(</li>|</div>|</ul>|</h\d>|</table>|<br/>|<br>|<br />|</dl>|<ol.*>|</ol>)$@i', $prev_line) || preg_match('@^(</?p>|<a onclick|<dl>|<dd>|<ul>|<li>|<ol>)@i', $line) )
+				$text .= $line . "\n";
+			else
+				$text .= '<br>' . $line . "\n";
+		}
+        
+		return $text;
+
+	}
 	
 	
 }
