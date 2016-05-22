@@ -66,15 +66,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$wEngine = new NamuMark1($text);
 		$text =  $wEngine->toHtml();
 				
-		
-		preg_match_all('/<math>.*?<\/math>/', $text, $math); // [내부항목] 태그로 인해 수식의 [내용]이 [[내용]]으로 대괄호 하나가 덧붙는 버그를 제거하기 위하여 모든 수식을 가져오고,
-    
-		# 가져온 수식 중 '[['과 ']]'를 모두 각각 '[', ']'로 바꾼다.
-		foreach ($math as $tex) {
-			foreach ($tex as $rtex)
-				$text = str_replace($rtex, str_replace(array("]]", "[["), array("]", "["), $rtex), $text);
-		}
-				
 		# 상기에서 볃도로 보관한 변수의 값을 본문의 바로 앞에 추가한다.
 		if (preg_match('/&oldid=/', $_SERVER["REQUEST_URI"]))
 			$text = $fn[0].$text;

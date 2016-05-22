@@ -374,26 +374,6 @@ class NamuMark1 extends NamuMark {
         if(preg_match('/^(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/', $text))
             return '['.str_replace('|', ' ', $text).']';
 		$text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
-		if(strtolower($text) == 'br')
-			return '<br>';
-        if(strtolower($text) == 'date')
-            return date('Y-m-d H:i:s');
-		if($text == '목차')
-			return '__TOC__';
-		if($text == '각주')
-			return '<references />';
-		if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/', $text, $wikilinks))
-			return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-		if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include))
-			return '{{'.$include[1].'}}'."\n";
-        if(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
-            return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
-		if(self::startsWithi($text, 'html(')) {
-            $html = $text;
-            $html = preg_replace('/html\((.*)\)/i', '$1', $html);
-            $html = htmlspecialchars_decode($html);
-            return '<html>' . $html . '</html>';
-        }
         if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
 			return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
 		if(preg_match('/^(파일:.*?(?!\.jpeg|\.jpg|\.png|\.gif))\|(.*)/i', $text, $namu_image)) {
@@ -464,17 +444,6 @@ class NamuMark1 extends NamuMark {
 				}
 				if(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
                     return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
-				if(preg_match('/^wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks) || preg_match('/^wiki:(.*)/', $text, $wikilinks)) {
-                    $wikilinks[2] = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $wikilinks[2]);
-                    if(isset($wikilinks[2]) && $wikilinks[2] !== '')
-						return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-					else
-						return '[['.$wikilinks[1].']]';
-				}
-				if(!self::startsWith($text, '[') && !preg_match('/^https?/m', $text)) {
-                    $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
-                    return '[['.$text.']]';
-				}
 
 		}
 		$text = preg_replace('/^(\S+)\|\B(.*)/', '$1 $2', $text);
@@ -502,8 +471,6 @@ class NamuMark1 extends NamuMark {
 				return '<sup>'.$text.'</sup>';
 			case ',,':
 				return '<sub>'.$text.'</sub>';
-			case '$ ':
-				return '<math>'.$text.'</math>';
 			case '<!--':
 				return '<!--'.$text.'-->';
 			case '{{|':

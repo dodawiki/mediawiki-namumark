@@ -176,43 +176,16 @@ class NamuMark2 extends NamuMark {
         if(preg_match('/^(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/', $text))
             return '['.str_replace('|', ' ', $text).']';
         $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
-        if(preg_match('/wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/', $text, $wikilinks))
-            if(isset($wikilinks[2]) && $wikilinks[2] !== '')
-                if(self::startsWithi($wikilinks[2], 'attachment:'))
-                    return $wikilinks[2].'&link='.str_replace(' ', '_',$wikilinks[1]);
-                else
-                    return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-            else
-                return '[['.$wikilinks[1].']]';
-        if(strtolower($text) == 'br')
-            return '<br>';
         if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
             return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
-		if(preg_match('/^anchor\((.*?)\)/i', $text, $anchor))
-			return '<span id="'.$anchor[1].'"></span>';
 
         return '[['.$this->formatParser($text).']]';
 		
 	}
 	
 	protected function macroProcessor($text, $type) {
-		switch(strtolower($text)) {
-			case 'br':
-				return '<br>';
-			default:
-                if(preg_match('/^wiki: ?"(.*?)" ?(.*)/', $text, $wikilinks) || preg_match('/^"(.*?)" ?(.*)/m', $text, $wikilinks) || preg_match('/wiki:(\w*?) (.*)/u', $text, $wikilinks) || preg_match('/^wiki:(.*)/', $text, $wikilinks)) {
-                    $wikilinks[2] = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $wikilinks[2]);
-                    if(isset($wikilinks[2]) && $wikilinks[2] !== '')
-                        if(self::startsWithi($wikilinks[2], 'attachment:'))
-                            return $wikilinks[2].'&link='.str_replace(' ', '_',$wikilinks[1]);
-                        else
-                            return '[['.$wikilinks[1].'|'.$wikilinks[2].']]';
-                    else
-                        return '[['.$wikilinks[1].']]';
-				}
-                if(!$this->startsWith($text, '[') && !preg_match('/^https?/m', $text))
-					return '[['.$text.']]';
-		}
+		if(strtolower($text) === 'br')
+			return '<br>';
 	
 		return '['.$text.']';
 	}
