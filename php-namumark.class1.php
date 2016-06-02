@@ -223,7 +223,7 @@ class NamuMark1 extends NamuMark {
 		$offset = $i-1;
 		$innerhtml = preg_replace('/^>+/m', '', $innerhtml);
 		$innerhtml = preg_replace('/<br>>+/m', '<br>', $innerhtml);
-		return '<blockquote>'.$innerhtml.'</blockquote>';
+		return '<blockquote>'.$innerhtml.'</blockquote>'."\n";
 	}
 
 	private function listParser($text, &$offset) {
