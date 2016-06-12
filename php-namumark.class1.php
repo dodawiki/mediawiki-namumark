@@ -365,8 +365,8 @@ class NamuMark1 extends NamuMark {
 	}
 
 	protected function linkProcessor($text, $type) {
-        if(preg_match('/^(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/', $text))
-            return '['.str_replace('|', ' ', $text).']';
+        if(preg_match('/^((?:http|https|ftp|ftps)\:\/\/\S+)\|\B(.*)/', $text, $ex_link))
+            return '['.$ex_link[1].' '.$ex_link[2].']';
 		$text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
         if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
 			return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
@@ -440,7 +440,6 @@ class NamuMark1 extends NamuMark {
                     return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
 
 		}
-		$text = preg_replace('/^(\S+)\|\B(.*)/', '$1 $2', $text);
 		return '['.$text.']';
 	}
 
