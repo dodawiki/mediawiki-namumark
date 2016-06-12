@@ -121,12 +121,6 @@ class NamuMark1 extends NamuMark {
 				'close' => '</nowiki>',
 				'multiline' => false,
 				'processor' => array($this,'textProcessor')),
-			array(
-				'open'	=> '<<',
-				'close' => '>>',
-				'multiline' => false,
-				'processor' => array($this,'macroProcessor')),
-
 			);
 		
 		$this->WikiPage = $wtext;
