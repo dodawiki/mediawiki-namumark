@@ -15,7 +15,7 @@ $wgExtensionCredits['parserhook'][] = array(
 
 	// The version of the extension, which will appear on Special:Version.
 	// This can be a number or a string.
-	'version' => '1.1',
+	'version' => '1.1.1',
  
 	// Your name, which will appear on Special:Version.
 	'author' => 'koreapyj 원본, 김동동 수정',
@@ -63,7 +63,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 
 		# 파서를 불러온다.
 		require_once("php-namumark.class1.php");
-		$wEngine = new NamuMark1($text);
+		$wEngine = new NamuMark1($text, $title);
 		$text =  $wEngine->toHtml();
 				
 		# 상기에서 볃도로 보관한 변수의 값을 본문의 바로 앞에 추가한다.
@@ -105,6 +105,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 	$title = $parser->getTitle();
 	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
 		$text = str_replace('&apos;', "'", $text);
+		$text = str_replace('&gt;', ">", $text);
 
 		$Extra = new NamuMarkExtra;
 		$text = $Extra->table($text);

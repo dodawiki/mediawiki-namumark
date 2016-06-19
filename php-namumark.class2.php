@@ -20,109 +20,6 @@
 
 class NamuMark2 extends NamuMark {
 
-	function __construct($wtext, $title=null) {
-
-		$this->multi_bracket = array(
-			array(
-				'open'	=> '{{{',
-				'close' => '}}}',
-				'multiline' => true,
-				'processor' => array($this,'renderProcessor')),
-		);
-
-		$this->single_bracket = array(
-			array(
-				'open'	=> '[[',
-				'close' => ']]',
-				'multiline' => false,
-				'processor' => array($this,'linkProcessor')),
-			array(
-				'open'	=> '[',
-				'close' => ']',
-				'multiline' => false,
-				'processor' => array($this,'macroProcessor')),
-			array(
-				'open'	=> '__',
-				'close' => '__',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
-				'open'	=> '~~',
-				'close' => '~~',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
-				'open'	=> '--',
-				'close' => '--',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			array(
-				'open'	=> '{{{',
-				'close' => '}}}',
-				'multiline' => false,
-				'processor' => array($this,'textProcessor')),
-			);
-			
-		
-		$this->WikiPage = $wtext;
-        $this->title = $title;
-
-		$this->toc = array();
-		$this->fn = array();
-		$this->fn_cnt = 0;
-		$this->prefix = '';
-	}
-
-	public function toHtml() {
-		$this->whtml = $this->WikiPage;
-		$this->whtml = $this->htmlScan($this->whtml);
-		return $this->whtml;
-	}
-
-	private function htmlScan($text) {
-		$result = '';
-		$len = strlen($text);
-		$now = '';
-		$line = '';
-
-
-		for($i=0;$i<$len;$this->nextChar($text,$i)) {
-			$now = $this->getChar($text,$i);
-
-
-			if($this->startsWith($text, '|', $i) && $table = $this->tableParser($text, $i)) {
-				$result .= ''
-					.$table
-					.'';
-				$line = '';
-				$now = '';
-				continue;
-			}
-
-			foreach($this->multi_bracket as $bracket) {
-				if(self::startsWith($text, $bracket['open'], $i) && $innerstr = $this->bracketParser($text, $i, $bracket)) {
-					$result .= ''
-						.$this->lineParser($line, '')
-						.$innerstr
-						.'';
-					$line = '';
-					$now = '';
-					break;
-				}
-			}
-
-			if($now == "\n") { // line parse
-				$result .= $this->lineParser($line, '');
-				$line = '';
-			}
-			else
-				$line.=$now;
-		}
-		if($line != '')
-			$result .= $this->lineParser($line, 'notn');
-		return $result;
-	}
-	
 	protected function blockParser($block) {
         $block = $this->formatParser($block);
 		$result = '';
@@ -172,80 +69,39 @@ class NamuMark2 extends NamuMark {
 		return $result;
 	}
 
-	protected function linkProcessor($text, $type) {
-		if(preg_match('/^((?:http|https|ftp|ftps)\:\/\/\S+)\|\B(.*)/', $text, $ex_link))
-			return '['.$ex_link[1].' '.$ex_link[2].']';
-        $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
-        if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
-            return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
-
-        return '[['.$this->formatParser($text).']]';
-		
-	}
-	
-	protected function macroProcessor($text, $type) {
-		if(strtolower($text) === 'br')
-			return '<br>';
-	
-		return '['.$text.']';
-	}
-
-	protected function textProcessor($text, $type) {
-		switch($type) {
-			case '__':
-				if(preg_match('/TOC/', $text) || preg_match('/^.*?(\.jpeg|\.jpg|\.png|\.gif)/', $text))
-					return '__'.$text.'__';
-				else
-					return '<u>'.$text.'</u>';
-			case '--':
-			case '~~':
-				if (!self::startsWith($text, 'QINU') && !preg_match('/^.*?-.*-QINU/', $text) && !self::startsWith($text, 'h-') && !self::startsWith($text, 'item-') && !self::endsWith($text, 'UNIQ'))
-					return '<s>'.$text.'</s>';
-				else
-					return $type.$text.$type;
-			case '{{{':
-				if(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
-					if(empty($color[1]) && empty($color[2]))
-						return $text;
-					return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
-				}
-				if(preg_match('/^\+([1-5]) (.*)$/', $text, $size)) {
-					for ($i=1; $i<=$size[1]; $i++){
-						if(isset($big_before) && isset($big_after)) {
-							$big_before .= '<big>';
-							$big_after .= '</big>';
-						} else {
-							$big_before = '<big>';
-							$big_after = '</big>';
-						}
-					}
-
-					return $big_before.$this->formatParser($size[2]).$big_after;
-				}
-				if(preg_match('/^\-([1-5]) (.*)$/', $text, $size)) {
-					for ($i=1; $i<=$size[1]; $i++){
-						if(isset($small_before) && isset($small_after)) {
-							$small_before .= '<small>';
-							$small_after .= '</small>';
-						} else {
-							$small_before = '<small>';
-							$small_after = '</small>';
-						}
-					}
-
-					return $small_before.$this->formatParser($size[2]).$small_after;
-				}
-		}
-		
-	}
-
     protected function renderProcessor($text, $type) {
-        if(self::startsWithi($text, '#!html')) {
-            $text = substr($text, 7);
-            $text = htmlspecialchars_decode($text);
-			require_once("XSSfilter.php");
-			$xss = new XssHtml($text);
-            return $xss->getHtml();
+        if($type == '{{|') {
+            if(preg_match('/\|-/', $text))
+                return $type.$text.$type;
+            else
+                return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+        } else {
+            $lines = explode("\n", $text);
+            $text = '';
+            foreach ($lines as $key => $line) {
+                if ((!$key && !$lines[$key]) || ($key == count($lines) - 1 && !$lines[$key]))
+                    continue;
+                if (preg_match('/^(:+)/', $line, $match)) {
+                    $line = substr($line, strlen($match[1]));
+                    $add = '';
+                    for ($i = 1; $i <= strlen($match[1]); $i++)
+                        $add .= ' ';
+                    $line = $add . $line;
+                    $text .= $line . "\n";
+                } else {
+                    $text .= $line . "\n";
+                }
+            }
+
+            if (self::startsWithi($text, '#!html')) {
+                $text = substr($text, 7);
+                $text = htmlspecialchars_decode($text);
+                require_once("XSSfilter.php");
+                $xss = new XssHtml($text);
+                return $xss->getHtml();
+            } else {
+                return '<pre>' . $text . '</pre>';
+            }
         }
     }
 

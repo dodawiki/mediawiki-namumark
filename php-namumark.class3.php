@@ -38,18 +38,10 @@ class NamuMark3 extends NamuMark {
 		$this->prefix = '';
 	}
 
-	public function toHtml() {
-		$this->whtml = $this->WikiPage;
-		$this->whtml = $this->htmlScan($this->whtml);
-		return $this->whtml;
-	}
-
-	private function htmlScan($text) {
+	protected function htmlScan($text) {
 		$result = '';
 		$len = strlen($text);
-		$now = '';
 		$line = '';
-
 
 		for($i=0;$i<$len;$this->nextChar($text,$i)) {
 			$now = $this->getChar($text,$i);
@@ -84,11 +76,7 @@ class NamuMark3 extends NamuMark {
     }
 
     protected function blockParser($block) {
-        $result = '';
-        $block_len = strlen($block);
-
-        $result .= $this->formatParser($block);
-        return $result;
+		return  $this->formatParser($block);
     }
 
 }
