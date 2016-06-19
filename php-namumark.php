@@ -614,23 +614,8 @@ class NamuMark {
 					}
 				}
 
-				if(empty($tdStyleList['text-align'])) {
-					if(preg_match('/^ .* $/', $innerstr)) {
-						$tdStyleList['text-align'] = 'center';
-					}
-					elseif(self::seekEndOfLine($innerstr)>0 && $innerstr[self::seekEndOfLine($innerstr)-1] == ' ') {
-						$tdStyleList['text-align'] = null;
-					}
-//					elseif(self::startsWith($innerstr, ' ')) {
-//						$tdStyleList['text-align'] = 'right';
-//					}
-					else {
-						$tdStyleList['text-align'] = null;
-					}
-				}
                 $innerstr = trim($innerstr);
-
-				
+                
 				$tdAttr['style'] = '';
 				foreach($tdStyleList as $styleName =>$tdstyleValue) {
 					if(empty($tdstyleValue))
