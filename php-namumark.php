@@ -219,7 +219,7 @@ class NamuMark {
     }
 
     protected function linkProcessor($text, $type) {
-        if(preg_match('/^((?:http|https|ftp|ftps)\:\/\/\S+)\|\B(.*)/', $text, $ex_link))
+        if(preg_match('/^((?:http|https|ftp|ftps)\:\/\/\S+)\|(.*)/', $text, $ex_link))
             return '['.$ex_link[1].' '.$ex_link[2].']';
         $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
         if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
@@ -615,7 +615,7 @@ class NamuMark {
 				}
 
                 $innerstr = trim($innerstr);
-                
+
 				$tdAttr['style'] = '';
 				foreach($tdStyleList as $styleName =>$tdstyleValue) {
 					if(empty($tdstyleValue))
