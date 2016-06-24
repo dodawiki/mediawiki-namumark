@@ -21,17 +21,7 @@
 class NamuMark1 extends NamuMark {
 
 	protected function blockParser($block) {
-		$result = '';
-
-		if(preg_match('/^#title (.*)$/', $block, $match)) {
-			$result .= ''
-				.'{{DISPLAYTITLE:'.$match[1].'}}'
-				.'';
-			$block = '';
-		}
-		
-		$result .= $this->formatParser($block);
-		return $result;
+		return $this->formatParser($block);
 	}
 
 	protected function renderProcessor($text, $type) {
