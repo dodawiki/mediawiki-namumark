@@ -611,7 +611,6 @@ class NamuMark {
 				}
 
                 if(empty($tdStyleList['text-align'])) {
-                    echo '"'.$innerstr.'"'."\n";
                     if(self::startsWith($innerstr, ' ') && self::endsWith($innerstr, ' '))
                         $tdStyleList['text-align'] = 'center';
                     elseif(self::startsWith($innerstr, ' ') && !self::endsWith($innerstr, ' '))
