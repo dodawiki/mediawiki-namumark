@@ -116,14 +116,11 @@ class NamuMarkExtra {
     }
 
 	public function table($text) {
-        $text = preg_replace('/^ \|\|/m', '||', $text); // ���̺� �� ��(||)�� �ٷ� �տ� ������ ���� ��� �����ϵ��� �Ѵ�.
 		$text = preg_replace('/^\|([^\|\}]+?)\|(.*?\|\|)$/m', '||<table caption=$1>$2', $text);
 
         preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
         foreach($tables[1] as $table) {
             $newtable = preg_replace('/^((?:\|\|)+)(<table.*?\>)((?:\|\|)+)(.+)/im', '$1$3$2$4', $table);
-			$newtable = preg_replace('/^\|\|\s+/m', '||', $newtable); // ���̺� �� ��(||)�� �ٷ� �ڿ� ������ ���� ��� �����ϵ��� �Ѵ�.
-			$newtable = str_replace(['|| <', '> <'], ['||<', '><'], $newtable);
             $text = str_replace($table, str_replace("\n", '<br />', $newtable), $text);
         }
 		$text = preg_replace('/\n\|\|$/', '||', $text);
@@ -162,8 +159,6 @@ class NamuMarkExtra {
 			else
 				$text .= '<br>' . $line . "\n";
 		}
-
-//		echo $text;
 
 		return $text;
 

@@ -512,16 +512,12 @@ class NamuMark {
 					$simpleColspan = 0;
 				}
 				
-				$innerstr = preg_replace('/\s+?</', '<', $innerstr);
-
-                // 끝에 붙어 있는 표 속성 앞으로 옮기기
-                $innerstr = preg_replace('@(.*?)((?:<[^</]*?>)*?)$@', '$2$1', $innerstr);
 
 
 				while(self::startsWith($innerstr, '<') && !preg_match('/^<[^<]*?>([^<]*?)<\/.*?>/', $innerstr) && !self::startsWithi($innerstr, '<br')) {
 					$dummy=0;
 					$prop = $this->bracketParser($innerstr, $dummy, array('open'	=> '<', 'close' => '>','multiline' => false,'processor' => function($str) { return $str; }));
-                    $prop = str_replace(array('tablealign', 'tablewidth'), array('table align', 'table width'), $prop);
+                    $prop = preg_replace('/^table([^ ])/', 'table $1', $prop);
                     $innerstr = substr($innerstr, $dummy+1);
 
                     switch($prop) {
@@ -613,6 +609,18 @@ class NamuMark {
                                 $tdStyleList['background-color'] = $prop;
 					}
 				}
+
+                if(empty($tdStyleList['text-align'])) {
+                    echo '"'.$innerstr.'"'."\n";
+                    if(self::startsWith($innerstr, ' ') && self::endsWith($innerstr, ' '))
+                        $tdStyleList['text-align'] = 'center';
+                    elseif(self::startsWith($innerstr, ' ') && !self::endsWith($innerstr, ' '))
+                        $tdStyleList['text-align'] = null;
+                    elseif(!self::startsWith($innerstr, ' ') && self::endsWith($innerstr, ' '))
+                        $tdStyleList['text-align'] = 'right';
+                    else
+                        $tdStyleList['text-align'] = null;
+                }
 
                 $innerstr = trim($innerstr);
 
