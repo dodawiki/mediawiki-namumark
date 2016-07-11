@@ -126,6 +126,8 @@ class NamuMark {
         $this->WikiPage = $wtext;
         $this->title = $title;
 
+        $this->refnames = array();
+
         $this->toc = array();
         $this->fn = array();
         $this->fn_cnt = 0;
@@ -289,8 +291,17 @@ class NamuMark {
                     return '{{'.$include[1].'}}'."\n";
                 }
                 if(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
-                    if(isset($note[2]))
-                        return "<ref>$note[2]</ref>";
+                    if(isset($note[1]) and isset($note[2])) {
+                        foreach($this->refnames as $refname) {
+                            if($refname === $note[1])
+                                return '<ref name="'.$note[1].'" />';
+                        }
+                        array_push($this->refnames, $note[1]);
+                        return '<ref name="' . $note[1] . '">' . $note[2] . '</ref>';
+                    } elseif(isset($note[2]))
+                        return '<ref>'.$note[2].'</ref>';
+                    elseif(isset($note[1]))
+                        return '<ref name="'.$note[1].'" />';
                 }
                 if(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
                     return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
