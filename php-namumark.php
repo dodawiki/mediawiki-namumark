@@ -291,7 +291,7 @@ class NamuMark {
                     return '{{'.$include[1].'}}'."\n";
                 }
                 if(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
-                    if(isset($note[1]) and isset($note[2])) {
+                    if(isset($note[1]) && isset($note[2]) && $note[1] !== '') {
                         foreach($this->refnames as $refname) {
                             if($refname === $note[1])
                                 return '<ref name="'.$note[1].'" />';
