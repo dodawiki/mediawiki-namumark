@@ -227,7 +227,7 @@ class NamuMark {
         if(preg_match('/(.*)\|(attachment:.*)/i', $text, $filelink))
             return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]);
         if(preg_match('/(.*)\|(\[\[파일:.*)\]\]/', $text, $filelink))
-            return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]).']]';
+            return $filelink[2].'|link='.str_replace(' ', '_',$filelink[1]).']]';
         if(preg_match('/^(파일:.*?(?!\.jpeg|\.jpg|\.png|\.gif))\|(.*)/i', $text, $namu_image)) {
             $properties = explode("&", $namu_image[2]);
 
