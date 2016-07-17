@@ -23,35 +23,7 @@ class NamuMark2 extends NamuMark {
 	protected function blockParser($block) {
         $block = $this->formatParser($block);
 		$result = '';
-
-		if(preg_match('/^(.*?)(?<!<nowiki>)attachment:"?(.*?)(\.jpeg|\.jpg|\.png|\.gif)"?([?&][^\| <]+)?(?!<\/nowiki>)(.*)$/i', $block, $match)) {
-
-            if(preg_match('@^/@', $match[2]))
-                $match[2] = substr($match[2], 1);
-            elseif(preg_match('@/@', $match[2]))
-                $match[2] = str_replace('/', '__', $match[2]);
-            else
-                $match[2] = str_replace('/', '__', $this->title).'__'.$match[2];
-
-
-			if(!strlen($match[4])) {
-				$result .= ''
-					.$match[1].'[[파일:'.$match[2].$match[3].']]'
-					.'';
-
-			} else {
-				$match[4] = str_replace(array('?', '&'), '|', $match[4]);
-				$match[4] = preg_replace('/width=(\d*)/i', '$1px', $match[4]);
-				$match[4] = str_replace(['align=', 'pxpx'], ['', 'px'], $match[4]);
-
-				$result .= ''
-					.$match[1].'[[파일:'.$match[2].$match[3].$match[4].']]'
-					.'';
-			}
-
-			$block = $this->blockParser($match[5]);
-		}
-
+        
 		if(preg_match("/^(.*?)(?<!<nowiki>|\[)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
 			$match[4] = str_replace(array('?', '&'), ' ', $match[4]);
 
