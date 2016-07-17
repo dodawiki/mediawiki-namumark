@@ -225,7 +225,7 @@ class NamuMark {
             return '['.$ex_link[1].' '.$ex_link[2].']';
         $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
         if(preg_match('/(.*)\|(\[\[파일:.*)\]\]/', $text, $filelink))
-            return $filelink[2].'&link='.str_replace(' ', '_',$filelink[1]).']]';
+            return $filelink[2].'|link='.str_replace(' ', '_',$filelink[1]).']]';
         if(preg_match('/^(파일:.*?(?!\.jpeg|\.jpg|\.png|\.gif))\|(.*)/i', $text, $namu_image)) {
             $properties = explode("&", $namu_image[2]);
 

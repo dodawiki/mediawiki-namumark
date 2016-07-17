@@ -23,7 +23,7 @@ class NamuMark2 extends NamuMark {
 	protected function blockParser($block) {
         $block = $this->formatParser($block);
 		$result = '';
-        
+
 		if(preg_match("/^(.*?)(?<!<nowiki>|\[)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
 			$match[4] = str_replace(array('?', '&'), ' ', $match[4]);
 
