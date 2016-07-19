@@ -288,6 +288,8 @@ class NamuMark {
                     $include[1] = urldecode($include[1]);
                     return '{{'.$include[1].'}}'."\n";
                 }
+                if(self::startsWithi($text, 'anchor') && preg_match('/^anchor\((.+)\)$/i', $text, $anchor))
+                    return '<div id="'.$anchor[1].'"></div>';
                 if(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
                     if(isset($note[1]) && isset($note[2]) && $note[1] !== '') {
                         foreach($this->refnames as $refname) {
