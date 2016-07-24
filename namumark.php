@@ -110,8 +110,6 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 		$Extra = new NamuMarkExtra;
 		$text = $Extra->table($text);
 
-        $text = preg_replace('/\[attachment:(.*?)\]/', 'attachment:$1', $text);
-
 		# 파서를 불러온다.
 		require_once("php-namumark.class2.php");
 		$wEngine = new NamuMark2($text, $title);
