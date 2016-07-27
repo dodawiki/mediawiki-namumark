@@ -154,7 +154,7 @@ class NamuMarkExtra {
 				$prev_line = preg_replace('/^\s*/', '', $lines[$line_n - 1]);
 			}
 
-			if( $line === '' || $prev_line === '' || preg_match('/^<(?!img)[^>]*>$/', $line) || preg_match('/^<(?!img)[^>]*>$/', $prev_line) || preg_match('@(</li>|</div>|</ul>|</h\d>|</table>|<br/>|<br>|<br />|</dl>|<ol.*>|</ol>)$@i', $prev_line) || preg_match('@^(</?p>|<a onclick|<dl>|<dd>|<ul>|<li>|<ol>)@i', $line) )
+			if( $line === '' || $prev_line === '' || preg_match('/^<(?!img)[^>]*>$/', $line) || preg_match('/^<(?!img)[^>]*>$/', $prev_line) || preg_match('@(</li>|</div>|</ul>|</h\d>|</table>|<br/>|<br>|<br />|</dl>|<ol.*>|</ol>|</blockquote>)$@i', $prev_line) || preg_match('@^(</?p>|<a onclick|<dl>|<dd>|<ul>|<li>|<ol>)@i', $line) )
 				$text .= $line . "\n";
 			else
 				$text .= '<br>' . $line . "\n";
