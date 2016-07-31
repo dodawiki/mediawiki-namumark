@@ -218,42 +218,37 @@ class NamuMark {
 
         if(preg_match_all('/<p>(>*)?(.*?)<\/p>/', $innerhtml, $matches, PREG_SET_ORDER)) {
             $innerhtml = '';
-            $cat = array();
             foreach($matches as $line => $match) {
-                $cat[$line] = array('text' => $match[2], 'depth' => strlen($match[1]));
-            }
-
-            foreach($cat as $line => $each_cat) {
-                if($each_cat['depth'] == 0) {
-                    $innerhtml .= $each_cat['text'] . "\n";
+                if(strlen($match[1]) == 0) {
+                    $innerhtml .= $match[2] . "\n";
                 } else {
-                    if (isset($cat[$line - 1])) {
-                        if ($each_cat['depth'] > $cat[$line - 1]['depth']) {
-                            for ($n = 1; $n <= $each_cat['depth'] - $cat[$line - 1]['depth']; $n++) {
+                    if (isset($matches[$line - 1])) {
+                        if (strlen($match[1]) > strlen($matches[$line - 1][1])) {
+                            for ($n = 1; $n <= strlen($match[1]) - strlen($matches[$line - 1][1]); $n++) {
                                 $innerhtml .= '<blockquote>' . "\n";
                             }
-                            $innerhtml .= $each_cat['text'] . "\n";
-                            if (isset($cat[$line + 1]) && $each_cat['depth'] > $cat[$line + 1]['depth']) {
-                                for ($n = 1; $n <= $each_cat['depth'] - $cat[$line + 1]['depth']; $n++) {
+                            $innerhtml .= $match[2] . "\n";
+                            if (isset($matches[$line + 1]) && strlen($match[1]) > strlen($matches[$line + 1][1])) {
+                                for ($n = 1; $n <= strlen($match[1]) - strlen($matches[$line + 1][1]); $n++) {
                                     $innerhtml .= '</blockquote>' . "\n";
                                 }
                             }
-                        } elseif ($each_cat['depth'] < $cat[$line - 1]['depth']) {
-                            for ($n = 1; $n <= $cat[$line - 1]['depth'] - $each_cat['depth']; $n++) {
+                        } elseif (strlen($match[1]) < strlen($matches[$line - 1][1])) {
+                            for ($n = 1; $n <= strlen($matches[$line - 1][1]) - strlen($match[1]); $n++) {
                                 $innerhtml .= '</blockquote>' . "\n";
                             }
-                            $innerhtml .= $each_cat['text'] . "\n";
-                        } elseif ($each_cat['depth'] == $cat[$line - 1]['depth']) {
-                            $innerhtml .= '</br>' . $each_cat['text'] . "\n";
+                            $innerhtml .= $match[2] . "\n";
+                        } elseif (strlen($match[1]) == strlen($matches[$line - 1][1])) {
+                            $innerhtml .= '</br>' . $match[2] . "\n";
                         }
-                    } elseif (!isset($cat[$line - 1])) {
-                        for ($n = 1; $n <= $each_cat['depth']; $n++) {
+                    } elseif (!isset($matches[$line - 1])) {
+                        for ($n = 1; $n <= strlen($match[1]); $n++) {
                             $innerhtml .= '<blockquote>' . "\n";
                         }
-                        $innerhtml .= $each_cat['text'] . "\n";
+                        $innerhtml .= $match[2] . "\n";
                     }
-                    if (!isset($cat[$line + 1])) {
-                        for ($n = 1; $n <= $each_cat['depth']; $n++) {
+                    if (!isset($matches[$line + 1])) {
+                        for ($n = 1; $n <= strlen($match[1]); $n++) {
                             $innerhtml .= '</blockquote>' . "\n";
                         }
                     }
