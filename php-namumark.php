@@ -219,6 +219,7 @@ class NamuMark {
         if(preg_match_all('/<p>(>*)?(.*?)<\/p>/', $innerhtml, $matches, PREG_SET_ORDER)) {
             $innerhtml = '';
             foreach($matches as $line => $match) {
+                $match[2] = trim($match[2]);
                 if(strlen($match[1]) == 0) {
                     $innerhtml .= $match[2] . "\n";
                 } else {
