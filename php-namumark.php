@@ -209,14 +209,59 @@ class NamuMark {
                 break;
             }
             $i+=1;
-            $innerhtml .= $this->formatParser(substr($text, $i, $eol-$i))."<br>";
+            $innerhtml .= '<p>' . $this->formatParser(substr($text, $i, $eol-$i)). "</p>";
         }
         if(empty($innerhtml))
             return false;
 
         $offset = $i-1;
-        $innerhtml = preg_replace('/^>+/m', '', $innerhtml);
-        $innerhtml = preg_replace('/<br>>+/m', '<br>', $innerhtml);
+
+        if(preg_match_all('/<p>(>*)?(.*?)<\/p>/', $innerhtml, $matches, PREG_SET_ORDER)) {
+            $innerhtml = '';
+            $cat = array();
+            foreach($matches as $line => $match) {
+                $cat[$line] = array('text' => $match[2], 'depth' => strlen($match[1]));
+            }
+
+            foreach($cat as $line => $each_cat) {
+                if($each_cat['depth'] == 0) {
+                    $innerhtml .= $each_cat['text'] . "\n";
+                } else {
+                    if (isset($cat[$line - 1])) {
+                        if ($each_cat['depth'] > $cat[$line - 1]['depth']) {
+                            for ($n = 1; $n <= $each_cat['depth'] - $cat[$line - 1]['depth']; $n++) {
+                                $innerhtml .= '<blockquote>' . "\n";
+                            }
+                            $innerhtml .= $each_cat['text'] . "\n";
+                            if (isset($cat[$line + 1]) && $each_cat['depth'] > $cat[$line + 1]['depth']) {
+                                for ($n = 1; $n <= $each_cat['depth'] - $cat[$line + 1]['depth']; $n++) {
+                                    $innerhtml .= '</blockquote>' . "\n";
+                                }
+                            }
+                        } elseif ($each_cat['depth'] < $cat[$line - 1]['depth']) {
+                            for ($n = 1; $n <= $cat[$line - 1]['depth'] - $each_cat['depth']; $n++) {
+                                $innerhtml .= '</blockquote>' . "\n";
+                            }
+                            $innerhtml .= $each_cat['text'] . "\n";
+                        } elseif ($each_cat['depth'] == $cat[$line - 1]['depth']) {
+                            $innerhtml .= '</br>' . $each_cat['text'] . "\n";
+                        }
+                    } elseif (!isset($cat[$line - 1])) {
+                        for ($n = 1; $n <= $each_cat['depth']; $n++) {
+                            $innerhtml .= '<blockquote>' . "\n";
+                        }
+                        $innerhtml .= $each_cat['text'] . "\n";
+                    }
+                    if (!isset($cat[$line + 1])) {
+                        for ($n = 1; $n <= $each_cat['depth']; $n++) {
+                            $innerhtml .= '</blockquote>' . "\n";
+                        }
+                    }
+                }
+            }
+
+        }
+
         return '<blockquote>'.$innerhtml.'</blockquote>'."\n";
     }
 
