@@ -762,8 +762,8 @@ class NamuMark {
                     $html = substr($text, 6);
                     $html = htmlspecialchars_decode($html);
                     return '<html>'.$html.'</html>';
-                } elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^ ][^\n]*)/', $text, $match)) {
-                    return '<syntaxhighlight lang="'.$match[1].'" line="1">'.preg_replace('/#!syntax ([^ ][^\n]*)/', '', $text).'</syntaxhighlight>';
+                } elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
+                    return '<syntaxhighlight lang="'.$match[1].'" line="1">'.preg_replace('/#!syntax ([^\s]*)/', '', $text).'</syntaxhighlight>';
                 } elseif(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
                     if(empty($color[1]) && empty($color[2]))
                         return $text;
