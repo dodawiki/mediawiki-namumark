@@ -247,6 +247,11 @@ class NamuMark {
                             $innerhtml .= '<blockquote>' . "\n";
                         }
                         $innerhtml .= $match[2] . "\n";
+                        if (isset($matches[$line + 1]) && strlen($match[1]) > strlen($matches[$line + 1][1])) {
+                            for ($n = 1; $n <= strlen($match[1]) - strlen($matches[$line + 1][1]); $n++) {
+                                $innerhtml .= '</blockquote>' . "\n";
+                            }
+                        }
                     }
                     if (!isset($matches[$line + 1])) {
                         for ($n = 1; $n <= strlen($match[1]); $n++) {
@@ -257,7 +262,7 @@ class NamuMark {
             }
 
         }
-
+        
         return '<blockquote>'.$innerhtml.'</blockquote>'."\n";
     }
 
