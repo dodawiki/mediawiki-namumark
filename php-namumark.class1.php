@@ -63,6 +63,18 @@ class NamuMark1 extends NamuMark {
                     }
                 }
 
+                $lines = explode("\n", $size[2]);
+                $size[2] = '';
+                foreach($lines as $line) {
+                    if($line !== '')
+                        $size[2] .= $line . "\n";
+                }
+
+                if(self::startsWith($size[2], '||')) {
+                    $offset = 0;
+                    $size[2] = $this->tableParser($size[2], $offset);
+                }
+
                 return $big_before.$this->formatParser($size[2]).$big_after;
             } elseif(preg_match('/^\-([1-5])(.*)$/sm', $text, $size)) {
                 for ($i = 1; $i <= $size[1]; $i++) {
@@ -73,6 +85,18 @@ class NamuMark1 extends NamuMark {
                         $small_before = '<small>';
                         $small_after = '</small>';
                     }
+                }
+
+                $lines = explode("\n", $size[2]);
+                $size[2] = '';
+                foreach($lines as $line) {
+                    if($line !== '')
+                        $size[2] .= $line . "\n";
+                }
+
+                if(self::startsWith($size[2], '||')) {
+                    $offset = 0;
+                    $size[2] = $this->tableParser($size[2], $offset);
                 }
 
                 return $small_before . $this->formatParser($size[2]) . $small_after;

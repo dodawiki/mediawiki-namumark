@@ -116,14 +116,31 @@ class NamuMarkExtra {
     }
 
 	public function table($text) {
-		$text = preg_replace('/^\|([^\|\}]+?)\|(.*?\|\|)$/m', '||<table caption=$1>$2', $text);
+        $text = preg_replace('/^\|([^\|\}]+?)\|(.*?\|\|)$/m', '||<table caption=$1>$2', $text);
 
-        preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables);
-        foreach($tables[1] as $table) {
-            $newtable = preg_replace('/^((?:\|\|)+)(<table.*?\>)((?:\|\|)+)(.+)/im', '$1$3$2$4', $table);
-            $text = str_replace($table, str_replace("\n", '<br />', $newtable), $text);
-        }
+        if(preg_match_all('/^(\|\|.*?\|\|)\s*$/sm', $text, $tables)) {
+			foreach ($tables[1] as $table) {
+				$newtable = preg_replace('/^((?:\|\|)+)(<table.*?\>)((?:\|\|)+)(.+)/im', '$1$3$2$4', $table);
+                if(preg_match('/\{\{\{(?:\+|-)\d$/m', $newtable))
+				    $text = str_replace($table, $newtable, $text);
+                else
+				    $text = str_replace($table, str_replace("\n", '<br />', $newtable), $text);
+			}
+		}
 		$text = preg_replace('/\n\|\|$/', '||', $text);
+
+        if(preg_match_all('/(\{\{\{(?:\+|-)\d\n(\|\|.*)\}\}\})\|\|/s', $text, $tables, PREG_SET_ORDER)) {
+            foreach($tables as $n => $table) {
+                if(preg_match('/(\{\{\{(?:\+|-)\d\n(\|\|.*)\}\}\})\|\|/s', $table[2], $sub_table)) {
+                    $tEngine = new NamuMark1($sub_table[1], null);
+                    $newtable = str_replace("\n", '', $tEngine->toHtml());
+                    $table[1] = str_replace($sub_table[1], $newtable, $table[1]);
+                }
+                $tEngine = new NamuMark1($table[1], null);
+                $newtable =  str_replace("\n", '', $tEngine->toHtml());
+                $text = str_replace($tables[$n][1], $newtable, $text);
+            }
+        }
 
         return $text;
 	}

@@ -536,10 +536,8 @@ class NamuMark {
 	}
 	
 	protected function tableParser($text, &$offset) {
-		$tableTable = array();
 		$len = strlen($text);
-		$lineStart = $offset;
-		
+
 		$tableInnerStr = '';
 		$tableStyleList = array();
         $caption = '';
@@ -717,7 +715,6 @@ class NamuMark {
 						$trAttrStr .= ' '.$propName.'="'.str_replace('"', '\\"', $propValue).'"';
 					}
 				}
-				
 				$trInnerStr .= '<td'.$tdAttrStr.'>'.$this->blockParser($innerstr).'</td>';
 			}
 			$tableInnerStr .= !empty($trInnerStr)?'<tr'.$trAttrStr.'>'.$trInnerStr.'</tr>':'';
