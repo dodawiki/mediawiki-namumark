@@ -48,12 +48,37 @@ class NamuMark1 extends NamuMark {
                 }
             }
 
-            if(self::startsWithi($text, '#!html'))
-                return '<html>'.preg_replace('/UNIQ--.*?--QINU/', '', substr($text, 7)).'</html>';
-            elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match))
-                return '<syntaxhighlight lang="'.$match[1].'" line="1">'.preg_replace('/#!syntax ([^\s]*)/', '', $text).'</syntaxhighlight>';
-            else
-                return '<pre>'.$text.'</pre>';
+            if(self::startsWithi($text, '#!html')) {
+                return '<html>' . preg_replace('/UNIQ--.*?--QINU/', '', substr($text, 7)) . '</html>';
+            } elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
+                return '<syntaxhighlight lang="' . $match[1] . '" line="1">' . preg_replace('/#!syntax ([^\s]*)/', '', $text) . '</syntaxhighlight>';
+            } elseif(preg_match('/^\+([1-5])(.*)$/sm', $text, $size)) {
+                for ($i=1; $i<=$size[1]; $i++){
+                    if(isset($big_before) && isset($big_after)) {
+                        $big_before .= '<big>';
+                        $big_after .= '</big>';
+                    } else {
+                        $big_before = '<big>';
+                        $big_after = '</big>';
+                    }
+                }
+
+                return $big_before.$this->formatParser($size[2]).$big_after;
+            } elseif(preg_match('/^\-([1-5])(.*)$/sm', $text, $size)) {
+                for ($i = 1; $i <= $size[1]; $i++) {
+                    if (isset($small_before) && isset($small_after)) {
+                        $small_before .= '<small>';
+                        $small_after .= '</small>';
+                    } else {
+                        $small_before = '<small>';
+                        $small_after = '</small>';
+                    }
+                }
+
+                return $small_before . $this->formatParser($size[2]) . $small_after;
+            } else {
+                return '<pre>' . $text . '</pre>';
+            }
         }
 	}
 
