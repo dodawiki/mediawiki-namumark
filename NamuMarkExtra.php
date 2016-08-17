@@ -129,9 +129,9 @@ class NamuMarkExtra {
 		}
 		$text = preg_replace('/\n\|\|$/', '||', $text);
 
-        if(preg_match_all('/(\{\{\{(?:\+|-)\d\n(\|\|.*)\}\}\})\|\|/s', $text, $tables, PREG_SET_ORDER)) {
+        if(preg_match_all('/(\{\{\{(?:\+|-)\d\n(\|\|.*)\}\}\}) *?\|\|/s', $text, $tables, PREG_SET_ORDER)) {
             foreach($tables as $n => $table) {
-                if(preg_match('/(\{\{\{(?:\+|-)\d\n(\|\|.*)\}\}\})\|\|/s', $table[2], $sub_table)) {
+                if(preg_match('/(\{\{\{(?:\+|-)\d\n(\|\|.*)\}\}\}) *?\|\|/s', $table[2], $sub_table)) {
                     $tEngine = new NamuMark1($sub_table[1], null);
                     $newtable = str_replace("\n", '', $tEngine->toHtml());
                     $table[1] = str_replace($sub_table[1], $newtable, $table[1]);
