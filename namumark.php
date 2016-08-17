@@ -122,12 +122,6 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 function NamuMarkHTML2( &$parser, &$text ) {
 	$title = $parser->getTitle();
 	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
-		# 파서를 불러온다.
-		require_once("php-namumark.class3.php");
-		$wEngine = new NamuMark3($text);
-		$text =  $wEngine->toHtml();
-	
-	
 		$text = str_replace("<br /></p>\n<p>", '<br />', $text);
 		$text = str_replace("<p><br />\n</p>", '', $text);
 
