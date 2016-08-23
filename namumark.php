@@ -58,8 +58,12 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$text = preg_replace('/<pre .*?>(.*?)<\/pre>/s', '<pre>$1</pre>', $text); // pre 태그 뒤에 붙는 모든 속성을 제거한다.
 
 		# 보조 파서를 불러온다.
-		$Extra = new NamuMarkExtra;
-		$text = $Extra->output($text, false);
+		$Extra = new NamuMarkExtra($text);
+        $Extra->title();
+        $Extra->table();
+        $Extra->indent();
+        $Extra->getTemplateParameter();
+        $text = $Extra->text;
 
 		# 파서를 불러온다.
 		require_once("php-namumark.class1.php");
@@ -107,8 +111,9 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 		$text = str_replace('&apos;', "'", $text);
 		$text = str_replace('&gt;', ">", $text);
 
-		$Extra = new NamuMarkExtra;
-		$text = $Extra->table($text);
+		$Extra = new NamuMarkExtra($text);
+		$Extra->table();
+        $text = $Extra->text;
 
 		# 파서를 불러온다.
 		require_once("php-namumark.class2.php");
@@ -131,8 +136,9 @@ function NamuMarkHTML2( &$parser, &$text ) {
 
         $text = preg_replace('@^<ol><li><ol><li>.*?</li></ol></li></ol>$@ms', '', $text);
 
-		$Extra = new NamuMarkExtra;
-		$text = $Extra->enter($text);
+		$Extra = new NamuMarkExtra($text);
+		$Extra->enter();
+        $text = $Extra->text;
 	}
 }
 
@@ -140,9 +146,13 @@ function NamuMarkExtraHTML ( &$parser, &$text ) {
 	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
 
 	if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
-		$Extra = new NamuMarkExtra;
-		$text = $Extra->output($text, true);
+		$Extra = new NamuMarkExtra($text);
+        preg_match('/(<div id="specialchars".*<\/div>)/s', $text, $charinsert);
+        $text = preg_replace('/(<div id="specialchars".*<\/div>)/s', '', $text);
+        $Extra->external();
+        $Extra->imageurl();
+        $Extra->printTemplateParameter();
+        $text = $Extra->text;
 	}
 }
 
-?>
