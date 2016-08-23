@@ -50,6 +50,8 @@ class NamuMark1 extends NamuMark {
 
             if(self::startsWithi($text, '#!html')) {
                 return '<html>' . preg_replace('/UNIQ--.*?--QINU/', '', substr($text, 7)) . '</html>';
+            } elseif(self::startsWithi($text, '#!wiki') && preg_match('/([^\n]*)\n(((((.*)(\n)?)+)))/', substr($text, 7), $match)) {
+                return '<div '.$match[1].'>'.$match[2].'</div>';
             } elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
                 return '<syntaxhighlight lang="' . $match[1] . '" line="1">' . preg_replace('/#!syntax ([^\s]*)/', '', $text) . '</syntaxhighlight>';
             } elseif(preg_match('/^\+([1-5])(.*)$/sm', $text, $size)) {
