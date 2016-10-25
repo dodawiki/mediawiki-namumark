@@ -144,14 +144,32 @@ class NamuMarkExtra {
 				$prev_line = preg_replace('/^\s*/', '', $lines[$line_n - 1]);
 			}
 
-			if( $line === '' || $prev_line === '' || preg_match('/^<(?!img)[^>]*>$/', $line) || preg_match('/^<(?!img)[^>]*>$/', $prev_line) || preg_match('@(</li>|</div>|</ul>|</h\d>|</table>|<br/>|<br>|<br />|</dl>|<ol.*>|</ol>|</blockquote>)$@i', $prev_line) || preg_match('@^(</?p>|<a onclick|<dl>|<dd>|<ul>|<li>|<ol>)@i', $line) )
+			if( $line === '' || $prev_line === '' || preg_match('/^<(?!img)[^>]*>$/', $line) || preg_match('/^<(?!img)[^>]*>$/', $prev_line) || preg_match('@(</li>|</div>|</ul>|</h\d>|</table>|<br/>|<br>|<br />|</dl>|<ol.*>|</ol>|</blockquote>|</t.>)$@i', $prev_line) || preg_match('@^(</?p>|<a onclick|<dl>|<dd>|<ul>|<li>|<ol>)@i', $line) )
 				$this->text .= $line . "\n";
 			else
 				$this->text .= '<br>' . $line . "\n";
 		}
 
 	}
-	
+
+	public function cutMediawikiTable() {
+		preg_match_all('/(?<!\{)\{\|(.*?)\|\}(?!\})/s', $this->text, $matches);
+        $this->mediawikiTable = array();
+
+		foreach($matches[0] as $key => $match) {
+            $this->mediawikiTable[$key] = $match;
+            $this->text = str_replace($match, '<preserved type=mediawikiTable no='.$key.'>', $this->text);
+        }
+    }
+
+    public function pasteMediawikiTable() {
+        preg_match_all('/<preserved type=mediawikiTable no=(\S*?)>/', $this->text, $matches, PREG_SET_ORDER);
+
+        foreach($matches as $match) {
+                $this->text = str_replace($match[0], $this->mediawikiTable[$match[1]], $this->text);
+        }
+
+    }
 	
 }
 
