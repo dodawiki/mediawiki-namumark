@@ -63,7 +63,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
         $Extra->table();
         $Extra->indent();
         $Extra->getTemplateParameter();
-        $Extra->cutMediawikiTable();
+        $mediawikiTable = $Extra->cutMediawikiTable();
         $text = $Extra->text;
 
 		# 파서를 불러온다.
@@ -101,7 +101,8 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 			$text = str_replace($code, $xss->getHtml(), $text);
 		}
 
-		$Extra->pasteMediawikiTable();
+		$Extra = new NamuMarkExtra($text);
+		$Extra->pasteMediawikiTable($mediawikiTable);
 		$text = $Extra->text;
 
 
@@ -118,7 +119,7 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 
 		$Extra = new NamuMarkExtra($text);
 		$Extra->table();
-		$Extra->cutMediawikiTable();
+		$mediawikiTable = $Extra->cutMediawikiTable();
         $text = $Extra->text;
 
 		# 파서를 불러온다.
@@ -126,7 +127,8 @@ function NamuMarkHTML( Parser &$parser, &$text ) {
 		$wEngine = new NamuMark2($text, $title);
 		$text =  $wEngine->toHtml();
 
-		$Extra->pasteMediawikiTable();
+		$Extra = new NamuMarkExtra($text);
+		$Extra->pasteMediawikiTable($mediawikiTable);
 		$text = $Extra->text;
 
 	}

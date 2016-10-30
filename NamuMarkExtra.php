@@ -154,19 +154,21 @@ class NamuMarkExtra {
 
 	public function cutMediawikiTable() {
 		preg_match_all('/(?<!\{)\{\|(.*?)\|\}(?!\})/s', $this->text, $matches);
-        $this->mediawikiTable = array();
+        $mediawikiTable = array();
 
 		foreach($matches[0] as $key => $match) {
-            $this->mediawikiTable[$key] = $match;
+            $mediawikiTable[$key] = $match;
             $this->text = str_replace($match, '<preserved type=mediawikiTable no='.$key.'>', $this->text);
         }
+
+		return $mediawikiTable;
     }
 
-    public function pasteMediawikiTable() {
+    public function pasteMediawikiTable($mediawikiTable) {
         preg_match_all('/<preserved type=mediawikiTable no=(\S*?)>/', $this->text, $matches, PREG_SET_ORDER);
 
         foreach($matches as $match) {
-                $this->text = str_replace($match[0], $this->mediawikiTable[$match[1]], $this->text);
+                $this->text = str_replace($match[0], $mediawikiTable[$match[1]], $this->text);
         }
 
     }
