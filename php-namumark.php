@@ -267,12 +267,12 @@ class NamuMark {
     }
 
     protected function linkProcessor($text, $type) {
-        if(preg_match('/^((?:http|https|ftp|ftps)\:\/\/\S+)\|?(.*)?/', $text, $ex_link))
-        {
-            if(isset($ex_link[2]))
-            	return '['.$ex_link[1].' '.$ex_link[2].']';
+        if(preg_match('/^(?:http|https|ftp|ftps)\:\/\/\S+/', $text, $ex_link)) {
+            $ex_link = explode('|', $ex_link[0]);
+            if(count($ex_link) - 1 != 0 && isset($ex_link[count($ex_link) - 1]))
+                return '['.$ex_link[0].' '.$ex_link[count($ex_link) - 1].']';
             else
-                return '['.$ex_link[1].']';
+                return '['.$ex_link[0].']';
         }
         $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
         if(preg_match('/(.*)\|(\[\[파일:.*)\]\]/', $text, $filelink))
