@@ -2,8 +2,9 @@
 
 class NamuMarkExtra {
 
-	function __construct($text) {
+	function __construct($text, $title) {
 		$this->text = $text;
+		$this->title = $title;
 	}
 
 	
@@ -168,7 +169,31 @@ class NamuMarkExtra {
         preg_match_all('/<preserved type=mediawikiTable no=(\S*?)>/', $this->text, $matches, PREG_SET_ORDER);
 
         foreach($matches as $match) {
-                $this->text = str_replace($match[0], $mediawikiTable[$match[1]], $this->text);
+			$contents = preg_split('/(?:\|-|\|\+)/', $mediawikiTable[$match[1]], -1);
+			foreach($contents as $contents_key => $each_contents) {
+				if($contents_key == 0)
+					continue;
+				if($contents_key == count($contents) - 1) {
+					$each_contents = substr($each_contents, 0, -2);
+				}
+				$content = preg_split('/(?:\||\|\||!|!!)/', $each_contents, -1);
+
+				foreach($content as $each_content_key => $each_content) {
+					$wEngine = new NamuMark1($each_content, $this->title);
+					$m_each_content = $wEngine->toHtml();
+					if($m_each_content != "\n") {
+						$m_each_content = substr($m_each_content, 0, -1);
+					}
+					if(preg_match('/\n$/', $each_content)) {
+						$m_each_content .= "\n";
+					}
+					$mediawikiTable[$match[1]] = str_replace($each_content, $m_each_content, $mediawikiTable[$match[1]]);
+				}
+
+
+			}
+
+			$this->text = str_replace($match[0], $mediawikiTable[$match[1]], $this->text);
         }
 
     }
