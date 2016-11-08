@@ -906,5 +906,13 @@ class NamuMark {
         return $result;
     }
 
+    protected function blockParser($block) {
+        return $this->formatParser($block);
+    }
+
+    protected function renderProcessor($text, $type) {
+
+    }
+
 }
 

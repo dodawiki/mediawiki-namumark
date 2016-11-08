@@ -37,6 +37,7 @@ require_once('php-namumark.php');
 require_once("NamuMarkExtra.php");
 require_once("php-namumark.class1.php");
 require_once("php-namumark.class2.php");
+require_once("php-namumark.class3.php");
 
 function NamuMark(&$parser, &$text, &$strip_state) {
 	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
@@ -105,7 +106,6 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 		$Extra = new NamuMarkExtra($text, $title);
 		$Extra->pasteMediawikiTable($mediawikiTable);
 		$text = $Extra->text;
-
 
 	}
 
