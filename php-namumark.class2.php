@@ -21,13 +21,15 @@
 class NamuMark2 extends NamuMark {
 
 	protected function blockParser($block) {
-        global $wgAllowExternalImages, $wgAllowExternalImagesFrom;
+        global $wgAllowExternalImages, $wgAllowExternalImagesFrom, $wgEnableImageWhitelist;
 
         $block = $this->formatParser($block);
 		$result = '';
 
 
-		if($wgAllowExternalImages || (!$wgAllowExternalImages && $wgAllowExternalImagesFrom)) {
+
+
+		if($wgAllowExternalImages || (!$wgAllowExternalImages && $wgAllowExternalImagesFrom) || (!$wgAllowExternalImages && $wgEnableImageWhitelist)) {
             if(preg_match("/^(.*?)(?<!<nowiki>|\[)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
                 $approve = false;
                 if($wgAllowExternalImagesFrom) {
@@ -43,6 +45,22 @@ class NamuMark2 extends NamuMark {
                     }
                 } elseif($wgAllowExternalImages) {
                     $approve = true;
+                } elseif($wgEnableImageWhitelist) {
+                    $titleObject = Title::newFromText( 'MediaWiki:External image whitelist' );
+                    if ($titleObject->exists()) {
+                        $article = new WikiPage($titleObject);
+                        $lists = $article->getText();
+                        $lists = explode("\n", $lists);
+                        foreach($lists as $list_n => $list) {
+                            if($list_n == 0 || empty($list) || self::startsWith($list, '#')) {
+                                continue;
+                            }
+                            if(preg_match($list, $match[2])) {
+                                $approve = true;
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 if($approve) {
