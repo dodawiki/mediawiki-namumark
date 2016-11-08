@@ -21,20 +21,43 @@
 class NamuMark2 extends NamuMark {
 
 	protected function blockParser($block) {
+        global $wgAllowExternalImages, $wgAllowExternalImagesFrom;
+
         $block = $this->formatParser($block);
 		$result = '';
 
-		if(preg_match("/^(.*?)(?<!<nowiki>|\[)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
-			$match[4] = str_replace(array('?', '&'), ' ', $match[4]);
 
-			$match[4] = str_ireplace('align=left', '', $match[4]);
-			$match[4] = str_ireplace('align=center', 'style="display:block; margin-left:auto; margin-right:auto;"', $match[4]);
+		if($wgAllowExternalImages || (!$wgAllowExternalImages && $wgAllowExternalImagesFrom)) {
+            if(preg_match("/^(.*?)(?<!<nowiki>|\[)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
+                $approve = false;
+                if($wgAllowExternalImagesFrom) {
+                    $urls = $wgAllowExternalImagesFrom;
+                    if (!is_array($urls)) {
+                        $urls = array($urls);
+                    }
+                    foreach ($urls as $url) {
+                        if(self::startsWith($match[2], $url)) {
+                            $approve = true;
+                            break;
+                        }
+                    }
+                } elseif($wgAllowExternalImages) {
+                    $approve = true;
+                }
 
-			$result .= ''
-				. $match[1] . '<img src="' . $match[2] . $match[3] . '"' . $match[4] . '>'
-				. '';
+                if($approve) {
+                    $match[4] = str_replace(array('?', '&'), ' ', $match[4]);
 
-			$block = $this->blockParser($match[5]);
+                    $match[4] = str_ireplace('align=left', '', $match[4]);
+                    $match[4] = str_ireplace('align=center', 'style="display:block; margin-left:auto; margin-right:auto;"', $match[4]);
+
+                    $result .= ''
+                        . $match[1] . '<img src="' . $match[2] . $match[3] . '"' . $match[4] . '>'
+                        . '';
+
+                    $block = $this->blockParser($match[5]);
+                }
+            }
 		}
 
 		$result .= $block;

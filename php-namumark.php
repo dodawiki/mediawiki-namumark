@@ -906,7 +906,5 @@ class NamuMark {
         return $result;
     }
 
-
-
 }
 
