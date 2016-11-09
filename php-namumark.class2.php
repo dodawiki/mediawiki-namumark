@@ -55,7 +55,7 @@ class NamuMark2 extends NamuMark {
                             if($list_n == 0 || empty($list) || self::startsWith($list, '#')) {
                                 continue;
                             }
-                            if(preg_match($list, $match[2])) {
+                            if(preg_match('/'.$list.'/', $match[2])) {
                                 $approve = true;
                                 break;
                             }
