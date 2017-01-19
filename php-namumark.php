@@ -267,8 +267,8 @@ class NamuMark {
     }
 
     protected function linkProcessor($text, $type) {
-        if(preg_match('/^(?:http|https|ftp|ftps)\:\/\/\S+/', $text, $ex_link)) {
-            $ex_link = explode('|', $ex_link[0]);
+        if(self::startsWithi($text, 'http://') || self::startsWithi($text, 'https://') || self::startsWithi($text, 'ftp://') || self::startsWithi($text, 'ftps://')) {
+            $ex_link = explode('|', $text);
             if(count($ex_link) - 1 != 0 && isset($ex_link[count($ex_link) - 1]))
                 return '['.$ex_link[0].' '.$ex_link[count($ex_link) - 1].']';
             else
