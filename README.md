@@ -21,9 +21,14 @@ php-namumark-mediawiki는 [나무위키](https://namu.wiki)에서 사용하는 [
 1. LocalSettings.php에 다음을 입력합니다.
 
     ```php
-    require_once "$IP/extensions/NamuMark/namumark.php";
-    $wgRawHtml = true;
-    $wgAllowImageTag = true;
+require_once "$IP/extensions/NamuMark/namumark.php";
+$wgRawHtml = true;
+$wgAllowImageTag = true;
+$wgNamespacesWithSubpages[NS_MAIN] = true;
+$wgNamespacesWithSubpages[NS_TEMPLATE] = true;
+$wgAllowDisplayTitle = true;
+$wgRestrictDisplayTitle = false;
+$wgDefaultUserOptions['numberheadings'] = 1;
     ```
 
 	
