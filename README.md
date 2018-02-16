@@ -18,8 +18,8 @@
 
 		git clone https://github.com/ddarkr/php-ddarkmark.git DDarkMark
 
-1. [여기](https://github.com/ddarkr/php-ddarkmark/archive/master.zip)를 눌러 다운받은 다음 압축을 풀고, 압축이 풀린 파일을 모두 DDarkMark 폴더에 넣습니다. (git으로 한 경우 필요 없습니다.)
-1. LocalSettings.php에 다음을 입력합니다.
+2. [여기](https://github.com/ddarkr/php-ddarkmark/archive/master.zip)를 눌러 다운받은 다음 압축을 풀고, 압축이 풀린 파일을 모두 DDarkMark 폴더에 넣습니다. (git으로 한 경우 필요 없습니다.)
+3. LocalSettings.php에 다음을 입력합니다.
 
     ```php
 	require_once "$IP/extensions/DDarkMark/ddarkmark.php";
@@ -31,8 +31,14 @@
 	$wgRestrictDisplayTitle = false;
 	$wgDefaultUserOptions['numberheadings'] = 1;
     ```
+4. '미디어위키:Common.js' 문서에 다음을 입력합니다.
+```javascript
+jQuery('.ddark-folding #df-text').click(function () {  
+    var content = $(this).parent().find("> .ddark-folding-content");
+    content.toggle('fast');
+});
+```
 
-	
 ## 그 외
 아직까지 라이브러리의 기능이 완벽하게 구현돼있지 않습니다. 이점을 참고하시고 실제 미디어위키 사이트에 적용하실 때에는 반드시 사전에 시험해보실 것을 권장하는 바입니다.
 
