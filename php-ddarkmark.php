@@ -325,6 +325,7 @@ class NamuMark {
             case 'br':
                 return '<br>';
             case 'date':
+				return date('Y-m-d');
             case 'datetime':
                 return date('Y-m-d H:i:s');
             case '목차':
@@ -338,6 +339,19 @@ class NamuMark {
                     $include[1] = str_replace(',', '|', $include[1]);
                     $include[1] = urldecode($include[1]);
                     return '{{'.$include[1].'}}'."\n";
+                }
+				if(self::startsWithi($text, 'dday') && preg_match('/^dday\((.+)\)$/i', $text, $include)) {
+                    $include[1] = str_replace(',', '|', $include[1]);
+                    $include[1] = urldecode($include[1]);
+					$datenow = date("Y-m-d",time()); // 오늘 날짜를 출력하겠지요?
+					$datevar = Trim($include[1]);
+                    return intval((strtotime($datenow)-strtotime($datevar)) / 86400);
+                }
+				if(self::startsWithi($text, 'age') && preg_match('/^age\((.+)\)$/i', $text, $include)) {
+                    $include[1] = str_replace(',', '|', $include[1]);
+                    $include[1] = urldecode($include[1]);
+					$birth = strtotime($include[1]);
+                    return floor((date('Ymd') - date('Ymd' , $birth)) / 10000);
                 }
                 if(self::startsWithi($text, 'anchor') && preg_match('/^anchor\((.+)\)$/i', $text, $anchor))
                     return '<div id="'.$anchor[1].'"></div>';
