@@ -32,9 +32,11 @@ $wgNamespacesWithSubpages[NS_TEMPLATE] = true;
 $wgAllowDisplayTitle = true;
 $wgRestrictDisplayTitle = false;
 $wgDefaultUserOptions['numberheadings'] = 1;
+$wgAllowSlowParserFunctions = true; # [pagecount(이름공간)] 문법을 사용하기 위해서는 켜야합니다.
 ```
 
 ## 그 외
 
 - 나무위키와 문법이 완벽하게 동일하지 않습니다. 참고하시고 이용하여 주시기 바랍니다.
 - 소스가 많이 더럽습니다. 하지만 차마 리팩토링은 못하겠네요.
+- `$wgAllowSlowParserFunctions` 는 `{{PAGESINNAMESPACE}}` 매직 워드를 사용할 수 있게 됩니다. 하지만 이 매직워드는 성능 이슈가 좀 있습니다.

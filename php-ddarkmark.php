@@ -2,7 +2,7 @@
 /**
  * namumark.php - Namu Mark Renderer
  * Copyright (C) 2015 koreapyj koreapyj0@gmail.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -12,12 +12,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
- 
+
 class NamuMark {
 
     function __construct($wtext, $title) {
@@ -262,7 +262,7 @@ class NamuMark {
             }
 
         }
-        
+
         return '<blockquote>'.$innerhtml.'</blockquote>'."\n";
     }
 
@@ -328,6 +328,8 @@ class NamuMark {
 				return date('Y-m-d');
             case 'datetime':
                 return date('Y-m-d H:i:s');
+            case 'pagecount':
+              return '{{NUMBEROFARTICLES}}';
             case '목차':
             case 'tableofcontents':
                 return '__TOC__';
@@ -340,12 +342,17 @@ class NamuMark {
                     $include[1] = urldecode($include[1]);
                     return '{{'.$include[1].'}}'."\n";
                 }
-				if(self::startsWithi($text, 'dday') && preg_match('/^dday\((.+)\)$/i', $text, $include)) {
-                    $include[1] = str_replace(',', '|', $include[1]);
-                    $include[1] = urldecode($include[1]);
-					$datenow = date("Y-m-d",time()); // 오늘 날짜를 출력하겠지요?
-					$datevar = Trim($include[1]);
-                    return intval((strtotime($datenow)-strtotime($datevar)) / 86400);
+                if(self::startsWithi($text, 'pagecount') && preg_match('/^pagecount\((.+)\)$/i', $text, $include)) {
+                  $include[1] = str_replace(',', '|', $include[1]);
+                  $include[1] = urldecode($include[1]);
+                  return '{{PAGESINNAMESPACE:'.$include[1].'}}'."\n";
+                }
+        				if(self::startsWithi($text, 'dday') && preg_match('/^dday\((.+)\)$/i', $text, $include)) {
+                  $include[1] = str_replace(',', '|', $include[1]);
+                  $include[1] = urldecode($include[1]);
+        					$datenow = date("Y-m-d",time()); // 오늘 날짜를 출력하겠지요?
+        					$datevar = Trim($include[1]);
+                  return intval((strtotime($datenow)-strtotime($datevar)) / 86400);
                 }
 				if(self::startsWithi($text, 'age') && preg_match('/^age\((.+)\)$/i', $text, $include)) {
                     $include[1] = str_replace(',', '|', $include[1]);
@@ -485,7 +492,7 @@ class NamuMark {
 		}
 		return false;
 	}
-	
+
 	protected static function getChar($string, $pointer){
 		if(!isset($string[$pointer])) return false;
 		$char = ord($string[$pointer]);
@@ -550,11 +557,11 @@ class NamuMark {
 		return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
 	}
 
-	
+
 	protected static function seekEndOfLine($text, $offset=0) {
 		return ($r=strpos($text, "\n", $offset))===false?strlen($text):$r;
 	}
-	
+
 	protected function tableParser($text, &$offset) {
 		$len = strlen($text);
 
@@ -588,12 +595,12 @@ class NamuMark {
 
 				$tdAttr = $tdStyleList = array();
 				$trAttr = $trStyleList = array();
-				
+
 				if($simpleColspan != 0) {
 					$tdAttr['colspan'] = $simpleColspan+1;
 					$simpleColspan = 0;
 				}
-				
+
 
 
 				while(self::startsWith($innerstr, '<') && !preg_match('/^<[^<]*?>([^<]*?)<\/.*?>/', $innerstr) && !self::startsWithi($innerstr, '<br')) {
@@ -711,7 +718,7 @@ class NamuMark {
 						continue;
 					$tdAttr['style'] .= $styleName.': '.$tdstyleValue.'; ';
 				}
-				
+
 				$trAttr['style'] = '';
 				foreach($trStyleList as $styleName =>$trstyleValue) {
 					if(empty($trstyleValue))
@@ -725,7 +732,7 @@ class NamuMark {
 						continue;
 					$tdAttrStr .= ' '.$propName.'="'.str_replace('"', '\\"', $propValue).'"';
 				}
-				
+
 				if (!isset($trAttrStri)) {
 					$trAttrStri = true;
 					$trAttrStr = '';
@@ -935,4 +942,3 @@ class NamuMark {
     }
 
 }
-
