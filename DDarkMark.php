@@ -5,11 +5,6 @@
   * Repository - https://github.com/ddarkr/php-ddarkmark
   */
 
-$wgHooks['ParserBeforeStrip'][] = 'NamuMark';
-$wgHooks['InternalParseBeforeLinks'][] = 'NamuMarkHTML';
-$wgHooks['ParserBeforeTidy'][] = 'NamuMarkHTML2';
-$wgHooks['ParserAfterTidy'][] = 'NamuMarkExtraHTML';
-
 require_once('php-ddarkmark.php');
 require_once("DDarkMarkExtra.php");
 require_once("php-ddarkmark.class1.php");
