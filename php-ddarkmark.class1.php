@@ -2,7 +2,7 @@
 /**
  * namumark.php - Namu Mark Renderer
  * Copyright (C) 2015 koreapyj koreapyj0@gmail.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -12,10 +12,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 class NamuMark1 extends NamuMark {
@@ -53,8 +53,8 @@ class NamuMark1 extends NamuMark {
                 return '<div '.$match[1].'>'.$match[2].'</div>';
             } elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
                 return '<syntaxhighlight lang="' . $match[1] . '" line="1">' . preg_replace('/#!syntax ([^\s]*)/', '', $text) . '</syntaxhighlight>';
-			} elseif(self::startsWithi($text, '#!folding') && preg_match('/#!folding ([^\s]*)/', $text, $match)) {
-                return '<div class="ddark-folding"><span id="df-text">' . $match[1] . '</span><div class="ddark-folding-content" style="display:none">' . preg_replace('/#!folding ([^\s]*)/', '', $text) . '</div></div>';
+						} elseif(self::startsWithi($text, '#!folding') && preg_match('/#!folding ([^\n]*)/', $text, $match)) {
+                return '<div class="nm-folding"><span class="text">' . $match[1] . '</span><div class="folding-content" style="display: none;">' . preg_replace('/#!folding ([^\n]*)/', '', $text) . '</div></div>';
             } elseif(preg_match('/^\+([1-5])(.*)$/sm', $text, $size)) {
                 for ($i=1; $i<=$size[1]; $i++){
                     if(isset($big_before) && isset($big_after)) {
@@ -112,5 +112,5 @@ class NamuMark1 extends NamuMark {
 
 
 
-	
+
 }

@@ -4,7 +4,6 @@
   * Origin - https://github.com/Oriwiki/php-namumark-mediawiki
   * Repository - https://github.com/ddarkr/php-ddarkmark
   */
-
 require_once('php-ddarkmark.php');
 require_once("DDarkMarkExtra.php");
 require_once("php-ddarkmark.class1.php");
@@ -12,6 +11,12 @@ require_once("php-ddarkmark.class2.php");
 require_once("php-ddarkmark.class3.php");
 
 class DDarkMark {
+  public static function start() {
+    global $wgOut, $wgScriptPath;
+
+		$wgOut->addModules( 'ext.DDarkMark' );
+	}
+
   public static function NamuMark(&$parser, &$text, &$strip_state) {
   	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
 

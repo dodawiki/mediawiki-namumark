@@ -1,26 +1,38 @@
 {
 	"name": "도다 마크",
-	"version": "10.0.3",
+	"version": "10.1",
 	"author": [
 		"koreapyj",
     "김동동",
     "도다"
 	],
 	"requires": {
-		"MediaWiki": ">= 1.28.0"
+		"MediaWiki": ">= 1.32.0"
 	},
-	"url": "https://www.mediawiki.org/wiki/Extension:BoilerPlate",
-	"descriptionmsg": "https://github.com/ddarkr/php-ddarkmark",
+	"url": "https://github.com/ddarkr/DDarkMark",
+	"descriptionmsg": "나무위키 문법을 미디어위키에서 사용할 수 있게 도와줍니다.",
 	"license-name": "AGPL-3.0",
 	"type": "parserhook",
 	"AutoloadClasses": {
 		"DDarkMark": "DDarkMark.php"
 	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "DDarkMark"
+	},
+	"ResourceModules": {
+		"ext.DDarkMark": {
+			"scripts": [
+				"resources/init.js"
+			]
+		}
+	},
 	"Hooks": {
+		"BeforePageDisplay": "DDarkMark::start",
 		"ParserBeforeStrip": "DDarkMark::NamuMark",
     "InternalParseBeforeLinks": "DDarkMark::NamuMarkHTML",
     "ParserBeforeTidy": "DDarkMark::NamuMarkHTML2",
     "ParserAfterTidy": "DDarkMark::NamuMarkExtraHTML"
 	},
-	"manifest_version": 2
+	"manifest_version": 1
 }
