@@ -1,15 +1,4 @@
 <?php
- /*
-  * DDark Mark (with php-namumark-mediawiki)
-  * Origin - https://github.com/Oriwiki/php-namumark-mediawiki
-  * Repository - https://github.com/ddarkr/php-ddarkmark
-  */
-require_once('php-ddarkmark.php');
-require_once("DDarkMarkExtra.php");
-require_once("php-ddarkmark.class1.php");
-require_once("php-ddarkmark.class2.php");
-require_once("php-ddarkmark.class3.php");
-
 class DDarkMark {
   public static function start() {
     global $wgOut, $wgScriptPath;
@@ -56,7 +45,7 @@ class DDarkMark {
   			$text = $fn[0].$text;
 
   		preg_match_all('/<html>(.*?)<\/html>/s', $text, $html);
-  		require_once 'XSSfilter.php';
+  		//require_once 'XSSfilter.php';
   		foreach ($html[1] as $code) {
   			$lines = explode("\n", $code);
   			$code_ex = '';
