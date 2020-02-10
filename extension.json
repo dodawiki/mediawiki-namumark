@@ -34,7 +34,7 @@
 "ResourceModules":
   {"ext.DDarkMark":
     {"scripts":
-      ["resources/init.js"]
+      ["init.js"]
     }
   }
 }
