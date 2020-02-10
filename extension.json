@@ -1,40 +1,49 @@
-{"name":"DDarkMark",
-"author":
-  ["[https://github.com/koreapyj koreapyj]",
-  "[https://github.com/Oriwiki Oriwiki]",
-  "[http://central.plavormind.tk:81/page/User:PlavorSeol PlavorSeol]",
-  "[https://github.com/ddarkr 도다]"],
-
-"descriptionmsg":"ddarkmark-description",
-"license-name":"AGPL-3.0-only",
-"manifest_version":2,
-"requires":
-  {"MediaWiki":">=1.32"},
-"type":"parserhook",
-"url":"https://github.com/ddarkr/DDarkMark",
-"version":"10.1.2",
-
-"AutoloadClasses":
-  {"DDarkMark":"includes/DDarkMark.php",
-  "NamuMark":"includes/php-ddarkmark.php",
-  "NamuMark1":"includes/php-ddarkmark.class1.php",
-  "NamuMark2":"includes/php-ddarkmark.class2.php",
-  "NamuMark3":"includes/php-ddarkmark.class3.php",
-  "NamuMarkExtra":"includes/DDarkMarkExtra.php",
-  "XssHtml":"includes/XSSfilter.php"},
-"Hooks":
-  {"BeforePageDisplay":"DDarkMark::start",
-  "InternalParseBeforeLinks":"DDarkMark::NamuMarkHTML",
-  "ParserAfterTidy":"DDarkMark::NamuMarkExtraHTML",
-  "ParserBeforeStrip":"DDarkMark::NamuMark",
-  "ParserBeforeTidy":"DDarkMark::NamuMarkHTML2"},
-"ResourceFileModulePaths":
-  {"localBasePath":"resources",
-  "remoteExtPath":"DDarkMark/resources"},
-"ResourceModules":
-  {"ext.DDarkMark":
-    {"scripts":
-      ["init.js"]
+{
+  "name":"DDarkMark",
+  "author": [
+    "[https://github.com/koreapyj koreapyj]",
+    "[https://github.com/Oriwiki Oriwiki]",
+    "[https://github.com/PlavorSeol PlavorSeol]",
+    "[https://github.com/ddarkr 도다]"
+  ],
+  "descriptionmsg": "ddarkmark-description",
+  "license-name": "AGPL-3.0-only",
+  "manifest_version": 2,
+  "requires": {
+    "MediaWiki": ">=1.32"
+  },
+  "type": "parserhook",
+  "url": "https://github.com/ddarkr/DDarkMark",
+  "version": "10.1.2",
+  "MessagesDirs": {
+    "DDarkMark": [
+      "i18n"
+    ]
+  },
+  "AutoloadClasses": {
+    "DDarkMark": "includes/DDarkMark.php",
+    "NamuMark": "includes/php-ddarkmark.php",
+    "NamuMark1": "includes/php-ddarkmark.class1.php",
+    "NamuMark2": "includes/php-ddarkmark.class2.php",
+    "NamuMark3": "includes/php-ddarkmark.class3.php",
+    "NamuMarkExtra": "includes/DDarkMarkExtra.php",
+    "XssHtml": "includes/XSSfilter.php"
+  },
+  "Hooks": {
+    "BeforePageDisplay": "DDarkMark::start",
+    "InternalParseBeforeLinks": "DDarkMark::NamuMarkHTML",
+    "ParserAfterTidy": "DDarkMark::NamuMarkExtraHTML",
+    "ParserBeforeStrip": "DDarkMark::NamuMark",
+    "ParserBeforeTidy": "DDarkMark::NamuMarkHTML2"
+  },
+  "ResourceFileModulePaths": {
+    "localBasePath": "resources",
+    "remoteExtPath": "DDarkMark/resources"
+  },
+  "ResourceModules": {
+    "ext.DDarkMark":
+    {
+      "scripts": ["init.js"]
     }
   }
 }
