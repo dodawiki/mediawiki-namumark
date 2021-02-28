@@ -1,10 +1,7 @@
 {
-  "name":"DDarkMark",
+  "name": "NamuMark",
   "author": [
-    "[https://github.com/koreapyj koreapyj]",
-    "[https://github.com/Oriwiki Oriwiki]",
-    "[https://github.com/PlavorSeol PlavorSeol]",
-    "[https://github.com/ddarkr 도다]"
+    "[https://github.com/dodawiki/mediawiki-namumark/graphs/contributors ...]"
   ],
   "descriptionmsg": "ddarkmark-description",
   "license-name": "AGPL-3.0-only",
@@ -13,36 +10,33 @@
     "MediaWiki": ">=1.32"
   },
   "type": "parserhook",
-  "url": "https://github.com/ddarkr/DDarkMark",
-  "version": "10.1.2",
+  "url": "https://github.com/dodawiki/mediawiki-namumark",
+  "version": "10.1.3",
   "MessagesDirs": {
-    "DDarkMark": [
-      "i18n"
-    ]
+    "NamuMark": ["i18n"]
   },
   "AutoloadClasses": {
-    "DDarkMark": "includes/DDarkMark.php",
-    "NamuMark": "includes/php-ddarkmark.php",
-    "NamuMark1": "includes/php-ddarkmark.class1.php",
-    "NamuMark2": "includes/php-ddarkmark.class2.php",
-    "NamuMark3": "includes/php-ddarkmark.class3.php",
-    "NamuMarkExtra": "includes/DDarkMarkExtra.php",
+    "NamuMarkCore": "includes/Core.php",
+    "NamuMark": "includes/php-namumark.php",
+    "NamuMark1": "includes/php-namumark.class1.php",
+    "NamuMark2": "includes/php-namumark.class2.php",
+    "NamuMark3": "includes/php-namumark.class3.php",
+    "NamuMarkExtra": "includes/NamuMarkExtra.php",
     "XssHtml": "includes/XSSfilter.php"
   },
   "Hooks": {
-    "BeforePageDisplay": "DDarkMark::start",
-    "InternalParseBeforeLinks": "DDarkMark::NamuMarkHTML",
-    "ParserAfterTidy": "DDarkMark::NamuMarkExtraHTML",
-    "ParserBeforeStrip": "DDarkMark::NamuMark",
-    "ParserBeforeTidy": "DDarkMark::NamuMarkHTML2"
+    "BeforePageDisplay": "NamuMarkCore::initialize",
+    "InternalParseBeforeLinks": "NamuMarkCore::NamuMarkHTML",
+    "ParserAfterTidy": "NamuMarkCore::NamuMarkExtraHTML",
+    "ParserBeforeStrip": "NamuMarkCore::NamuMark",
+    "ParserBeforeTidy": "NamuMarkCore::NamuMarkHTML2"
   },
   "ResourceFileModulePaths": {
     "localBasePath": "resources",
-    "remoteExtPath": "DDarkMark/resources"
+    "remoteExtPath": "NamuMark/resources"
   },
   "ResourceModules": {
-    "ext.DDarkMark":
-    {
+    "ext.NamuMark": {
       "scripts": ["init.js"]
     }
   }
