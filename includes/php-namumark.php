@@ -336,6 +336,8 @@ class NamuMark {
             case '각주':
             case 'footnote':
                 return '<references />';
+			case 'clearfix':
+				return '<div style="clear:both"></div>';
             default:
                 if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
                     $include[1] = str_replace(',', '|', $include[1]);
