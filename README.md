@@ -11,7 +11,6 @@ original: [php-namumark](https://github.com/koreapyj/php-namumark), [Orimark](ht
 ## 의존
 
 - MediaWiki 버전 1.32 이상
-- [EmbedVideo 확장기능](https://www.mediawiki.org/wiki/Extension:EmbedVideo)
 - [Cite 확장기능](https://www.mediawiki.org/wiki/Extension:Cite)
 - [Math 확장기능](https://www.mediawiki.org/wiki/Extension:Math) 또는 [SimpleMathJax 확장기능](https://www.mediawiki.org/wiki/Extension:SimpleMathJax) (※ SimpleMathJax 를 권장합니다.)
 - [Poem 확장기능](https://www.mediawiki.org/wiki/Extension:Poem)
@@ -43,3 +42,10 @@ $wgAllowSlowParserFunctions = true; # [pagecount(이름공간)] 문법을 사용
 - 나무위키와 다르거나 일부 지원되지 않는 문법이 존재할 수 있습니다.
 - 소스가 많이 더럽습니다. 😅
 - `$wgAllowSlowParserFunctions` 옵션을 켜면 제공되는 `{{PAGESINNAMESPACE}}` 매직 워드는 성능 이슈가 있을 수 있습니다.
+
+### 기존 나무마크 미디어위키판 (일명 '오리마크')에서의 전환
+
+해당 확장기능은 기본적으로 동일한 소스를 포크한 것이기 때문에, 전환이 어렵지 않습니다.
+
+1. 기존에 `require_once`로 확장을 로딩하셨다면, **사용 방법** 문단에 따라 `wfLoadExtension`으로 전환하시기 바랍니다. **`require_once`를 통한 로딩을 지원하지 않습니다.**
+2. [EmbedVideo 확장기능](https://www.mediawiki.org/wiki/Extension:EmbedVideo)이 의존성에서 제외되었습니다. 나무마크 때문에 해당 확장을 사용하셨다면 제거하셔도 됩니다.
