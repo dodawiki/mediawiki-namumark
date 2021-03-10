@@ -377,56 +377,42 @@ class NamuMark {
                     elseif(isset($note[1]))
                         return '<ref name="'.$note[1].'" />';
                 }
-                if(preg_match('/^(youtube|nicovideo)\((.*)\)$/i', $text, $video_code))
-                    return $this->videoProcessor($video_code[2], strtolower($video_code[1]));
+                elseif(self::startsWith($text, 'youtube') && preg_match('/^youtube\((.+)\)$/', $text, $include) && $include = $include[1]) {
+					$include = explode(',', $include);
+					$var = array();
+					foreach($include as $v) {
+						$v = explode('=', $v);
+						if(empty($v[1]))
+							$v[1]='';
+						$var[$v[0]] = $v[1];
+					}
+					return '<html><iframe width="'.(!empty($var['width'])?$var['width']:'640').'" height="'.(!empty($var['height'])?$var['height']:'360').'" src="//www.youtube.com/embed/'.$include[0].'" frameborder="0" allowfullscreen></iframe></html>';
+				}
+				elseif(self::startsWith($text, 'nicovideo') && preg_match('/^nicovideo\((.+)\)$/', $text, $include) && $include = $include[1]) {
+					$include = explode(',', $include);
+					$var = array();
+					foreach($include as $v) {
+						$v = explode('=', $v);
+						if(empty($v[1]))
+							$v[1]='';
+						$var[$v[0]] = $v[1];
+					}
+					return '<html><iframe width="'.(!empty($var['width'])?$var['width']:'640').'" height="'.(!empty($var['height'])?$var['height']:'360').'" src="//embed.nicovideo.jp/watch/'.$include[0].'?width='.(!empty($var['width'])?$var['width']:'640').'&height='.(!empty($var['height'])?$var['height']:'360').'" frameborder="0" allowfullscreen></iframe></html>';
+				}
+				elseif(self::startsWith($text, 'kakaotv') && preg_match('/^kakaotv\((.+)\)$/', $text, $include) && $include = $include[1]) {
+					$include = explode(',', $include);
+					$var = array();
+					foreach($include as $v) {
+						$v = explode('=', $v);
+						if(empty($v[1]))
+							$v[1]='';
+						$var[$v[0]] = $v[1];
+					}
+					return '<html><iframe width="'.(!empty($var['width'])?$var['width']:'640').'" height="'.(!empty($var['height'])?$var['height']:'360').'" src="//tv.kakao.com/embed/player/cliplink/'.$include[0].'?width='.(!empty($var['width'])?$var['width']:'640').'&height='.(!empty($var['height'])?$var['height']:'360').'" frameborder="0" allowfullscreen></iframe></html>';
+				}
 
         }
         return '['.$text.']';
-    }
-
-    protected function videoProcessor($text, $service) {
-        $text = str_replace('|', ',', $text);
-        $options = explode(",", $text);
-        $text = '';
-
-        foreach($options as $key => $value) {
-            if($key == 0) {
-                $service = str_replace('nicovideo', 'nico', $service);
-                $text .= '{{#evt:service='.$service.'|id='.$value;
-                continue;
-            }
-
-            $option = explode("=", $value);
-            if($option[0] == 'width') {
-                $width = $option[1];
-                continue;
-            } elseif ($option[0] == 'height') {
-                $height = $option[1];
-                continue;
-			} elseif ($option[0] == ' width') {
-                $width = $option[1];
-                continue;
-			} elseif ($option[0] == ' height') {
-                $height = $option[1];
-                continue;
-            } elseif (preg_match('/(\d+)x(\d+)/', $value, $match)) {
-                $width = $match[1];
-                $height = $match[2];
-                continue;
-            }
-
-            $text .= '|'.$value;
-        }
-
-        if(isset($width) && isset($height))
-            $text .= '|dimensions='.$width.'x'.$height;
-        elseif(isset($width))
-            $text .= '|dimensions='.$width;
-        elseif(isset($height))
-            $text .= '|dimensions=x'.$height;
-
-        return $text.'}}';
-
     }
 
     protected function mediawikiProcessor($text, $type) {
