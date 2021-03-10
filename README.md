@@ -19,23 +19,25 @@ original: [php-namumark](https://github.com/koreapyj/php-namumark), [Orimark](ht
 
 1.  미디어위키 extensions 폴더에 DDarkMark 폴더를 새로 생성합니다. 또는 서버에 직접 git을 이용하실 수 있으면 설치된 미디어위키의 extensions 폴더에서 다음과 같이 명령합니다.
 
-        git clone https://github.com/ddarkr/DDarkMark.git DDarkMark
+    ```bash
+    git clone https://github.com/ddarkr/DDarkMark.git DDarkMark
+    ```
 
 2.  [여기](https://github.com/ddarkr/DDarkMark/archive/master.zip)를 눌러 다운받은 다음 압축을 풀고, 압축이 풀린 파일을 모두 DDarkMark 폴더에 넣습니다. (git으로 한 경우 필요 없습니다.)
 3.  LocalSettings.php에 다음을 입력합니다.
 
-```php
-wfLoadExtension( 'NamuMark' );
+    ```php
+    wfLoadExtension( 'NamuMark' );
 
-$wgRawHtml = true;
-$wgAllowImageTag = true;
-$wgNamespacesWithSubpages[NS_MAIN] = true;
-$wgNamespacesWithSubpages[NS_TEMPLATE] = true;
-$wgAllowDisplayTitle = true;
-$wgRestrictDisplayTitle = false;
-$wgDefaultUserOptions['numberheadings'] = 1;
-$wgAllowSlowParserFunctions = true; # [pagecount(이름공간)] 문법을 사용하기 위해서는 켜야합니다.
-```
+    $wgRawHtml = true;
+    $wgAllowImageTag = true;
+    $wgNamespacesWithSubpages[NS_MAIN] = true;
+    $wgNamespacesWithSubpages[NS_TEMPLATE] = true;
+    $wgAllowDisplayTitle = true;
+    $wgRestrictDisplayTitle = false;
+    $wgDefaultUserOptions['numberheadings'] = 1;
+    $wgAllowSlowParserFunctions = true; # [pagecount(이름공간)] 문법을 사용하기 위해서는 켜야합니다.
+    ```
 
 ## 그 외
 
