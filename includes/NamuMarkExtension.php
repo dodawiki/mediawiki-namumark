@@ -2,11 +2,9 @@
 
 class NamuMarkExtension
 {
-	public static function onBeforePageDisplay()
+	public static function onBeforePageDisplay( OutputPage $out )
 	{
-		global $wgOut, $wgScriptPath;
-
-		$wgOut->addModules('ext.NamuMark');
+		$out->addModules('ext.NamuMark');
 	}
 
 	public static function markParse(Parser &$parser, &$text)
