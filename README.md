@@ -17,13 +17,13 @@ original: [php-namumark](https://github.com/koreapyj/php-namumark), [Orimark](ht
 
 ## 사용 방법
 
-1.  미디어위키 extensions 폴더에 DDarkMark 폴더를 새로 생성합니다. 또는 서버에 직접 git을 이용하실 수 있으면 설치된 미디어위키의 extensions 폴더에서 다음과 같이 명령합니다.
+1.  미디어위키 extensions 폴더에 NamuMark 폴더를 새로 생성합니다. 또는 서버에 직접 git을 이용하실 수 있으면 설치된 미디어위키의 extensions 폴더에서 다음과 같이 명령합니다.
 
     ```bash
-    git clone https://github.com/ddarkr/DDarkMark.git DDarkMark
+    git clone https://github.com/dodawiki/mediawiki-namumark.git NamuMark
     ```
 
-2.  [여기](https://github.com/ddarkr/DDarkMark/archive/master.zip)를 눌러 다운받은 다음 압축을 풀고, 압축이 풀린 파일을 모두 DDarkMark 폴더에 넣습니다. (git으로 한 경우 필요 없습니다.)
+2.  [여기](https://github.com/ddarkr/DDarkMark/archive/master.zip) 를 눌러 다운받은 다음 압축을 풀고, 압축이 풀린 파일을 모두 NamuMark 폴더에 넣습니다. (git으로 한 경우 필요 없습니다.)
 3.  LocalSettings.php에 다음을 입력합니다.
 
     ```php
@@ -39,15 +39,17 @@ original: [php-namumark](https://github.com/koreapyj/php-namumark), [Orimark](ht
     $wgAllowSlowParserFunctions = true; # [pagecount(이름공간)] 문법을 사용하기 위해서는 켜야합니다.
     ```
 
-## 그 외
-
-- 나무위키와 다르거나 일부 지원되지 않는 문법이 존재할 수 있습니다.
-- 소스가 많이 더럽습니다. 😅
-- `$wgAllowSlowParserFunctions` 옵션을 켜면 제공되는 `{{PAGESINNAMESPACE}}` 매직 워드는 성능 이슈가 있을 수 있습니다.
-
-### 기존 나무마크 미디어위키판 (일명 '오리마크')에서의 전환
+## 기존 나무마크 미디어위키판 (일명 '오리마크')에서의 전환
 
 해당 확장기능은 기본적으로 동일한 소스를 포크한 것이기 때문에, 전환이 어렵지 않습니다.
 
 1. 기존에 `require_once`로 확장을 로딩하셨다면, **사용 방법** 문단에 따라 `wfLoadExtension`으로 전환하시기 바랍니다. **`require_once`를 통한 로딩을 지원하지 않습니다.**
 2. [EmbedVideo 확장기능](https://www.mediawiki.org/wiki/Extension:EmbedVideo)이 의존성에서 제외되었습니다. 나무마크 때문에 해당 확장을 사용하셨다면 제거하셔도 됩니다.
+
+다만 실제 위키에 적용하시기 전에, 테스트는 필수적으로 진행하시기 바랍니다. 일부 소스가 변경되거나 제거되어 미작동하는 부분이 존재할 수 있는 점 참고해주세요.
+
+## 그 외
+
+- 나무위키와 다르거나 일부 지원되지 않는 문법이 존재합니다. 해당 익스텐션은 완벽한 호환을 목표로 하지 않습니다.
+- 소스가 많이 더럽습니다. 😅
+- `$wgAllowSlowParserFunctions` 옵션을 켜면 제공되는 `{{PAGESINNAMESPACE}}` 매직 워드는 성능 이슈가 있을 수 있습니다.
