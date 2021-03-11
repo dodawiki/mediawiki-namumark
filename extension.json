@@ -1,43 +1,44 @@
 {
-  "name": "NamuMark",
-  "author": [
-    "[https://github.com/dodawiki/mediawiki-namumark/graphs/contributors ...]"
-  ],
-  "descriptionmsg": "namumark-description",
-  "license-name": "AGPL-3.0-only",
-  "manifest_version": 2,
-  "requires": {
-    "MediaWiki": ">=1.32"
-  },
-  "type": "parserhook",
-  "url": "https://github.com/dodawiki/mediawiki-namumark",
-  "version": "10.2",
-  "MessagesDirs": {
-    "NamuMark": ["i18n"]
-  },
-  "AutoloadClasses": {
-    "NamuMarkCore": "includes/Core.php",
-    "NamuMark": "includes/php-namumark.php",
-    "NamuMark1": "includes/php-namumark.class1.php",
-    "NamuMark2": "includes/php-namumark.class2.php",
-    "NamuMark3": "includes/php-namumark.class3.php",
-    "NamuMarkExtra": "includes/NamuMarkExtra.php",
-    "XssHtml": "includes/XSSfilter.php"
-  },
-  "Hooks": {
-    "BeforePageDisplay": "NamuMarkCore::initialize",
-    "InternalParseBeforeLinks": "NamuMarkCore::NamuMarkHTML",
-    "ParserAfterTidy": "NamuMarkCore::NamuMarkExtraHTML",
-    "ParserBeforeStrip": "NamuMarkCore::NamuMark",
-    "ParserBeforeTidy": "NamuMarkCore::NamuMarkHTML2"
-  },
-  "ResourceFileModulePaths": {
-    "localBasePath": "resources",
-    "remoteExtPath": "NamuMark/resources"
-  },
-  "ResourceModules": {
-    "ext.NamuMark": {
-      "scripts": ["init.js"]
-    }
-  }
+	"name": "NamuMark",
+	"author": [
+		"[https://github.com/dodawiki/mediawiki-namumark/graphs/contributors ...]"
+	],
+	"descriptionmsg": "namumark-description",
+	"license-name": "AGPL-3.0-only",
+	"manifest_version": 2,
+	"requires": {
+		"MediaWiki": ">=1.32"
+	},
+	"type": "parserhook",
+	"url": "https://github.com/dodawiki/mediawiki-namumark",
+	"version": "10.2",
+	"MessagesDirs": {
+		"NamuMark": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"NamuMarkExtension": "includes/NamuMarkExtension.php",
+		"NamuMark": "includes/NamuMark.php",
+		"NamuMarkExtended": "includes/NamuMarkExtended.php",
+		"NamuMarkExtra": "includes/NamuMarkExtra.php",
+		"XssHtml": "includes/XSSfilter.php"
+	},
+	"Hooks": {
+		"BeforePageDisplay": "NamuMarkExtension::onBeforePageDisplay",
+		"ParserAfterTidy": "NamuMarkExtension::markHandleHTML",
+		"ParserBeforeInternalParse": "NamuMarkExtension::markParse",
+		"InternalParseBeforeLinks": "NamuMarkExtension::markParse"
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "NamuMark/resources"
+	},
+	"ResourceModules": {
+		"ext.NamuMark": {
+			"scripts": [
+				"init.js"
+			]
+		}
+	}
 }
