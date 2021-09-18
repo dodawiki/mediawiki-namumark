@@ -102,4 +102,45 @@ class NamuMarkExtension
 			$text = $Extra->text;
 		}
 	}
+
+	public static function handleHTML(&$parser, &$text)
+	{
+		$title = $parser->getTitle();
+		if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
+			$text = str_replace('&apos;', "'", $text);
+			$text = str_replace('&gt;', ">", $text);
+
+			$Extra = new NamuMarkExtra($text, $title);
+			$mediawikiTable = $Extra->cutMediawikiTable();
+			$Extra->table();
+			$text = $Extra->text;
+
+			# 파서를 불러온다.
+			$wEngine = new NamuMarkExtended2($text, $title);
+			$text =  $wEngine->toHtml();
+
+			$Extra = new NamuMarkExtra($text, $title);
+			$Extra->pasteMediawikiTable($mediawikiTable);
+			$text = $Extra->text;
+
+		}
+	}
+
+	public static function handleHTML2(&$parser, &$text)
+	{
+		$title = $parser->getTitle();
+
+		if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
+			$text = str_replace("<br /></p>\n<p>", '<br />', $text);
+			$text = str_replace("<p><br />\n</p>", '', $text);
+
+			$text = preg_replace('/<a rel="nofollow" target="_blank" class="external autonumber" href="(.*?)">\[(\[\d+\])\]<\/a>/', '<a rel="nofollow" target="_blank" class="external autonumber" href="$1">$2</a>', $text);
+
+			$text = preg_replace('@^<ol><li><ol><li>.*?</li></ol></li></ol>$@ms', '', $text);
+
+			$Extra = new NamuMarkExtra($text, $title);
+			$Extra->enter();
+			$text = $Extra->text;
+		}
+	}
 }

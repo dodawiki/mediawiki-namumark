@@ -21,14 +21,15 @@
 		"NamuMarkExtension": "includes/NamuMarkExtension.php",
 		"NamuMark": "includes/NamuMark.php",
 		"NamuMarkExtended": "includes/NamuMarkExtended.php",
+		"NamuMarkExtended2": "includes/NamuMarkExtended2.php",
 		"NamuMarkExtra": "includes/NamuMarkExtra.php",
 		"XssHtml": "includes/XSSfilter.php"
 	},
 	"Hooks": {
 		"BeforePageDisplay": "NamuMarkExtension::onBeforePageDisplay",
-		"ParserAfterTidy": "NamuMarkExtension::markHandleHTML",
+		"ParserAfterTidy": "NamuMarkExtension::handleHTML2",
 		"ParserBeforeInternalParse": "NamuMarkExtension::markParse",
-		"InternalParseBeforeLinks": "NamuMarkExtension::markParse"
+		"InternalParseBeforeLinks": "NamuMarkExtension::handleHTML"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "resources",
