@@ -11,15 +11,15 @@ class NamuMarkExtra
 
 	public function indent()
 	{
-		if (preg_match_all('/^((?!(( +){|( +)}|( +)\|))( +)([^* ][^\n]*))$/m', $this->text, $indent, PREG_SET_ORDER)) {
+		if (preg_match_all('/^(?! *{{| *}}| *\|)( +)([^* ][^\n]*)$/m', $this->text, $indent, PREG_SET_ORDER)) {
 			foreach ($indent as $each_indent) {
-				if (!preg_match('/^(1\.|A\.|I\.)/i', $each_indent[7])) {
-					if (preg_match('/^>/', $each_indent[7]))
-						$each_indent[6] = str_replace(' ', '', $each_indent[6]);
+				if (!preg_match('/^(1\.|A\.|I\.)/i', $each_indent[2])) {
+					if (preg_match('/^>/', $each_indent[2]))
+						$each_indent[1] = str_replace(' ', '', $each_indent[1]);
 					else
-						$each_indent[6] = str_replace(' ', ':', $each_indent[6]);
+						$each_indent[1] = str_replace(' ', ':', $each_indent[1]);
 					$each_indent[0] = '/^' . preg_quote($each_indent[0], '/') . '$/m';
-					$this->text = preg_replace($each_indent[0], $each_indent[6] . $each_indent[7], $this->text);
+					$this->text = preg_replace($each_indent[0], $each_indent[1] . $each_indent[2], $this->text);
 				}
 			}
 		}
@@ -194,15 +194,6 @@ class NamuMarkExtra
 		}
 
 	}
-
-	protected static function startsWith($haystack, $needle, $offset = 0)
-	{
-		$len = strlen($needle);
-		if (($offset + $len) > strlen($haystack))
-			return false;
-		return $needle == substr($haystack, $offset, $len);
-	}
-
 }
 
 
