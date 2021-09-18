@@ -115,7 +115,6 @@ class NamuMarkExtended2 extends NamuMark
       if (self::startsWithi($text, '#!html')) {
         $text = substr($text, 7);
         $text = htmlspecialchars_decode($text);
-        require_once("XSSfilter.php");
         $xss = new XssHtml($text);
         return $xss->getHtml();
       } elseif (self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
