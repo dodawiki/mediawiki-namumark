@@ -570,11 +570,17 @@ class NamuMark
 		$tableInnerStr = '';
 		$tableStyleList = array();
 		$caption = '';
+
 		for ($i = $offset; $i < $len; $i = self::seekEndOfLine($text, $i) + 1) {
 			$now = self::getChar($text, $i);
 			$eol = self::seekEndOfLine($text, $i);
 			if (!self::startsWith($text, '||', $i)) {
 				// table end
+				break;
+			}
+
+			// 미디어위키 table 문법 {|로 시작하면 무시
+			if (self::startsWith($text, '{|')) {
 				break;
 			}
 			$line = substr($text, $i, $eol - $i);
@@ -738,7 +744,7 @@ class NamuMark
 						$trAttrStr .= ' ' . $propName . '="' . str_replace('"', '\\"', $propValue) . '"';
 					}
 				}
-				$trInnerStr .= '<td' . $tdAttrStr . '>' . $this->blockParser($innerstr) . '</td>';
+				$trInnerStr .= '<td' . $tdAttrStr . '>' . $this->formatParser($innerstr) . '</td>';
 			}
 			$tableInnerStr .= !empty($trInnerStr) ? '<tr' . $trAttrStr . '>' . $trInnerStr . '</tr>' : '';
 			unset($trAttrStri);
@@ -825,6 +831,8 @@ class NamuMark
 					return $small_before . $this->formatParser($size[2]) . $small_after;
 				} elseif (self::startsWithi($text, '#!wiki') && preg_match('/([^\n]*)\n(((((.*)(\n)?)+)))/', substr($text, 7), $match)) {
 					return '<div ' . $match[1] . '>' . $match[2] . '</div>';
+				} elseif (self::startsWithi($text, '#!folding') && preg_match('/#!folding ([^\n]*)(?:(?:\<br \/\>)(?:\n)?)(((((.*)(\n)?)+)))/', $text, $match)) {
+					return '<div class="nm-folding"><span class="text">' . $match[1] . '</span><div class="folding-content" style="display: none;">' . $match[2] . '</div></div>';
 				} else {
 					return '<nowiki>' . $text . '</nowiki>';
 				}
