@@ -2,6 +2,8 @@
 
 class NamuMarkExtension
 {
+	public static $mediawikiTable = [];
+
 	public static function onBeforePageDisplay( OutputPage $out )
 	{
 		$out->addModules('ext.NamuMark');
@@ -84,6 +86,7 @@ class NamuMarkExtension
 
 		if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
 			$Extra = new NamuMarkExtra($text, $title);
+			$mediawikiTable = $Extra->cutMediawikiTable();
 			preg_match('/(<div id="specialchars".*<\/div>)/s', $text, $charinsert);
 			$text = preg_replace('/(<div id="specialchars".*<\/div>)/s', '', $text);
 
@@ -99,6 +102,7 @@ class NamuMarkExtension
 			$Extra->external();
 			$Extra->imageurl();
 			$Extra->printTemplateParameter();
+			$Extra->pasteMediawikiTable($mediawikiTable);
 			$text = $Extra->text;
 		}
 	}
@@ -111,7 +115,6 @@ class NamuMarkExtension
 			$text = str_replace('&gt;', ">", $text);
 
 			$Extra = new NamuMarkExtra($text, $title);
-			$mediawikiTable = $Extra->cutMediawikiTable();
 			$Extra->table();
 			$text = $Extra->text;
 
@@ -120,7 +123,6 @@ class NamuMarkExtension
 			$text =  $wEngine->toHtml();
 
 			$Extra = new NamuMarkExtra($text, $title);
-			$Extra->pasteMediawikiTable($mediawikiTable);
 			$text = $Extra->text;
 
 		}

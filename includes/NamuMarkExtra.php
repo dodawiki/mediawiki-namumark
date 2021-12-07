@@ -184,10 +184,6 @@ class NamuMarkExtra
 			foreach ($contents as $contents_key => $each_contents) {
 				if ($contents_key == 0)
 					continue;
-
-				$wEngine = new NamuMarkExtended($each_contents, $this->title);
-				$m_each_contents = $wEngine->toHtml();
-				$mediawikiTable[$match[1]] = str_replace($each_contents, $m_each_contents, $mediawikiTable[$match[1]]);
 			}
 
 			$this->text = str_replace($match[0], $mediawikiTable[$match[1]], $this->text);

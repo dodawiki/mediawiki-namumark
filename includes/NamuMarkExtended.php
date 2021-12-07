@@ -56,7 +56,7 @@ class NamuMarkExtended extends NamuMark
 				return '<div ' . $match[1] . '>' . $match[2] . '</div>';
 			} elseif (self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
 				return '<syntaxhighlight lang="' . $match[1] . '" line="1">' . preg_replace('/#!syntax ([^\s]*)/', '', $text) . '</syntaxhighlight>';
-			} elseif (self::startsWithi($text, '#!folding') && preg_match('/#!folding ([^\n]*)/', $text, $match)) {
+			} elseif (self::startsWithi($text, '#!folding') && preg_match('/#!folding ([^\n]*)\n(((((.*)(\n)?)+)))/', $text, $match)) {
 				return '<div class="nm-folding"><span class="text">' . $match[1] . '</span><div class="folding-content" style="display: none;">' . preg_replace('/#!folding ([^\n]*)/', '', $text) . '</div></div>';
 			} elseif (preg_match('/^\+([1-5])(.*)$/sm', $text, $size)) {
 				for ($i = 1; $i <= $size[1]; $i++) {
