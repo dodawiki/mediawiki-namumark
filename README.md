@@ -30,6 +30,7 @@
     wfLoadExtension( 'NamuMark' );
 
     $wgRawHtml = true;
+    $wgAllowExternalImages = true;
     $wgNamespacesWithSubpages[NS_MAIN] = true;
     $wgNamespacesWithSubpages[NS_TEMPLATE] = true;
     $wgAllowDisplayTitle = true;
