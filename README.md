@@ -1,8 +1,8 @@
 # 나무마크 for MediaWiki
 
-**나무마크**는 [나무위키](https://namu.wiki)에서 사용하는 [문법](https://namu.wiki/w/%EB%82%98%EB%AC%B4%EC%9C%84%ED%82%A4:%ED%8E%B8%EC%A7%91%20%EB%8F%84%EC%9B%80%EB%A7%90)을 미디어위키 확장 기능으로 구현한 것입니다.
+**나무마크**는 [나무위키](https://namu.wiki)에서 사용하는 [문법](https://namu.wiki/w/%EB%82%98%EB%AC%B4%EC%9C%84%ED%82%A4:%ED%8E%B8%EC%A7%91%20%EB%8F%84%EC%9B%80%EB%A7%90) 중 일부를 미디어위키 확장 기능으로 구현한 것입니다.
 
-Original: [php-namumark](https://github.com/koreapyj/php-namumark), [Orimark](https://github.com/Oriwiki/php-namumark-mediawiki)
+원 구현체: [php-namumark](https://github.com/koreapyj/php-namumark), [Orimark](https://github.com/Oriwiki/php-namumark-mediawiki)
 
 ## 라이선스
 
@@ -30,7 +30,6 @@ Original: [php-namumark](https://github.com/koreapyj/php-namumark), [Orimark](ht
     wfLoadExtension( 'NamuMark' );
 
     $wgRawHtml = true;
-    $wgAllowImageTag = true;
     $wgNamespacesWithSubpages[NS_MAIN] = true;
     $wgNamespacesWithSubpages[NS_TEMPLATE] = true;
     $wgAllowDisplayTitle = true;
@@ -50,6 +49,7 @@ Original: [php-namumark](https://github.com/koreapyj/php-namumark), [Orimark](ht
 
 ## 그 외
 
+- **정상 작동을 보증하지 않습니다.**
 - 나무위키와 다르거나 일부 지원되지 않는 문법이 존재합니다. 해당 익스텐션은 완벽한 호환을 목표로 하지 않습니다.
 - 소스 코드가 많이 더럽습니다. 😅
 - `$wgAllowSlowParserFunctions` 옵션을 켜면 제공되는 `{{PAGESINNAMESPACE}}` 매직 워드는 성능 이슈가 있을 수 있습니다.
