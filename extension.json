@@ -27,9 +27,9 @@
 	},
 	"Hooks": {
 		"BeforePageDisplay": "NamuMarkExtension::onBeforePageDisplay",
-		"ParserBeforeInternalParse": "NamuMarkExtension::markParse",
-		"InternalParseBeforeLinks": "NamuMarkExtension::handleHTML",
-		"ParserAfterTidy": "NamuMarkExtension::handleHTML2"
+		"ParserBeforeInternalParse": "NamuMarkExtension::onParserBeforeInternalParse",
+		"InternalParseBeforeLinks": "NamuMarkExtension::onInternalParseBeforeLinks",
+		"ParserAfterTidy": "NamuMarkExtension::onParserAfterTidy"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "resources",

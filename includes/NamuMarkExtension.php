@@ -9,7 +9,7 @@ class NamuMarkExtension
 		$out->addModules('ext.NamuMark');
 	}
 
-	public static function markParse(Parser &$parser, &$text)
+	public static function onParserBeforeInternalParse(Parser &$parser, &$text)
 	{
 		$title = $parser->getTitle();
 
@@ -107,7 +107,7 @@ class NamuMarkExtension
 		}
 	}
 
-	public static function handleHTML(&$parser, &$text)
+	public static function onInternalParseBeforeLinks(&$parser, &$text)
 	{
 		$title = $parser->getTitle();
 		if (!preg_match('/^특수:/', $title) && !preg_match("/&action=history/", $_SERVER["REQUEST_URI"]) && !preg_match('/^사용자:.*\.(css|js)$/', $title)) {
@@ -128,7 +128,7 @@ class NamuMarkExtension
 		}
 	}
 
-	public static function handleHTML2(&$parser, &$text)
+	public static function onParserAfterTidy(&$parser, &$text)
 	{
 		$title = $parser->getTitle();
 
