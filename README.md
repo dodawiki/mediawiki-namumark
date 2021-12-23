@@ -10,7 +10,9 @@
 
 ## 의존
 
-- MediaWiki 버전 1.32 이상
+의존 소프트웨어/확장 기능에 **볼드체** 처리가 되어 있습니다.
+
+- **MediaWiki** 버전 1.32 이상
 - [**Cite** 확장기능](https://www.mediawiki.org/wiki/Extension:Cite)
 - [**SimpleMathJax** 확장기능](https://www.mediawiki.org/wiki/Extension:SimpleMathJax) 또는 [**Math** 확장기능](https://www.mediawiki.org/wiki/Extension:Math) (※ SimpleMathJax를 권장합니다.)
 - [**Poem** 확장기능](https://www.mediawiki.org/wiki/Extension:Poem)
@@ -44,13 +46,13 @@
 해당 확장 기능은 기본적으로 동일한 소스를 포크한 것이기 때문에, 전환이 어렵지 않습니다.
 
 1. 기존에 `require_once`로 확장을 로딩하셨다면, **사용 방법** 문단에 따라 `wfLoadExtension`으로 전환하시기 바랍니다. **`require_once`를 통한 로딩을 지원하지 않기 때문입니다.**
-2. [EmbedVideo 확장 기능](https://www.mediawiki.org/wiki/Extension:EmbedVideo)이 의존성에서 제외되었습니다. 나무마크 때문에 해당 확장을 사용하셨다면 제거하셔도 됩니다.
+2. [EmbedVideo 확장 기능](https://www.mediawiki.org/wiki/Extension:EmbedVideo)이 의존성에서 제외되었습니다. (대신 자체적인 영상 embed 서비스를 사용합니다.) 나무마크 때문에 해당 확장을 사용하셨다면 제거하셔도 됩니다.
 
 다만 실제 위키에 적용하시기 전에, 테스트는 필수적으로 진행하시기 바랍니다. 일부 소스가 변경되거나 제거되어 미작동하는 부분이 존재할 수 있는 점 참고해주세요.
 
 ## 그 외
 
 - **정상 작동을 보증하지 않습니다.**
-- 나무위키와 다르거나 일부 지원되지 않는 문법이 존재합니다. 해당 익스텐션은 완벽한 호환을 목표로 하지 않습니다.
-- 소스 코드가 많이 더럽습니다. 😅
+- 나무위키와 다르거나 일부 지원되지 않는 문법(예: `folding` 문법을 통한 펼치기 - 접기)이 존재합니다. 해당 익스텐션은 완벽한 호환을 목표로 하지 않습니다.
+- 소스가 많이 더럽습니다. 😅
 - `$wgAllowSlowParserFunctions` 옵션을 켜면 제공되는 `{{PAGESINNAMESPACE}}` 매직 워드는 성능 이슈가 있을 수 있습니다.
