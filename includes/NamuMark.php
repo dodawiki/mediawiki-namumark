@@ -684,7 +684,11 @@ class NamuMark
 							} elseif (preg_match('/^([^=]+)=(?|"(.*)"|\'(.*)\'|(.*))$/', $prop, $match)) {
 								switch ($match[1]) {
 									case 'bgcolor':
+									case 'colbgcolor':
 										$tdStyleList['background-color'] = $match[2];
+										break;
+									case 'colcolor':
+										$tdStyleList['color'] = $match[2];
 										break;
 									case 'rowbgcolor':
 										$trStyleList['background-color'] = $match[2];
@@ -705,9 +709,9 @@ class NamuMark
 					if (self::startsWith($innerstr, ' ') && self::endsWith($innerstr, ' '))
 						$tdStyleList['text-align'] = 'center';
 					elseif (self::startsWith($innerstr, ' ') && !self::endsWith($innerstr, ' '))
-						$tdStyleList['text-align'] = null;
-					elseif (!self::startsWith($innerstr, ' ') && self::endsWith($innerstr, ' '))
 						$tdStyleList['text-align'] = 'right';
+					elseif (!self::startsWith($innerstr, ' ') && self::endsWith($innerstr, ' '))
+						$tdStyleList['text-align'] = 'left';
 					else
 						$tdStyleList['text-align'] = null;
 				}
@@ -829,8 +833,16 @@ class NamuMark
 					}
 
 					return $small_before . $this->formatParser($size[2]) . $small_after;
-				} elseif (self::startsWithi($text, '#!wiki') && preg_match('/([^\n]*)\n(((((.*)(\n)?)+)))/', substr($text, 7), $match)) {
-					return '<div ' . $match[1] . '>' . $match[2] . '</div>';
+				} elseif (self::startsWithi($text, '#!wiki')) {
+					$html = explode("\n", $text);
+					if (!isset($html[0])) {
+						return $text;
+					}
+					$result = '<div '.substr(htmlspecialchars_decode($html[0]), 7).'>';
+					array_shift($html);
+					$result .= $html[0];
+					$result .= '</div>';
+					return $result;
 				} elseif (self::startsWithi($text, '#!folding') && preg_match('/#!folding ([^\n]*)(?:(?:\<br \/\>)(?:\n)?)(((((.*)(\n)?)+)))/', $text, $match)) {
 					return '<div class="nm-folding"><span class="text">' . $match[1] . '</span><div class="folding-content" style="display: none;">' . $match[2] . '</div></div>';
 				} else {

@@ -140,6 +140,9 @@ class NamuMarkExtension
 
 			$text = preg_replace('@^<ol><li><ol><li>.*?</li></ol></li></ol>$@ms', '', $text);
 
+			$wEngine = new NamuMarkExtended($text, $title);
+			$text =  $wEngine->toHtml();
+
 			$Extra = new NamuMarkExtra($text, $title);
 			$Extra->enter();
 			$text = $Extra->text;

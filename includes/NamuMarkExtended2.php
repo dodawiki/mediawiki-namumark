@@ -2,7 +2,7 @@
 /**
  * namumark.php - Namu Mark Renderer
  * Copyright (C) 2015 koreapyj koreapyj0@gmail.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -12,25 +12,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 class NamuMarkExtended2 extends NamuMark
 {
-  
+
   protected function blockParser($block)
   {
     global $wgAllowExternalImages, $wgAllowExternalImagesFrom, $wgEnableImageWhitelist;
-    
+
     $block  = $this->formatParser($block);
     $result = '';
-    
-    
-    
-    
+
+
+
+
     if ($wgAllowExternalImages || (!$wgAllowExternalImages && $wgAllowExternalImagesFrom) || (!$wgAllowExternalImages && $wgEnableImageWhitelist)) {
       if (preg_match("/^(.*?)(?<!<nowiki>|\[)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
         $approve = false;
@@ -66,27 +66,27 @@ class NamuMarkExtended2 extends NamuMark
             }
           }
         }
-        
+
         if ($approve) {
           $match[4] = str_replace(array(
             '?',
             '&'
           ), ' ', $match[4]);
-          
+
           $match[4] = str_ireplace('align=left', '', $match[4]);
           $match[4] = str_ireplace('align=center', 'style="display:block; margin-left:auto; margin-right:auto;"', $match[4]);
-          
+
           $result .= '' . $match[1] . '<img src="' . $match[2] . $match[3] . '"' . $match[4] . '>' . '';
-          
+
           $block = $this->blockParser($match[5]);
         }
       }
     }
-    
+
     $result .= $block;
     return $result;
   }
-  
+
   protected function renderProcessor($text, $type)
   {
     if ($type == '{{|') {
@@ -111,7 +111,7 @@ class NamuMarkExtended2 extends NamuMark
           $text .= $line . "\n";
         }
       }
-      
+
       if (self::startsWithi($text, '#!html')) {
         $text = substr($text, 7);
         $text = htmlspecialchars_decode($text);
@@ -129,19 +129,19 @@ class NamuMarkExtended2 extends NamuMark
             $big_after  = '</big>';
           }
         }
-        
+
         $lines   = explode("\n", $size[2]);
         $size[2] = '';
         foreach ($lines as $line) {
           if ($line !== '')
             $size[2] .= $line . "\n";
         }
-        
+
         if (self::startsWith($size[2], '||')) {
           $offset  = 0;
           $size[2] = $this->tableParser($size[2], $offset);
         }
-        
+
         return $big_before . $this->formatParser($size[2]) . $big_after;
       } elseif (preg_match('/^\-([1-5])(.*)$/sm', $text, $size)) {
         for ($i = 1; $i <= $size[1]; $i++) {
@@ -153,24 +153,30 @@ class NamuMarkExtended2 extends NamuMark
             $small_after  = '</small>';
           }
         }
-        
+
         $lines   = explode("\n", $size[2]);
         $size[2] = '';
         foreach ($lines as $line) {
           if ($line !== '')
             $size[2] .= $line . "\n";
         }
-        
+
         if (self::startsWith($size[2], '||')) {
           $offset  = 0;
           $size[2] = $this->tableParser($size[2], $offset);
         }
-        
+
         return $small_before . $this->formatParser($size[2]) . $small_after;
+	  } elseif (self::startsWithi($text, '#!wiki') && preg_match('/([^\n]*)\n(((((.*)(\n)?)+)))/', substr($text, 7), $match)) {
+		return '<div ' . $match[1] . '>' . $match[2] . '</div>';
+      } elseif (self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
+		return '<syntaxhighlight lang="' . $match[1] . '" line="1">' . preg_replace('/#!syntax ([^\s]*)/', '', $text) . '</syntaxhighlight>';
+	  } elseif (self::startsWithi($text, '#!folding') && preg_match('/#!folding ([^\n]*)\n(((((.*)(\n)?)+)))/', $text, $match)) {
+		return '<div class="nm-folding"><span class="text">' . $match[1] . '</span><div class="folding-content" style="display: none;">' . preg_replace('/#!folding ([^\n]*)/', '', $text) . '</div></div>';
       } else {
         return '<pre>' . $text . '</pre>';
       }
     }
   }
-  
+
 }
