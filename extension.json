@@ -11,7 +11,7 @@
 	},
 	"type": "parserhook",
 	"url": "https://github.com/dodawiki/mediawiki-namumark",
-	"version": "10.3.2",
+	"version": "10.3.3",
 	"MessagesDirs": {
 		"NamuMark": [
 			"i18n"
