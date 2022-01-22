@@ -118,7 +118,9 @@ class NamuMarkExtension
 			$Extra->table();
 			$text = $Extra->text;
 
-			# 파서를 불러온다.
+			$wEngine = new NamuMarkExtended($text, $title);
+			$text =  $wEngine->toHtml();
+
 			$wEngine = new NamuMarkExtended2($text, $title);
 			$text =  $wEngine->toHtml();
 
@@ -141,6 +143,9 @@ class NamuMarkExtension
 			$text = preg_replace('@^<ol><li><ol><li>.*?</li></ol></li></ol>$@ms', '', $text);
 
 			$wEngine = new NamuMarkExtended($text, $title);
+			$text =  $wEngine->toHtml();
+
+			$wEngine = new NamuMarkExtended2($text, $title);
 			$text =  $wEngine->toHtml();
 
 			$Extra = new NamuMarkExtra($text, $title);
