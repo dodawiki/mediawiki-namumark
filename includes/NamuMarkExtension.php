@@ -100,7 +100,6 @@ class NamuMarkExtension
 			$text = preg_replace('@^<ol><li><ol><li>.*?</li></ol></li></ol>$@ms', '', $text);
 
 			$Extra->external();
-			$Extra->imageurl();
 			$Extra->printTemplateParameter();
 			$Extra->pasteMediawikiTable($mediawikiTable);
 			$text = $Extra->text;

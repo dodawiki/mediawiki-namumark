@@ -39,27 +39,6 @@ class NamuMarkExtra
 		);
 	}
 
-	public function imageurl()
-	{
-		preg_match_all('/<a rel="nofollow" target="_blank" class="external free" href="(.*?)">.*?<\/a>/', $this->text, $exurlarr, PREG_SET_ORDER);
-
-		foreach ($exurlarr as $image_path) {
-			$n = 0;
-			if (preg_match('/(.*)(\.jpeg|\.jpg|\.png|\.gif)(.*)/', $image_path[1], $image_url)) {
-				$this->text = str_replace($image_path[0], '<img src="' . $image_url[1] . $image_url[2] . '"><br>', $this->text);
-				$n = 1;
-			}
-
-			if ($n == '0') {
-				$header = @get_headers($image_path[1], 1);
-			}
-			if (isset($header['Content-Type']) && !is_array($header['Content-Type']) && preg_match('/image/', $header['Content-Type'])) {
-				$this->text = str_replace("$image_path[0]", "<img src=\"$image_path[1]\"><br>\n", $this->text);
-			}
-		}
-
-	}
-
 	public function getTemplateParameter()
 	{
 		if (preg_match_all('/\{\{(.*?)\}\}/', $this->text, $includes, PREG_SET_ORDER)) {

@@ -26,65 +26,7 @@ class NamuMarkExtended2 extends NamuMark
     global $wgAllowExternalImages, $wgAllowExternalImagesFrom, $wgEnableImageWhitelist;
 
     $block  = $this->formatParser($block);
-    $result = '';
-
-
-
-
-    if ($wgAllowExternalImages || (!$wgAllowExternalImages && $wgAllowExternalImagesFrom) || (!$wgAllowExternalImages && $wgEnableImageWhitelist)) {
-      if (preg_match("/^(.*?)(?<!<nowiki>|\[)(https?[^<]*?)(\.jpeg|\.jpg|\.png|\.gif)([?&][^< ']+)(?!<\/nowiki>)(.*)$/i", $block, $match)) {
-        $approve = false;
-        if ($wgAllowExternalImagesFrom) {
-          $urls = $wgAllowExternalImagesFrom;
-          if (!is_array($urls)) {
-            $urls = array(
-              $urls
-            );
-          }
-          foreach ($urls as $url) {
-            if (self::startsWith($match[2], $url)) {
-              $approve = true;
-              break;
-            }
-          }
-        } elseif ($wgAllowExternalImages) {
-          $approve = true;
-        } elseif ($wgEnableImageWhitelist) {
-          $titleObject = Title::newFromText('MediaWiki:External image whitelist');
-          if ($titleObject->exists()) {
-            $article = new WikiPage($titleObject);
-            $lists   = $article->getText();
-            $lists   = explode("\n", $lists);
-            foreach ($lists as $list_n => $list) {
-              if ($list_n == 0 || empty($list) || self::startsWith($list, '#')) {
-                continue;
-              }
-              if (preg_match('/' . $list . '/', $match[2])) {
-                $approve = true;
-                break;
-              }
-            }
-          }
-        }
-
-        if ($approve) {
-          $match[4] = str_replace(array(
-            '?',
-            '&'
-          ), ' ', $match[4]);
-
-          $match[4] = str_ireplace('align=left', '', $match[4]);
-          $match[4] = str_ireplace('align=center', 'style="display:block; margin-left:auto; margin-right:auto;"', $match[4]);
-
-          $result .= '' . $match[1] . '<img src="' . $match[2] . $match[3] . '"' . $match[4] . '>' . '';
-
-          $block = $this->blockParser($match[5]);
-        }
-      }
-    }
-
-    $result .= $block;
-    return $result;
+    return $block;
   }
 
   protected function renderProcessor($text, $type)
